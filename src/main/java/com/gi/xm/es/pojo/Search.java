@@ -46,7 +46,7 @@ public class Search  implements Serializable{
 	private String pic;
 	
 	/**
-	 * 点击跳转
+	 * 点击跳转 
 	 * @return
 	 */
 	private String  url;
