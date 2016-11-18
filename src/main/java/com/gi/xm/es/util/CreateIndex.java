@@ -29,8 +29,8 @@ import com.gi.xm.es.controller.EslController;
 public class CreateIndex  
 {  
   
-	public  static Client client ;
-	public static final String INDEX = "xm_es";
+	public static Client client ;
+	public static final String INDEX = "test";
 	public static final String TYPE = "search";
 	public static final String FILEPATH = "C:/Users/sks/Desktop/456.csv";
 	public static final String HOST ="10.9.21.141";
@@ -46,7 +46,6 @@ public class CreateIndex
 			e.printStackTrace();
 		}
 	}
-	
 
 	/**
 	 * 创建索引名称
@@ -72,8 +71,8 @@ public class CreateIndex
 	}
 	
 	/**
-	 * 创建mapping(feid("indexAnalyzer","ik")该字段分词IK索引
-	 * ;feid("searchAnalyzer","ik")该字段分词ik查询；具体分词插件请看IK分词插件说明)
+	 * 创建mapping(field("analyzer","ik")该字段分词ik_max_word索引
+	 * ;filed("analyzer","ik_max_word")该字段分词ik_max_word查询,会将文本做最细粒度的拆分)
 	 * 
 	 * @param indices
 	 *            索引名称；
@@ -99,8 +98,11 @@ public class CreateIndex
 				           	.endObject()
 				           	.startObject("body")
 				           		.field("type", "text")
-				           		.field("indexAnalyzer", "ik")
-				           		.field("searchAnalyzer", "ik")
+				           		.field("analyzer", "ik_max_word")
+			           	   .endObject()
+					           	.startObject("label")
+				           		.field("type", "text")
+				           		.field("analyzer", "ik_max_word")
 			           	   .endObject()
 				           .startObject("sid")
 				           		.field("type", "long")
@@ -128,8 +130,13 @@ public class CreateIndex
 	}
 	
 	 
-	 public static void createIndex(String indexName, String typeName, String filePath){
-     	 File file = new File(filePath);  
+	 public static void createIndex(){
+		 //创建索引
+	     createCluterName(INDEX);
+	     //创建文档
+	     createMapping(INDEX,TYPE);
+		 
+     	 File file = new File(FILEPATH);  
          LinkedHashMap<String, Class<?>> colNames = new LinkedHashMap<String, Class<?>>();  
          colNames.put("id", Long.class);  
          colNames.put("sid", Long.class);
@@ -150,7 +157,7 @@ public class CreateIndex
              List<Map<String, Object>> results = reader.readFile(); 
              for (Map<String, Object> col : results)  
              {  
-                 bulkRequest.add(client.prepareIndex(indexName, typeName)  
+                 bulkRequest.add(client.prepareIndex(INDEX, TYPE)  
                          .setSource(JSON.toJSONString(col)).setId("#"+col.get("id")));  
                  count++;  
              }  
@@ -169,12 +176,9 @@ public class CreateIndex
   
     public static void main(String args[])  
     {  
-    	/*//创建索引
-    	createCluterName(INDEX);
-    	//创建文档
-    	createMapping(INDEX,TYPE);*/
+    	
     	//导入数据
-    	createIndex(INDEX,TYPE,FILEPATH);
+    	createIndex();
     	
         
     }
