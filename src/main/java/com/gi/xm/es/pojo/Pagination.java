@@ -3,7 +3,15 @@ package com.gi.xm.es.pojo;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * 
+ * @author zhangchunyuan
+ * 查询分页对象
+ */
 public class Pagination implements Serializable {
+	
+	
+	private static final long serialVersionUID = 1L;
 	
 	private Integer pageSize  = 10;
 	
@@ -13,10 +21,9 @@ public class Pagination implements Serializable {
 	
 	private List<Search> list;
 
-	public Pagination(){ 
-	}
+	
 	public Integer getPageSize() {
-		return pageSize;
+		return pageSize; 
 	}
 
 	public Integer getPageNo() {

@@ -33,14 +33,15 @@ public class CreateIndex
 	public static final String INDEX = "xm_es";
 	public static final String TYPE = "search";
 	public static final String FILEPATH = "C:/Users/sks/Desktop/456.csv";
-	public static final String IP ="10.9.130.135";
+	public static final String HOST ="10.9.21.141";
+	public static final int POST = 9300;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(EslController.class);
 	
 	static{
 		try {
 		   client = new PreBuiltTransportClient(Settings.EMPTY)
-			        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(IP), 9300));
+			        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST), POST));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -125,7 +126,8 @@ public class CreateIndex
 		}
 		
 	}
-
+	
+	 
 	 public static void createIndex(String indexName, String typeName, String filePath){
      	 File file = new File(filePath);  
          LinkedHashMap<String, Class<?>> colNames = new LinkedHashMap<String, Class<?>>();  
@@ -139,43 +141,29 @@ public class CreateIndex
          colNames.put("sourceId", Long.class); 
          int count = 0;  
          long startTime = System.currentTimeMillis();  
-             int currentCount = 0;  
-             long startCurrentTime = System.currentTimeMillis();  
-             FileReader reader = new FileReader(file, "\\$", colNames);  
-             BulkResponse resp = null;  
-             BulkRequestBuilder bulkRequest = client.prepareBulk();  
-             try  
+         long startCurrentTime = System.currentTimeMillis();  
+         FileReader reader = new FileReader(file, ",", colNames);  
+         BulkResponse resp = null;  
+         BulkRequestBuilder bulkRequest = client.prepareBulk();  
+         try  
+         {  
+             List<Map<String, Object>> results = reader.readFile(); 
+             for (Map<String, Object> col : results)  
              {  
-                 List<Map<String, Object>> results = reader.readFile(); 
-                 for (Map<String, Object> col : results)  
-                 {  
-                     bulkRequest.add(client.prepareIndex(indexName, typeName)  
-                             .setSource(JSON.toJSONString(col)).setId("#"+col.get("id")));  
-                     count++;  
-                     currentCount++;  
-                 }  
-                 resp = bulkRequest.execute().actionGet();  
+                 bulkRequest.add(client.prepareIndex(indexName, typeName)  
+                         .setSource(JSON.toJSONString(col)).setId("#"+col.get("id")));  
+                 count++;  
              }  
-             catch (Exception e)  
-             {  
-            	 LOG.error("添加索引内容出现异常 bulkRequest.add(client.prepareIndex(indexName, typeName)..", e.getStackTrace());
-             }  
-             long endCurrentTime = System.currentTimeMillis();  
-             System.out.println("[thread-0"  + "-]per count:" + currentCount);  
-             System.out.println("[thread-0"+ "-]per time:"  
-                     + (endCurrentTime - startCurrentTime));  
-             System.out.println("[thread-0" + "-]per count/s:"  
-                     + (float) currentCount / (endCurrentTime - startCurrentTime)  
-                     * 1000);  
-             System.out.println("[thread-0" + "-]per count/s:"  
-                     + resp.toString());  
-             long endTime = System.currentTimeMillis();  
-             System.out.println("[thread-0" + "-]total count:" + count);  
-             System.out.println("[thread-0"  + "-]total time:"  
-                    + (endTime - startTime));  
-             System.out.println("[thread-0" + "-]total count/s:" + (float) count  
-                    / (endTime - startTime) * 1000);  
-             client.close();
+             resp = bulkRequest.execute().actionGet();  
+         }  
+         catch (Exception e)  
+         {  
+        	 LOG.error("添加索引内容出现异常 bulkRequest.add(client.prepareIndex(indexName, typeName)..", e.getStackTrace());
+         }  
+         long endCurrentTime = System.currentTimeMillis(); 
+         System.out.println("[-----总条数:"+ "-]"+  count +" 条");
+         System.out.println("[-----总用时:"+ "-]"+  (endCurrentTime - startCurrentTime)+" ms");
+         client.close();
      }
    
   
@@ -187,6 +175,7 @@ public class CreateIndex
     	createMapping(INDEX,TYPE);*/
     	//导入数据
     	createIndex(INDEX,TYPE,FILEPATH);
+    	
         
     }
 

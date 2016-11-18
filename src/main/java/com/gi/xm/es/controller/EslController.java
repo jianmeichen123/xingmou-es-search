@@ -1,7 +1,5 @@
 package com.gi.xm.es.controller;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +8,14 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.Search;
 import com.gi.xm.es.util.CreateIndex;
+
 import net.sf.json.JSONObject;
 
 @RestController
@@ -33,7 +31,18 @@ import net.sf.json.JSONObject;
 public class EslController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EslController.class);
-
+	
+	@Autowired
+	private Client client;
+	
+	@Autowired
+	@Value("${es.index}")
+	private String index;
+	
+	@Autowired
+	@Value("${es.type}")
+	private String type;
+	
 	/**
 	 * 分页查询 @author zhangchunyuan
 	 * 
@@ -45,7 +54,6 @@ public class EslController {
 	 *            当前页码
 	 * @return Pagination
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("searchBypage")
 	@ResponseBody
 	public  Pagination findByPage(String keyword, Integer pageSize, Integer pageNo) {
@@ -53,24 +61,16 @@ public class EslController {
 		pageNo = null == pageNo ? 1 : pageNo;
 		page.setPageNo(pageNo);
 		page.setPageSize(pageSize);
-
-		Client client = null;
-		try {
-			   client = new PreBuiltTransportClient(Settings.EMPTY)
-				        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.9.130.135"), 9300));
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-		}
 		
+		//设置查询条件 title termQuery body,label matchquery 分词
 		QueryBuilder queryBuilder = QueryBuilders.disMaxQuery().add(QueryBuilders.termQuery("title", keyword))
-				.add(QueryBuilders.matchQuery("body", keyword).analyzer("ik"));
+				.add(QueryBuilders.matchQuery("body", keyword).analyzer("ik")).add(QueryBuilders.matchQuery("label", keyword).analyzer("ik"));
 		
 		//设置分页参数
-		SearchRequestBuilder srb = client.prepareSearch(CreateIndex.INDEX);
+		SearchRequestBuilder srb = client.prepareSearch(index);
 		srb.setQuery(queryBuilder);
 		srb.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		
-		srb.setFrom((pageNo - 1) * pageSize).setSize(pageSize).setExplain(true);
+		srb.setFrom((pageNo - 1) * pageSize).setSize(pageSize);
 		
 		SearchResponse response = srb.execute().actionGet();
 		SearchHits hits = response.getHits();

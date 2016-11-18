@@ -8,19 +8,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.commons.io.FileSystemUtils;  
-import org.apache.commons.io.FileUtils;  
-import org.apache.commons.io.FilenameUtils;  
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.gi.xm.es.controller.EslController;
-
-import org.apache.commons.io.IOCase;  
+import org.slf4j.LoggerFactory;  
 
 
-
+/**
+ * 读取文件工具类
+ * @author zhangchunyuan
+ *
+ */
 public class FileReader  
 {  
   
@@ -57,7 +56,7 @@ public class FileReader
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();  
         if (!file.isFile())  
         {  
-            throw new Exception("File not exists." + file.getName());  
+            throw new Exception("----该文件不存在---:" + file.getName());  
         }  
         LineIterator  lineIterator = null;  
         try  
@@ -66,7 +65,7 @@ public class FileReader
             while (lineIterator.hasNext())  
             {  
                 String line = (String) lineIterator.next();  
-                String[] values = line.split(",");  
+                String[] values = line.split(splitCharactor);  
                 if (colNames.size() != values.length)  
                 {  
                     continue;  

@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public class Search  implements Serializable{
 	
+
 	private Long id;
 	
 	/**
