@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.Search;
-import com.gi.xm.es.util.CreateIndex;
 
 import net.sf.json.JSONObject;
 
