@@ -1,7 +1,10 @@
 package com.gi.xm.es.controller;
 
 import com.gi.xm.es.pojo.Query;
+import com.gi.xm.es.util.Aes;
 import com.gi.xm.es.util.EntityUtil;
+import com.gi.xm.es.util.Md5;
+import com.gi.xm.es.util.PostServer;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
@@ -17,13 +20,11 @@ import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/multisearch/")
@@ -34,6 +35,13 @@ public class MultiSearchController {
     @Autowired
     private Client client;
 
+    //图灵网站上的secret
+    @Value("${xm.robot.secret}")
+    private String[] secrets ;
+    //图灵网站上的apiKey
+    @Value("${xm.robot.apiKey}")
+    private  String[] apiKeys ;
+
 
     /**
      * 根据关键字查询 @author zhangchunyuan
@@ -42,15 +50,43 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(@RequestBody Query query) throws ClassNotFoundException {
+    public Result searchByKey(@RequestBody Query query) {
+        Result ret = new Result();
+        if (query == null || query.getKeyword() == null) {
+            ret = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
+            return ret;
+        }
+
+        if (!query.getKeyword().startsWith("#") ){
+            //待加密的json数据
+            int randNum = new Random().nextInt(3);
+            String data = "{\"key\":\"" + apiKeys[randNum] + "\",\"info\":\"" + query.getKeyword() + "\"}";
+            //获取时间戳
+            String timestamp = String.valueOf(System.currentTimeMillis());
+
+            //生成密钥
+            String keyParam = secrets[randNum] + timestamp + apiKeys[randNum];
+            String key = Md5.MD5(keyParam);
+
+            //加密
+            Aes mc = new Aes(key);
+            data = mc.encrypt(data);
+
+            //封装请求参数
+            com.alibaba.fastjson.JSONObject json = new com.alibaba.fastjson.JSONObject();
+            json.put("key", apiKeys[randNum]);
+            json.put("timestamp", timestamp);
+            json.put("data", data);
+            //请求图灵api
+            String str = PostServer.SendPost(json.toString(), "http://www.tuling123.com/openapi/api");
+            ret.setMsg(str);
+            return ret;
+        }
+
         String keyword = query.getKeyword();
         String category = query.getCategory();
         Integer pageSize = query.getPageSize();
         Integer pageNo = query.getPageNo();
-        if (query == null || keyword == null) {
-            Result ret = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
-            return ret;
-        }
         if(category == null){
             category = "xm_project";
         }
