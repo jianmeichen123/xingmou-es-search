@@ -50,14 +50,14 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(@RequestBody Query query) {
+    public Result searchByKey(String keys, @RequestBody Query query) {
         Result ret = new Result();
-        if (query == null || query.getKeyword() == null) {
+        if ( query.getKeyword() == null &&keys ==null) {
             ret = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
             return ret;
         }
 
-        if (!query.getKeyword().startsWith("#") ){
+        if (keys != null){
             //待加密的json数据
             int randNum = new Random().nextInt(3);
             String data = "{\"key\":\"" + apiKeys[randNum] + "\",\"info\":\"" + query.getKeyword() + "\"}";
