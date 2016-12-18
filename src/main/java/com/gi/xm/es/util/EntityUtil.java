@@ -1,7 +1,10 @@
 package com.gi.xm.es.util;
 
 
-import com.gi.xm.es.pojo.*;
+import com.gi.xm.es.pojo.Investfirms;
+import com.gi.xm.es.pojo.Investor;
+import com.gi.xm.es.pojo.Originator;
+import com.gi.xm.es.pojo.Project;
 
 import java.util.HashMap;
 import java.util.Map;
