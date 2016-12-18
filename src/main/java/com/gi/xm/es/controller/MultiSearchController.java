@@ -60,7 +60,7 @@ public class MultiSearchController {
         if (keys != null){
             //待加密的json数据
             int randNum = new Random().nextInt(3);
-            String data = "{\"key\":\"" + apiKeys[randNum] + "\",\"info\":\"" + query.getKeyword() + "\"}";
+            String data = "{\"key\":\"" + apiKeys[randNum] + "\",\"info\":\"" + keys + "\"}";
             //获取时间戳
             String timestamp = String.valueOf(System.currentTimeMillis());
 
