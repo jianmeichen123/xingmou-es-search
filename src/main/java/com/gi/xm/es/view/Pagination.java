@@ -1,4 +1,6 @@
-package com.gi.xm.es.pojo;
+package com.gi.xm.es.view;
+
+import com.gi.xm.es.pojo.Search;
 
 import java.io.Serializable;
 import java.util.List;

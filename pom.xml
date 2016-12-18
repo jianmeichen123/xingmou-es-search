@@ -11,27 +11,24 @@
         <groupId>org.springframework.boot</groupId>  
         <artifactId>spring-boot-starter-parent</artifactId>  
         <version>1.4.2.RELEASE</version>  
-    </parent>  
-  
-    <build>  
-        <plugins>  
-            <plugin>  
-                <groupId>org.springframework.boot</groupId>  
-                <artifactId>spring-boot-maven-plugin</artifactId>  
-            </plugin>  
-        </plugins>  
-    </build>  
-  
-    <dependencies>  
-         <dependency>  
+    </parent>
+
+    <properties>
+		<!-- The main class to start by executing java -jar -->
+		<start-class>com.gi.xm.es.main.SearchApp</start-class>
+	</properties>
+
+    <dependencies>
+        <!--<dependency>
+            <groupId>com.gi</groupId>
+            <artifactId>xingmou-robot-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>-->
+         <dependency>
             <groupId>org.springframework.boot</groupId>  
             <artifactId>spring-boot-starter-web</artifactId>  
-        </dependency>  
-		<!-- <dependency>
-		  <groupId>com.fasterxml.jackson.core</groupId>
-		  <artifactId>jackson-databind</artifactId>
-		  <version>2.7.4</version>
-		</dependency> -->
+        </dependency>
+
 		<dependency>
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
@@ -62,6 +59,12 @@
 			<artifactId>log4j-api</artifactId>
 			<version>2.6.2</version>
 		</dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.3</version>
+        </dependency>
+
 		<!-- <dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-1.2-api</artifactId>
@@ -74,4 +77,30 @@
 		  <classifier>jdk13</classifier>
 		</dependency>
 	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.9</version>
+                <configuration>
+                    <imageName>${project.artifactId}</imageName>
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project> 
