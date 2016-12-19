@@ -50,10 +50,11 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(String keys, @RequestBody Query query) {
+    public Result searchByKey(@RequestHeader ("email") String email,  String keys, @RequestBody Query query) {
         Result ret = new Result();
         if ( query.getKeyword() == null &&keys ==null) {
             ret = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
+            LOG.info(email + ":" + email);
             return ret;
         }
 
