@@ -46,11 +46,12 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(@RequestBody Query query) throws ClassNotFoundException {
+    public Result searchByKey(@RequestHeader ("email") String email,  @RequestBody Query query) throws ClassNotFoundException {
         String keyword = query.getKeyword();
         String category = query.getCategory();
         Integer pageSize = query.getPageSize();
         Integer pageNo = query.getPageNo();
+        LOG.info(email + ":" + email);
         if (query == null || keyword == null) {
             Result ret = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
             return ret;
