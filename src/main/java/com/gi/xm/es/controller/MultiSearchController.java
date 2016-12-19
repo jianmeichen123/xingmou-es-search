@@ -136,8 +136,8 @@ public class MultiSearchController {
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("title");
         highlightBuilder.field("description");
-        highlightBuilder.preTags("<em>");
-        highlightBuilder.postTags("</em>");
+        highlightBuilder.preTags("<span class = 'highlight'>");
+        highlightBuilder.postTags("</span>");
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("title",keyword))
                 .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_max_word"))
@@ -154,8 +154,8 @@ public class MultiSearchController {
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
         highlightBuilder.field("desciption");
-        highlightBuilder.preTags("<em>");
-        highlightBuilder.postTags("</em>");
+        highlightBuilder.preTags("<span class = 'highlight'>");
+        highlightBuilder.postTags("</span>");
 
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
@@ -172,8 +172,8 @@ public class MultiSearchController {
         highlightBuilder.field("name");
         highlightBuilder.field("investfirmName");
         highlightBuilder.field("desciption");
-        highlightBuilder.preTags("<em>");
-        highlightBuilder.postTags("</em>");
+        highlightBuilder.preTags("<span class = 'highlight'>");
+        highlightBuilder.postTags("</span>");
 
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
@@ -188,8 +188,8 @@ public class MultiSearchController {
         highlightBuilder.field("name");
         highlightBuilder.field("jobDescription");
         highlightBuilder.field("projectName");
-        highlightBuilder.preTags("<em>");
-        highlightBuilder.postTags("</em>");
+        highlightBuilder.preTags("<span class = 'highlight'>");
+        highlightBuilder.postTags("</sapn>");
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
                 .add(QueryBuilders.termQuery("projectName", keyword))
