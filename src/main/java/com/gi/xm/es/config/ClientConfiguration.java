@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -19,6 +20,7 @@ import java.net.UnknownHostException;
  *
  */
 @Configuration
+@EnableMongoRepositories(basePackages = "com.gi.xm.es")
 public class ClientConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClientConfiguration.class);

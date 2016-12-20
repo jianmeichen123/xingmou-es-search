@@ -1,3 +1,4 @@
+/*
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
@@ -28,9 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+*/
 /**
  * Created by zcy on 16-12-12.
- */
+ *//*
+
 public class ESDataUtil {
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
@@ -61,9 +64,11 @@ public class ESDataUtil {
         //importOriginator();
     }
 
-    /**
+    */
+/**
      *  项目
-     */
+     *//*
+
     public static void importProjects(){
         createIndex("xm_project_a","project");
         String projectSql = "select " +
@@ -81,9 +86,11 @@ public class ESDataUtil {
         excuteThread("xm_project_a","project",projectSql);
     }
 
-    /**
+    */
+/**
      *  投资机构
-     */
+     *//*
+
     public static void importInvestfirms(){
         String investfirmsSql = " select " +
                 " i.name, " +
@@ -98,9 +105,11 @@ public class ESDataUtil {
         excuteThread("xm_investfirm_a","investfirm",investfirmsSql);
     }
 
-    /**
+    */
+/**
      * 创始人
-     */
+     *//*
+
     public static void importOriginator(){
         String originatorSql = "select " +
                 "ps.name," +
@@ -115,9 +124,11 @@ public class ESDataUtil {
         excuteThread("xm_originator_a","originator",originatorSql);
     }
 
-    /**
+    */
+/**
      *  投资人
-     */
+     *//*
+
     public static void importInvestor(){
 
         String investorSql = "select " +
@@ -223,10 +234,12 @@ public class ESDataUtil {
 
 
 
-    /**
+    */
+/**
      * 读取mysql 数据
      * @param sql 查询语句
-     */
+     *//*
+
     public static int writeData(String sql){
         Connection conn = null;
         PreparedStatement ps = null;
@@ -286,3 +299,4 @@ public class ESDataUtil {
     }
 
 }
+*/

@@ -13,9 +13,9 @@ public class Pagination implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer pageSize ;
+    private Integer pageSize = 10;
 
-    private Integer pageNo ;
+    private Integer pageNo = 0;
     /**
      * 每种分类查询总数
      */
