@@ -62,15 +62,16 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(String keys,@RequestHeader (name = "userInfo" ,required = false) String userInfo ,  @RequestBody Query query) throws ClassNotFoundException {
+    public Result searchByKey(String keys,@RequestHeader (name = "email" ,required = false) String email ,  @RequestBody Query query) throws ClassNotFoundException {
         String keyword = query.getKeyword();
         if (keys == null && keyword == null) {
             return errorRet;
         }
         Result ret = new Result();
         UserSearchLog userSearchLog = null;
-        if (userInfo != null){
-            userSearchLog = JSON.parseObject(userInfo,UserSearchLog.class);
+        if (email != null){
+            userSearchLog = new UserSearchLog();
+            userSearchLog.setEmail(email);
         }
         long startTime = System.currentTimeMillis();
         if (keys != null){
