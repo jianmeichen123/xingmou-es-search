@@ -18,8 +18,27 @@ public class UserSearchLog implements Serializable {
     private String txt;
     private Integer type;
     private String returnjson;
+    private Long sendtime;
+
+    public Long getReturntime() {
+        return returntime;
+    }
+
+    public void setReturntime(Long returntime) {
+        this.returntime = returntime;
+    }
+
+    private Long returntime;
 
     public UserSearchLog() {
+    }
+
+    public Long getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(Long sendtime) {
+        this.sendtime = sendtime;
     }
 
     public UserSearchLog(String id, String email, Integer roleId, Integer realName, String txt, Integer type, String returnjson, Integer pageNo, Long loadtime) {
