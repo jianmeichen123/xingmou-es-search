@@ -252,7 +252,7 @@ public class MultiSearchController {
         highlightBuilder.field("jobDescription");
         highlightBuilder.field("projectName");
         highlightBuilder.preTags("<span class = 'highlight'>");
-        highlightBuilder.postTags("</sapn>");
+        highlightBuilder.postTags("</span>");
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
                 .add(QueryBuilders.termQuery("projectName", keyword))
