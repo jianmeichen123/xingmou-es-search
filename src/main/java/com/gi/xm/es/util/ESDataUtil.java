@@ -26,12 +26,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by zcy on 16-12-12.
  */
-public class ESDataUtil {
+public class ESDataUtil{
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
@@ -55,9 +56,9 @@ public class ESDataUtil {
 
     public static void main(String args[]) {
 
-        //importProjects();
+        importProjects();
         //importInvestfirms();
-        importInvestor();
+        //importInvestor();
         //importOriginator();
     }
 
@@ -65,7 +66,6 @@ public class ESDataUtil {
      *  项目
      */
     public static void importProjects(){
-        createIndex("xm_project_a","project");
         String projectSql = "select " +
                 "p.id as sid," +
                 "p.title," +
@@ -78,7 +78,7 @@ public class ESDataUtil {
                 "p.newest_event_round as roundName," +
                 "p.create_date as createDate " +
                 "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
-        excuteThread("xm_project_a","project",projectSql);
+        excuteThread("xm_project_c","project",projectSql);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ESDataUtil {
     }
 
     /**
-     * 创始人
+     * 创 始人
      */
     public static void importOriginator(){
         String originatorSql = "select " +
@@ -112,7 +112,7 @@ public class ESDataUtil {
                 "from edw2.dm_project_person ps," +
                 "edw2.dm_project pj " +
                 "where ps.project_id = pj.id" ;
-        excuteThread("xm_originator_a","originator",originatorSql);
+        excuteThread("xm_originator_b","originator",originatorSql);
     }
 
     /**
@@ -142,7 +142,7 @@ public class ESDataUtil {
         System.out.println("总条数:"+rowcount+"条");
     }
 
-    public static void  createIndex(final  String index,final  String type){
+    public static void  createIndex( final String index,  final String type){
         final long currentTime = System.currentTimeMillis();
         final ConcurrentHashMap<String, Boolean> hashMap = new ConcurrentHashMap();
         //开多线程读队列的数据
@@ -158,11 +158,10 @@ public class ESDataUtil {
                                 //批量成功后执行
                                 public void afterBulk(long l, BulkRequest bulkRequest,
                                                       BulkResponse bulkResponse) {
+                                    System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
                                     if (bulkResponse.hasFailures()) {
-                                        System.out.println("请求数量："+ bulkRequest.numberOfActions());
                                         for (BulkItemResponse item :
                                                 bulkResponse.getItems()) {
-
                                             if (item.isFailed()) {
                                                 System.out.println("失败信息:--------" +
                                                         item.getFailureMessage());
@@ -211,7 +210,11 @@ public class ESDataUtil {
                                     e.printStackTrace(System.out);
                                 }
                             }
-                            bulkProcessor.close();
+                            try {
+                                bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             break;
 
                         }
