@@ -202,7 +202,7 @@ public class MultiSearchController {
         highlightBuilder.preTags("<span class = 'highlight'>");
         highlightBuilder.postTags("</span>");
         QueryBuilder qb = QueryBuilders.disMaxQuery()
-                .add(QueryBuilders.termQuery("title",keyword))
+                .add(QueryBuilders.matchQuery("title", keyword).analyzer("ik_max_word"))
                 .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_max_word"))
                 .add(QueryBuilders.termQuery("lables", keyword))
                 .add(QueryBuilders.termQuery("indudstryName", keyword))
@@ -263,11 +263,11 @@ public class MultiSearchController {
 
     private SearchRequestBuilder getRequestBuilder(QueryBuilder queryBuilder ,HighlightBuilder highlightBuilder, String index, int pageNo,int pageSize){
 
-
         SearchRequestBuilder srb = client.prepareSearch(index);
         srb.setQuery(queryBuilder);
         srb.highlighter(highlightBuilder);
         srb.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+        pageNo = (pageNo>20) ? 20 : pageNo;
         srb.setFrom(pageNo * pageSize).setSize(pageSize);
         return srb;
     }
