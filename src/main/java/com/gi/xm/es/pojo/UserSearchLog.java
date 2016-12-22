@@ -14,64 +14,11 @@ public class UserSearchLog implements Serializable {
     private String id;
     private String email;
     private Integer roleId;
-    private Integer realName;
+    private String realName;
     private String txt;
     private Integer type;
     private String returnjson;
     private Long sendtime;
-
-    public Long getReturntime() {
-        return returntime;
-    }
-
-    public void setReturntime(Long returntime) {
-        this.returntime = returntime;
-    }
-
-    private Long returntime;
-
-    public UserSearchLog() {
-    }
-
-    public Long getSendtime() {
-        return sendtime;
-    }
-
-    public void setSendtime(Long sendtime) {
-        this.sendtime = sendtime;
-    }
-
-    public UserSearchLog(String id, String email, Integer roleId, Integer realName, String txt, Integer type, String returnjson, Integer pageNo, Long loadtime) {
-        this.id = id;
-        this.email = email;
-        this.roleId = roleId;
-        this.realName = realName;
-        this.txt = txt;
-        this.type = type;
-        this.returnjson = returnjson;
-        this.pageNo = pageNo;
-        this.loadtime = loadtime;
-    }
-
-    public Integer getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(Integer pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    private Integer pageNo;
-
-    public Long getLoadtime() {
-        return loadtime;
-    }
-
-    public void setLoadtime(Long loadtime) {
-        this.loadtime = loadtime;
-    }
-
-    private Long loadtime;
 
     public String getId() {
         return id;
@@ -97,11 +44,11 @@ public class UserSearchLog implements Serializable {
         this.roleId = roleId;
     }
 
-    public Integer getRealName() {
+    public String getRealName() {
         return realName;
     }
 
-    public void setRealName(Integer realName) {
+    public void setRealName(String realName) {
         this.realName = realName;
     }
 
@@ -127,5 +74,13 @@ public class UserSearchLog implements Serializable {
 
     public void setReturnjson(String returnjson) {
         this.returnjson = returnjson;
+    }
+
+    public Long getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(Long sendtime) {
+        this.sendtime = sendtime;
     }
 }
