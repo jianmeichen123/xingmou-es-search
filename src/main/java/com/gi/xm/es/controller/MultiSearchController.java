@@ -12,7 +12,6 @@ import com.gi.xm.es.util.PostServer;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
-import net.sf.json.JSONObject;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -79,8 +78,10 @@ public class MultiSearchController {
             int randNum = new Random().nextInt(3);
             TulingSend send = new TulingSend();
             send.setInfo(keys);
-            send.setKey(apiKeys[1]);
-            send.setUserid("1");
+            send.setKey(apiKeys[email.length()%3]);
+            StringBuffer sb=new StringBuffer(email);
+            sb=sb.reverse();
+            send.setUserid(Md5.MD5(sb.toString()));
             String data = JSON.toJSONString(send);
             //获取时间戳
             String timestamp = String.valueOf(System.currentTimeMillis());
@@ -140,7 +141,7 @@ public class MultiSearchController {
                     if(index.equals(category)){
                         Map source = searchHit.getSource();
 
-                        Object entity = JSONObject.toBean(JSONObject.fromObject(source),  EntityUtil.classHashMap.get(index));
+                        Object entity = JSON.parseObject(JSON.toJSONString(source),  EntityUtil.classHashMap.get(index));
                         //获取对应的高亮域
                         Map<String, HighlightField> result = searchHit.highlightFields();
                         //从设定的高亮域中取得指定域
