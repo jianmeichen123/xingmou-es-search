@@ -24,7 +24,7 @@ public class Investor implements Serializable{
     /**
      * 个人简介
      */
-    private String desciption;
+    private String description;
     /**
      * 投资人id
      */
@@ -58,12 +58,12 @@ public class Investor implements Serializable{
         this.position = position;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getSid() {
