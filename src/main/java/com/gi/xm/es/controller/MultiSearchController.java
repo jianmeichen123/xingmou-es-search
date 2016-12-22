@@ -79,10 +79,13 @@ public class MultiSearchController {
             int randNum = new Random().nextInt(3);
             TulingSend send = new TulingSend();
             send.setInfo(keys);
-            send.setKey(apiKeys[userSearchLog.getRoleId()%3]);
-            StringBuffer sb=new StringBuffer(userSearchLog.getEmail());
-            sb=sb.reverse();
-            send.setUserid(Md5.MD5(sb.toString()));
+            int keynum = userSearchLog!=null&&userSearchLog!=null?userSearchLog.getRoleId()%3:0;
+            send.setKey(apiKeys[keynum]);
+            if (userSearchLog!=null&&userSearchLog.getEmail()!=null){
+                StringBuffer sb=new StringBuffer(userSearchLog.getEmail());
+                sb=sb.reverse();
+                send.setUserid(Md5.MD5(sb.toString()));
+            }
             String data = JSON.toJSONString(send);
             //获取时间戳
             String timestamp = String.valueOf(System.currentTimeMillis());
