@@ -226,7 +226,7 @@ public class MultiSearchController {
         //设置高亮字段
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
-        highlightBuilder.field("desciption");
+        highlightBuilder.field("description");
         highlightBuilder.preTags("<span class = 'highlight'>");
         highlightBuilder.postTags("</span>");
 
@@ -244,7 +244,7 @@ public class MultiSearchController {
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
         highlightBuilder.field("investfirmName");
-        highlightBuilder.field("desciption");
+        highlightBuilder.field("description");
         highlightBuilder.preTags("<span class = 'highlight'>");
         highlightBuilder.postTags("</span>");
 
