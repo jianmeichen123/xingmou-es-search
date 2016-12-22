@@ -198,6 +198,7 @@ public class MultiSearchController {
             userSearchLog.setLoadtime(endTime-startTime);
             userSearchLog.setReturntime(endTime);
             userSearchLog.setSendtime(startTime);
+            userSearchLog.setFrom(from==null?"search":"robit");
             userLogService.addUserSearchLog(userSearchLog);
         }
         return ret;
