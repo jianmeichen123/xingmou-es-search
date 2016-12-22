@@ -71,7 +71,7 @@ public class MultiSearchController {
         Result ret = new Result();
         UserSearchLog userSearchLog = null;
         if (userInfo != null){
-            userSearchLog = JSON.parseObject(userInfo, UserSearchLog.class);
+            userSearchLog = JSON.parseObject(URLDecoder.decode(userInfo), UserSearchLog.class);
         }
         long startTime = System.currentTimeMillis();
         if (keys != null){
