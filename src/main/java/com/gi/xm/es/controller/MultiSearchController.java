@@ -64,7 +64,7 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(String keys,@RequestHeader (name = "userInfo" ,required = false) String userInfo ,  @RequestBody Query query) {
+    public Result searchByKey(String keys,String from,@RequestHeader (name = "userInfo" ,required = false) String userInfo ,  @RequestBody Query query) {
         String keyword = query.getKeyword();
         if (keys == null && keyword == null) {
             return errorRet;
