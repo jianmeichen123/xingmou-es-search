@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -71,7 +72,11 @@ public class MultiSearchController {
         Result ret = new Result();
         UserSearchLog userSearchLog = null;
         if (userInfo != null){
-           // userSearchLog = JSON.parseObject(URLDecoder.decode(userInfo), UserSearchLog.class);
+            try {
+                userSearchLog = JSON.parseObject(URLDecoder.decode(userInfo,"UTF-8"), UserSearchLog.class);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         long startTime = System.currentTimeMillis();
         if (keys != null){
