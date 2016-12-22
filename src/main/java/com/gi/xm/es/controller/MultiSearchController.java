@@ -12,7 +12,6 @@ import com.gi.xm.es.util.PostServer;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
-import net.sf.json.JSONObject;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -142,7 +141,7 @@ public class MultiSearchController {
                     if(index.equals(category)){
                         Map source = searchHit.getSource();
 
-                        Object entity = JSONObject.toBean(JSONObject.fromObject(source),  EntityUtil.classHashMap.get(index));
+                        Object entity = JSON.parseObject(JSON.toJSONString(source),  EntityUtil.classHashMap.get(index));
                         //获取对应的高亮域
                         Map<String, HighlightField> result = searchHit.highlightFields();
                         //从设定的高亮域中取得指定域
