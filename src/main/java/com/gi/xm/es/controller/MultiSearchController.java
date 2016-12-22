@@ -31,6 +31,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 
 @RestController
@@ -61,16 +63,15 @@ public class MultiSearchController {
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result searchByKey(String keys,@RequestHeader (name = "email" ,required = false) String email ,  @RequestBody Query query) {
+    public Result searchByKey(String keys,@RequestHeader (name = "userInfo" ,required = false) String userInfo ,  @RequestBody Query query) {
         String keyword = query.getKeyword();
         if (keys == null && keyword == null) {
             return errorRet;
         }
         Result ret = new Result();
         UserSearchLog userSearchLog = null;
-        if (email != null){
-            userSearchLog = new UserSearchLog();
-            userSearchLog.setEmail(email);
+        if (userInfo != null){
+            userSearchLog = JSON.parseObject(userInfo, UserSearchLog.class);
         }
         long startTime = System.currentTimeMillis();
         if (keys != null){
@@ -78,8 +79,8 @@ public class MultiSearchController {
             int randNum = new Random().nextInt(3);
             TulingSend send = new TulingSend();
             send.setInfo(keys);
-            send.setKey(apiKeys[email.length()%3]);
-            StringBuffer sb=new StringBuffer(email);
+            send.setKey(apiKeys[userSearchLog.getRoleId()%3]);
+            StringBuffer sb=new StringBuffer(userSearchLog.getEmail());
             sb=sb.reverse();
             send.setUserid(Md5.MD5(sb.toString()));
             String data = JSON.toJSONString(send);
