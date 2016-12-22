@@ -196,9 +196,9 @@ public class MultiSearchController {
         long endTime = System.currentTimeMillis();
         if (userSearchLog != null){
             userSearchLog.setLoadtime(endTime-startTime);
-            userLogService.addUserSearchLog(userSearchLog);
             userSearchLog.setReturntime(endTime);
             userSearchLog.setSendtime(startTime);
+            userLogService.addUserSearchLog(userSearchLog);
         }
         return ret;
     }
