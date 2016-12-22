@@ -20,6 +20,16 @@ public class UserSearchLog implements Serializable {
     private String returnjson;
     private Long sendtime;
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    private String from;
+
     public String getRealName() {
         return realName;
     }
