@@ -218,8 +218,7 @@ public class MultiSearchController {
                 .add(QueryBuilders.termQuery("lables", keyword))
                 .add(QueryBuilders.termQuery("indudstryName", keyword))
                 .add(QueryBuilders.termQuery("indudstrySubName", keyword))
-                .add(QueryBuilders.termQuery("roundName", keyword))
-                .tieBreaker(0.3f);
+                .add(QueryBuilders.termQuery("roundName", keyword));
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.PROJECT_INDEX_A,pageNo,pageSize);
         return srb;
     }
@@ -236,8 +235,7 @@ public class MultiSearchController {
                 .add(QueryBuilders.termQuery("name", keyword))
                 .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_max_word"))
                 .add(QueryBuilders.termQuery("areaNames", keyword))
-                .add(QueryBuilders.termQuery("roundNames", keyword))
-                .tieBreaker(0.3f);
+                .add(QueryBuilders.termQuery("roundNames", keyword));
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.INVESTFIRM_INDEX_A,pageNo,pageSize);
         return srb;
     }
@@ -254,8 +252,7 @@ public class MultiSearchController {
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
                 .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_max_word"))
-                .add(QueryBuilders.termQuery("investfirmName", keyword))
-                .tieBreaker(0.3f);
+                .add(QueryBuilders.termQuery("investfirmName", keyword));
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.INVESTOR_INDEX_A,pageNo,pageSize);
         return srb;
     }
@@ -270,8 +267,7 @@ public class MultiSearchController {
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
                 .add(QueryBuilders.termQuery("projectName", keyword))
-                .add(QueryBuilders.matchQuery("jobDescription", keyword).analyzer("ik_max_word"))
-                .tieBreaker(0.3f);
+                .add(QueryBuilders.matchQuery("jobDescription", keyword).analyzer("ik_max_word"));
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.ORIGINATOR_INDEX_A,pageNo,pageSize);
         return srb;
     }
