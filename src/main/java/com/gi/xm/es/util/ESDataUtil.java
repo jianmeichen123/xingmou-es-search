@@ -8,13 +8,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.elasticsearch.action.bulk.*;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +39,8 @@ public class ESDataUtil{
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
-    static final String HOST = "10.9.130.135";
-    static final String clustername = "elasticsearch";
+    static final String HOST = "10.10.213";
+    static final String clustername = "xm_es_cluster";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
 
@@ -56,9 +59,9 @@ public class ESDataUtil{
 
     public static void main(String args[]) {
 
-        importProjects();
+         //importProjects();
         //importInvestfirms();
-        //importInvestor();
+        importInvestor();
         //importOriginator();
     }
 
@@ -66,70 +69,80 @@ public class ESDataUtil{
      *  项目
      */
     public static void importProjects(){
-        String projectSql = "select " +
-                "p.id as sid," +
-                "p.title," +
-                "p.description," +
-                "p.pic_big_xm as logo, " +
-                "i.icon as icon ," +
-                "p.industry_name as labels," +
-                "p.industry_name as indudstryName ," +
-                "p.industry_sub_name as indudstrySubName," +
-                "p.newest_event_round as roundName," +
-                "p.create_date as createDate " +
-                "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
-        excuteThread("xm_project_c","project",projectSql);
+        boolean isDelete = deleteIndexData("xm_project_a","project");
+        if(isDelete){
+            String projectSql = "select " +
+                    "p.id as sid," +
+                    "p.title," +
+                    "p.description," +
+                    "p.pic_big_xm as logo, " +
+                    "i.id as icon ," +
+                    "p.labels as labels," +
+                    "p.industry_name as indudstryName ," +
+                    "p.industry_sub_name as indudstrySubName," +
+                    "p.newest_event_round as roundName," +
+                    "p.create_date as createDate " +
+                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
+            excuteThread("xm_project_a","project",projectSql);
+        }
     }
 
     /**
      *  投资机构
      */
     public static void importInvestfirms(){
-        String investfirmsSql = " select " +
-                " i.name, " +
-                " i.description, " +
-                " d.invest_industry as investIndustry," +
-                " d.invest_round as roundNames," +
-                " d.newest_invest_projects as recentProjects," +
-                " d.newest_invest_projects_ids as projectIds," +
-                " i.id as sid," +
-                " i.icon_big_xm as logo" +
-                " from edw2.dm_investfirms i left join edw2.dm_investfirms_data d  on d.investfirm_id = i.id";
-        excuteThread("xm_investfirm_a","investfirm",investfirmsSql);
+        boolean isDelete = deleteIndexData("xm_investfirm_a","investfirm");
+        if(isDelete) {
+            String investfirmsSql = " select " +
+                    " i.name, " +
+                    " i.description, " +
+                    " d.invest_industry as investIndustry," +
+                    " d.invest_round as roundNames," +
+                    " d.newest_invest_projects as recentProjects," +
+                    " d.newest_invest_projects_ids as projectIds," +
+                    " i.id as sid," +
+                    " i.icon_big_xm as logo" +
+                    " from edw2.dm_investfirms i left join edw2.dm_investfirms_data d  on d.investfirm_id = i.id";
+            excuteThread("xm_investfirm_a", "investfirm", investfirmsSql);
+        }
     }
 
     /**
      * 创 始人
      */
     public static void importOriginator(){
-        String originatorSql = "select " +
-                "ps.name," +
-                "pj.title as projectName," +
-                "ps.postion_name as position," +
-                "ps.schools as schoolNames," +
-                "ps.description as jobDescription," +
-                "ps.icon_xm as avatar " +
-                "from edw2.dm_project_person ps," +
-                "edw2.dm_project pj " +
-                "where ps.project_id = pj.id" ;
-        excuteThread("xm_originator_b","originator",originatorSql);
+        boolean isDelete = deleteIndexData("xm_originator_a","originator");
+        if(isDelete) {
+            String originatorSql = "select " +
+                    "ps.name," +
+                    "pj.title as projectName," +
+                    "ps.postion_name as position," +
+                    "ps.schools as schoolNames," +
+                    "ps.description as jobDescription," +
+                    "ps.icon_xm as avatar " +
+                    "from edw2.dm_project_person ps," +
+                    "edw2.dm_project pj " +
+                    "where ps.project_id = pj.id";
+            excuteThread("xm_originator_a", "originator", originatorSql);
+        }
     }
 
     /**
      *  投资人
      */
     public static void importInvestor(){
-
-        String investorSql = "select " +
-                "name," +
-                "investfirm_name as investfirmName," +
-                "investfirm_postion_name  as position," +
-                "description," +
-                "id as sid," +
-                "icon_xm as avatar " +
-                "from edw2.dm_investor";
-        excuteThread("xm_investor_a","investor",investorSql);
-
+        boolean isDelete = deleteIndexData("xm_investor_a","investor");
+        if(isDelete) {
+            String investorSql = "select " +
+                    "name," +
+                    "investfirm_name as investfirmName," +
+                    "investfirm_postion_name  as position," +
+                    "description," +
+                    "id as sid," +
+                    "icon_xm as avatar " +
+                    "from edw2.dm_investor";
+            excuteThread("xm_investor_a", "investor", investorSql);
+        }
     }
 
     public static void excuteThread(String index,String type,String sql){
@@ -158,7 +171,7 @@ public class ESDataUtil{
                                 //批量成功后执行
                                 public void afterBulk(long l, BulkRequest bulkRequest,
                                                       BulkResponse bulkResponse) {
-                                    System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
+                                    //System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
                                     if (bulkResponse.hasFailures()) {
                                         for (BulkItemResponse item :
                                                 bulkResponse.getItems()) {
@@ -276,7 +289,6 @@ public class ESDataUtil{
                     int number2 = queues.size();
                     j = number2/1000;
                 }
-
             }
             isInsert = new AtomicBoolean(false);
             return count;
@@ -286,6 +298,34 @@ public class ESDataUtil{
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private static boolean deleteIndexData(String index,String type) {
+        boolean flag = false;
+        int timeMillis = 60000;
+        long startTime = System.currentTimeMillis();
+        SearchResponse scrollResp = client.prepareSearch(index)
+                .setScroll(new TimeValue(timeMillis))
+                .setSize(5000).execute().actionGet();
+        while (true) {
+            BulkRequestBuilder bulkRequest = client.prepareBulk();
+            SearchHit[] hits = scrollResp.getHits().getHits();
+            System.out.println("共拉取："+hits.length+"条");
+            if(hits.length > 0){
+                for (SearchHit searchHit : hits) {
+                    bulkRequest.add(new DeleteRequest(index,type,searchHit.getId()));
+                }
+                bulkRequest.execute().actionGet();
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId())
+                    .setScroll(new TimeValue(timeMillis)).execute().actionGet();
+            if (scrollResp.getHits().getHits().length == 0) {
+                break;
+            }
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println("删除"+index+"数据共用时：" + (endTime - startTime)+"ms");
+        return true;
     }
 
 }
