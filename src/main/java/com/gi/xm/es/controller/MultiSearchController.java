@@ -57,6 +57,10 @@ public class MultiSearchController {
     @Value("${xm.robot.apiKey}")
     private  String[] apiKeys ;
 
+    @Value("${xm.search.env}")
+    private  String env ;
+
+
     /**
      * 根据关键字查询 @author zhangchunyuan
      *
@@ -199,6 +203,7 @@ public class MultiSearchController {
             userSearchLog.setReturntime(endTime);
             userSearchLog.setSendtime(startTime);
             userSearchLog.setFrom(from==null?"search":"robit");
+            userSearchLog.setEnv(env);
             userLogService.addUserSearchLog(userSearchLog);
         }
         return ret;
