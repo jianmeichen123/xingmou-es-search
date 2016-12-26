@@ -20,6 +20,15 @@ public class UserSearchLog implements Serializable {
     private String returnjson;
     private Long sendtime;
 
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
+    }
+
+    private String env;
     public String getFrom() {
         return from;
     }
