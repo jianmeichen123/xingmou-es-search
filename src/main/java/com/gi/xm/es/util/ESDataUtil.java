@@ -122,7 +122,7 @@ public class ESDataUtil{
                     "ps.icon_xm as avatar " +
                     "from edw2.dm_project_person ps," +
                     "edw2.dm_project pj " +
-                    "where ps.project_id = pj.id";
+                    "where ps.project_id = pj.id and ps.is_core_member = 0";
             excuteThread("xm_originator_a", "originator", originatorSql);
         }
     }
@@ -203,6 +203,7 @@ public class ESDataUtil{
                                     BackoffPolicy.exponentialBackoff(
                                             TimeValue.timeValueMillis(100), 3))
                             .setConcurrentRequests(1)
+                            .setFlushInterval(TimeValue.timeValueSeconds(5))
                             .build();
 
                     //读取队列里的数据
