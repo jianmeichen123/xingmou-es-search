@@ -39,8 +39,8 @@ public class ESDataUtil{
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
-    static final String HOST = "10.10.213";
-    static final String clustername = "xm_es_cluster";
+    static final String HOST = "10.9.130.135";
+    static final String clustername = "elasticsearch";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
 
@@ -60,9 +60,9 @@ public class ESDataUtil{
     public static void main(String args[]) {
 
          //importProjects();
-        //importInvestfirms();
-        importInvestor();
-        //importOriginator();
+       // importInvestfirms();
+       // importInvestor();
+        importOriginator();
     }
 
     /**
@@ -171,7 +171,7 @@ public class ESDataUtil{
                                 //批量成功后执行
                                 public void afterBulk(long l, BulkRequest bulkRequest,
                                                       BulkResponse bulkResponse) {
-                                    //System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
+                                    System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
                                     if (bulkResponse.hasFailures()) {
                                         for (BulkItemResponse item :
                                                 bulkResponse.getItems()) {
