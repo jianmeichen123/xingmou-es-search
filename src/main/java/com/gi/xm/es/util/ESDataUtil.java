@@ -53,9 +53,9 @@ public class ESDataUtil{
     public static void main(String args[]) {
 
         //importProjects();
-        importInvestfirms();
+       // importInvestfirms();
         //importInvestor();
-        // importOriginator();
+         importOriginator();
     }
 
     /**
@@ -261,7 +261,7 @@ public class ESDataUtil{
                     columnName = data.getColumnName(i); //获取列名
                     value = rs.getString(i);
                     if (value != null && !"".equals(value.trim()) && value.trim().length() > 0) {
-                        map.put(columnName,value);
+                        map.put(columnName,HTMLFilter.Html2Text(value));
                     }else{
                         map.put(columnName,"");
                     }
