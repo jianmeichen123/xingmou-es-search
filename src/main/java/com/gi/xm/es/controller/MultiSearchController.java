@@ -2,16 +2,16 @@ package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.gi.xm.es.pojo.Query;
+import com.gi.xm.es.pojo.TulingSend;
 import com.gi.xm.es.pojo.UserSearchLog;
 import com.gi.xm.es.service.UserLogService;
 import com.gi.xm.es.util.Aes;
 import com.gi.xm.es.util.EntityUtil;
 import com.gi.xm.es.util.Md5;
+import com.gi.xm.es.util.PostServer;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
-import com.gi.xm.es.pojo.TulingSend;
-import com.gi.xm.es.util.PostServer;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 
 @RestController
@@ -260,7 +261,6 @@ public class MultiSearchController {
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.INVESTOR_INDEX_A,pageNo,pageSize);
         return srb;
     }
-
     private SearchRequestBuilder queryOriginator(String keyword, int pageNo,int pageSize){
         //设置高亮字段
         HighlightBuilder highlightBuilder = new HighlightBuilder();

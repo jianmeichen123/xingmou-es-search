@@ -32,8 +32,8 @@ public class ESDataUtil{
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
-    static final String HOST = "10.9.130.135";
-    static final String clustername = "elasticsearch";
+    static final String HOST = "10.10.0.213";
+    static final String clustername = "xm_es_cluster";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
 
@@ -52,10 +52,10 @@ public class ESDataUtil{
 
     public static void main(String args[]) {
 
-         //importProjects();
-       // importInvestfirms();
-       // importInvestor();
-        importOriginator();
+        //importProjects();
+        importInvestfirms();
+        //importInvestor();
+        // importOriginator();
     }
 
     /**
