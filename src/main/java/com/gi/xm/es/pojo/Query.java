@@ -1,11 +1,9 @@
 package com.gi.xm.es.pojo;
 
-import com.gi.xm.es.view.Pagination;
-
 /**
  * Created by zcy on 16-12-8.
  */
-public class Query  extends  Pagination{
+public class Query  extends com.gi.xm.es.view.Pagination {
 
     /**
      * 搜索字段
