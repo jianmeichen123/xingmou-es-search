@@ -52,10 +52,10 @@ public class ESDataUtil{
 
     public static void main(String args[]) {
 
-        //importProjects();
+       //importProjects();
        // importInvestfirms();
         //importInvestor();
-         importOriginator();
+        importOriginator();
     }
 
     /**
@@ -111,8 +111,8 @@ public class ESDataUtil{
                     "pj.title as projectName," +
                     "ps.postion_name as position," +
                     "ps.schools as schoolNames," +
-                    "ps.description as jobDescription," +
-                    "ps.icon_xm as avatar " +
+                    "ps.description as jobDescription " +
+
                     "from edw2.dm_project_person ps," +
                     "edw2.dm_project pj " +
                     "where ps.project_id = pj.id and ps.is_core_member = 0";
@@ -290,7 +290,10 @@ public class ESDataUtil{
             e.printStackTrace();
         }catch (SQLException e){
             e.printStackTrace();
+        }catch(Exception e){
+            e.printStackTrace();
         }
+
         return 0;
     }
 

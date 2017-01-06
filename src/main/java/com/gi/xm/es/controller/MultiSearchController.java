@@ -238,7 +238,7 @@ public class MultiSearchController {
 
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("name", keyword))
-                .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_max_word"))
+                .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_smart"))
                 .add(QueryBuilders.termQuery("areaNames", keyword))
                 .add(QueryBuilders.termQuery("roundNames", keyword));
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.INVESTFIRM_INDEX_A,pageNo,pageSize);
