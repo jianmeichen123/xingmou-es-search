@@ -198,8 +198,8 @@ public class MultiSearchController {
             }
         }
         long endTime = System.currentTimeMillis();
-       // System.out.println("查询用时："+(endTime-startTime));
-        LOG.info("查询关键字"+keyword+"  查询用时："+(endTime-startTime));
+        //System.out.println("查询用时："+(endTime-startTime));
+        //LOG.info("查询关键字"+keyword+"  查询用时："+(endTime-startTime));
         if (userSearchLog != null){
             userSearchLog.setLoadtime(endTime-startTime);
             userSearchLog.setReturntime(endTime);
