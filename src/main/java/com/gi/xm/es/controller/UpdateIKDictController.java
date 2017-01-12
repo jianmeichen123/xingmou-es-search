@@ -46,6 +46,7 @@ public class UpdateIKDictController {
      * 更新ik自定义词典 @author zhangchunyuan
      */
     @RequestMapping(value="updateProject")
+    @ResponseBody
     public static String  writeData(HttpServletResponse response){
         Connection conn = null;
         PreparedStatement ps = null;
@@ -77,5 +78,7 @@ public class UpdateIKDictController {
         }
         return sb.toString();
     }
+
+
 
 }
