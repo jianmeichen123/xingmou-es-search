@@ -49,6 +49,9 @@ public class MultiSearchController {
     private UserLogService userLogService;
 
 
+    private static List<Object> emtpyList  = new ArrayList<Object>();
+
+
     private static Result errorRet = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
     //图灵网站上的secret
     @Value("${xm.robot.secret}")
@@ -252,7 +255,7 @@ public class MultiSearchController {
                 page.setTotal(0l);
                 page.setTotalhit(0l);
                 page.setMap(null);
-                page.setRecords(new ArrayList<>());
+                page.setRecords(emtpyList);
                 page.setMatchIndex(null);
                 ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(),page);
             }
