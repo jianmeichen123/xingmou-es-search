@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 投资机构 Elasticsearch 实体类
  * @author zhangchunyuan
  */
-public class Investfirms implements Serializable{
+public class Investfirms  implements Serializable{
 
     /**
      * 机构名称
@@ -45,6 +45,12 @@ public class Investfirms implements Serializable{
      * @return
      */
     private String logo;
+
+    /**
+     * 分类
+     * @return
+     */
+    private String category;
 
     public String getName() {
         return name;
@@ -110,4 +116,11 @@ public class Investfirms implements Serializable{
         this.logo = logo;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

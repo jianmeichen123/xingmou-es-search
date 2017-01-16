@@ -51,6 +51,12 @@ public class Project implements Serializable  {
      */
     private String createDate;
 
+    /**
+     * 分类
+     * @return
+     */
+    private String category;
+
     public Long getSid() {
         return sid;
     }
@@ -129,5 +135,13 @@ public class Project implements Serializable  {
 
     public String getLabels() {
         return labels;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

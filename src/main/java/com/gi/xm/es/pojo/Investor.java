@@ -34,6 +34,12 @@ public class Investor implements Serializable{
      */
     private  String avatar;
 
+    /**
+     * 分类
+     * @return
+     */
+    private String category;
+
     public String getName() {
         return name;
     }
@@ -56,6 +62,14 @@ public class Investor implements Serializable{
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getDescription() {

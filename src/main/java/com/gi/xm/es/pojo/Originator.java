@@ -34,6 +34,12 @@ public class Originator implements Serializable{
      */
     private String avatar;
 
+    /**
+     * 分类
+     * @return
+     */
+    private String category;
+
     public String getAvatar() {
         return avatar;
     }
@@ -81,4 +87,13 @@ public class Originator implements Serializable{
     public String getJobDescription() {
         return jobDescription;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }
+

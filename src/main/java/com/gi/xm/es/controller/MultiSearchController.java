@@ -21,6 +21,7 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.slf4j.Logger;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.*;
 
 @RestController
@@ -125,14 +125,12 @@ public class MultiSearchController {
             String category = query.getCategory();
             Integer pageSize = query.getPageSize();
             Integer pageNo = query.getPageNo();
-            if(category == null){
-                category = "xm_project";
-            }
-            //构建各个索引的请求体
-            SearchRequestBuilder projectsrb = queryProject(keyword,pageNo,pageSize);
-            SearchRequestBuilder investfirmsrb = queryInvestFirm(keyword,pageNo,pageSize);
-            SearchRequestBuilder investorsrb = queryInvestor(keyword,pageNo,pageSize);
-            SearchRequestBuilder originatorsrb = queryOriginator(keyword,pageNo,pageSize);
+            //构建各个索引的请求体 先查询每个分类的个数
+            SearchRequestBuilder projectsrb = queryProject(keyword, null, null);
+            SearchRequestBuilder investfirmsrb = queryInvestFirm(keyword, null, null);
+            SearchRequestBuilder investorsrb = queryInvestor(keyword, null, null);
+            SearchRequestBuilder originatorsrb = queryOriginator(keyword, null, null);
+
             MultiSearchResponse multiSearchResponse = client.prepareMultiSearch()
                     .add(projectsrb)
                     .add(investfirmsrb)
@@ -144,62 +142,122 @@ public class MultiSearchController {
             //单个分类总条数
             Long totalCount = 0l;
             List<Object> dataList = new ArrayList<Object>();
-            Map<String,Long> numHashMap = new HashMap<String,Long>();
+            LinkedHashMap<String, Long> numHashMap = new LinkedHashMap<String, Long>();
             //遍历每个索引的命中结果
             for (MultiSearchResponse.Item item : multiSearchResponse.getResponses()) {
                 SearchResponse response = item.getResponse();
                 totalHit += response.getHits().totalHits();
                 for (SearchHit searchHit : response.getHits()) {
                     String index = searchHit.getIndex();
-                    if(index.equals(category)){
-                        Map source = searchHit.getSource();
-
-                        Object entity = JSON.parseObject(JSON.toJSONString(source),  EntityUtil.classHashMap.get(index));
-                        //获取对应的高亮域
-                        Map<String, HighlightField> result = searchHit.highlightFields();
-                        //从设定的高亮域中取得指定域
-                        for (Map.Entry<String, HighlightField> entry : result.entrySet()) {
-                            String key = entry.getKey();
-                            //取得定义的高亮标签
-                            Text[] titleTexts =  entry.getValue().fragments();
-                            //为title串值增加自定义的高亮标签
-                            String value = "";
-                            for(Text text : titleTexts){
-                                value += text;
-                            }
-                            try {
-                                Field field = entity.getClass().getDeclaredField(key);
-                                field.setAccessible(true);
-                                field.set(entity,value);
-                            } catch (NoSuchFieldException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        dataList.add(entity);
-                        totalCount = response.getHits().totalHits();
-                    }
-                    numHashMap.put(index,response.getHits().totalHits());
+                    numHashMap.put(index, response.getHits().totalHits());
                 }
             }
-            Pagination page = new Pagination();
-            page.setTotal(totalCount);
-            page.setTotalhit(totalHit);
-            page.setMap(numHashMap);
-            page.setRecords(dataList);
-            ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(),page);
-            if (userSearchLog != null){
-                userSearchLog.setReturnjson(com.alibaba.fastjson.JSON.toJSONString(ret));
-                userSearchLog.setTxt(query.getKeyword());
-                userSearchLog.setType(1);
-                userSearchLog.setPageNo(pageNo);
+            if (numHashMap.size() > 0) {
+                SearchRequestBuilder srb = null;
+                String selectIndex = null;
+                if (category != null) {
+                    selectIndex = category;
+                    switch (category) {
+                        case "xm_project": {
+                            srb = queryProject(keyword, pageNo, pageSize);
+                            break;
+                        }
+                        case "xm_investfirm": {
+                            srb = queryInvestFirm(keyword, pageNo, pageSize);
+                            break;
+                        }
+                        case "xm_originator": {
+                            srb = queryOriginator(keyword, pageNo, pageSize);
+                            break;
+                        }
+                        case "xm_investor": {
+                            srb = queryInvestor(keyword, pageNo, pageSize);
+                            break;
+                        }
+                    }
+                } else {
+                    for (String index : numHashMap.keySet()) {
+                        if (numHashMap.get(index) != 0) {
+                            selectIndex = index;
+                            switch (index) {
+                                case "xm_project": {
+                                    srb = queryProject(keyword, pageNo, pageSize);
+                                    break;
+                                }
+                                case "xm_investfirm": {
+                                    srb = queryInvestFirm(keyword, pageNo, pageSize);
+                                    break;
+                                }
+                                case "xm_originator": {
+                                    srb = queryOriginator(keyword, pageNo, pageSize);
+                                    break;
+                                }
+                                case "xm_investor": {
+                                    srb = queryInvestor(keyword, pageNo, pageSize);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                SearchResponse response = srb.execute().actionGet();
+                totalCount = response.getHits().totalHits();
+                SearchHits searchHits = response.getHits();
+                SearchHit[] hits = searchHits.getHits();
+                for (SearchHit searchHit : response.getHits()) {
+                    Map source = searchHit.getSource();
+                    source.put("category",selectIndex);
+                    Object entity = JSON.parseObject(JSON.toJSONString(source), EntityUtil.classHashMap.get(selectIndex));
+                    //获取对应的高亮域
+                    Map<String, HighlightField> result = searchHit.highlightFields();
+                    //从设定的高亮域中取得指定域
+                    for (Map.Entry<String, HighlightField> entry : result.entrySet()) {
+                        String key = entry.getKey();
+                        //取得定义的高亮标签
+                        Text[] titleTexts = entry.getValue().fragments();
+                        //为title串值增加自定义的高亮标签
+                        String value = "";
+                        for (Text text : titleTexts) {
+                            value += text;
+                        }
+                        try {
+                            Field field = entity.getClass().getDeclaredField(key);
+                            field.setAccessible(true);
+                            field.set(entity, value);
+                        } catch (NoSuchFieldException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    dataList.add(entity);
+                }
+                Pagination page = new Pagination();
+                page.setTotal(totalCount);
+                page.setTotalhit(totalHit);
+                page.setMap(numHashMap);
+                page.setRecords(dataList);
+                page.setMatchIndex(selectIndex);
+                ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
+                if (userSearchLog != null) {
+                    userSearchLog.setReturnjson(com.alibaba.fastjson.JSON.toJSONString(ret));
+                    userSearchLog.setTxt(query.getKeyword());
+                    userSearchLog.setType(1);
+                    userSearchLog.setPageNo(pageNo);
+                }
+            }else{
+                Pagination page = new Pagination();
+                page.setTotal(0l);
+                page.setTotalhit(0l);
+                page.setMap(null);
+                page.setRecords(new ArrayList<>());
+                page.setMatchIndex(null);
+                ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(),page);
             }
         }
         long endTime = System.currentTimeMillis();
-        //System.out.println("查询用时："+(endTime-startTime));
-        //LOG.info("查询关键字"+keyword+"  查询用时："+(endTime-startTime));
         if (userSearchLog != null){
             userSearchLog.setLoadtime(endTime-startTime);
             userSearchLog.setReturntime(endTime);
@@ -212,7 +270,8 @@ public class MultiSearchController {
     }
 
 
-    private SearchRequestBuilder queryProject(String keyword , int pageNo,int pageSize){
+
+    private SearchRequestBuilder queryProject(String keyword , Integer pageNo,Integer pageSize){
         //设置高亮字段
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("title");
@@ -222,15 +281,15 @@ public class MultiSearchController {
         QueryBuilder qb = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.termQuery("title",keyword))
                 .add(QueryBuilders.matchQuery("description", keyword).analyzer("ik_smart"))
-                .add(QueryBuilders.termQuery("lables", keyword))
-                .add(QueryBuilders.termQuery("indudstryName", keyword))
+                .add(QueryBuilders.termQuery("lables", keyword));
+                /*.add(QueryBuilders.termQuery("indudstryName", keyword))
                 .add(QueryBuilders.termQuery("indudstrySubName", keyword))
-                .add(QueryBuilders.termQuery("roundName", keyword));
+                .add(QueryBuilders.termQuery("roundName", keyword));*/
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.PROJECT_INDEX_A,pageNo,pageSize);
         return srb;
     }
 
-    private SearchRequestBuilder queryInvestFirm(String keyword, int pageNo,int pageSize){
+    private SearchRequestBuilder queryInvestFirm(String keyword, Integer pageNo,Integer pageSize){
         //设置高亮字段
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
@@ -247,7 +306,7 @@ public class MultiSearchController {
         return srb;
     }
 
-    private SearchRequestBuilder queryInvestor(String keyword,  int pageNo,int pageSize){
+    private SearchRequestBuilder queryInvestor(String keyword,  Integer pageNo,Integer pageSize){
         //设置高亮字段
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
@@ -263,7 +322,7 @@ public class MultiSearchController {
         SearchRequestBuilder srb = getRequestBuilder(qb,highlightBuilder,EntityUtil.INVESTOR_INDEX_A,pageNo,pageSize);
         return srb;
     }
-    private SearchRequestBuilder queryOriginator(String keyword, int pageNo,int pageSize){
+    private SearchRequestBuilder queryOriginator(String keyword, Integer pageNo,Integer pageSize){
         //设置高亮字段
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
@@ -279,14 +338,16 @@ public class MultiSearchController {
         return srb;
     }
 
-    private SearchRequestBuilder getRequestBuilder(QueryBuilder queryBuilder ,HighlightBuilder highlightBuilder, String index, int pageNo,int pageSize){
+    private SearchRequestBuilder getRequestBuilder(QueryBuilder queryBuilder ,HighlightBuilder highlightBuilder, String index, Integer pageNo,Integer pageSize){
 
         SearchRequestBuilder srb = client.prepareSearch(index);
         srb.setQuery(queryBuilder);
         srb.highlighter(highlightBuilder);
         srb.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-        pageNo = (pageNo>20) ? 20 : pageNo;
-        srb.setFrom(pageNo * pageSize).setSize(pageSize);
+        if(pageNo != null && pageSize != null){
+            srb.setFrom(pageNo * pageSize).setSize(pageSize);
+        }
         return srb;
     }
+
 }

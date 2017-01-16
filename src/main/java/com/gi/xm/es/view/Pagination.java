@@ -26,6 +26,10 @@ public class Pagination implements Serializable {
      * @param totalhit
      */
     private Long totalhit;
+    /**
+     *
+     */
+    private String matchIndex;
 
     private List<Object> records;
 
@@ -78,4 +82,13 @@ public class Pagination implements Serializable {
     public void setRecords(List<Object> records) {
         this.records = records;
     }
+
+    public String getMatchIndex() {
+        return matchIndex;
+    }
+
+    public void setMatchIndex(String matchIndex) {
+        this.matchIndex = matchIndex;
+    }
+
 }
