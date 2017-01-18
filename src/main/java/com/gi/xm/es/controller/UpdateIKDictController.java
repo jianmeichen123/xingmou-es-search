@@ -41,7 +41,6 @@ public class UpdateIKDictController {
     @RequestMapping(value="updateProject")
     @ResponseBody
     public  String  updateProject(HttpServletResponse response){
-        LOG.error("----------------updateProject-------------");
         PreparedStatement ps = null;
         ResultSet rs = null;
         StringBuilder sb = new StringBuilder("");
@@ -61,7 +60,6 @@ public class UpdateIKDictController {
     @RequestMapping(value="updateInvestfirm")
     @ResponseBody
     public  String  updateInvestfirm(HttpServletResponse response){
-        LOG.error("----------------updateInvestfirm-------------");
         PreparedStatement ps = null;
         ResultSet rs = null;
         StringBuilder sb = new StringBuilder("");
@@ -81,7 +79,6 @@ public class UpdateIKDictController {
     @RequestMapping(value="updateInvestor")
     @ResponseBody
     public  String  updateInvestor(HttpServletResponse response){
-        LOG.error("----------------updateInvestor-------------");
         PreparedStatement ps = null;
         ResultSet rs = null;
         StringBuilder sb = new StringBuilder("");
@@ -101,7 +98,6 @@ public class UpdateIKDictController {
     @RequestMapping(value="updateOriginator")
     @ResponseBody
     public  String  updateOriginator(HttpServletResponse response){
-        LOG.error("----------------updateOriginator-------------");
         PreparedStatement ps = null;
         ResultSet rs = null;
         StringBuilder sb = new StringBuilder("");
