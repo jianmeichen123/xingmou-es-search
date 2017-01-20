@@ -66,8 +66,11 @@ public class MultiSearchController {
 
     /**
      * 根据关键字查询 @author zhangchunyuan
+     *@param keys:图灵接口传入的关键字
+     *@param from:搜索来源（机器人 or 全站搜索）
+     *@param userInfo:搜索发起用户相关信息
+     *@param query:全站搜索相关 （关键字,分类,分页参数）
      *
-     * @param query 搜索参数
      */
     @RequestMapping(value="globalSearch",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -87,7 +90,7 @@ public class MultiSearchController {
         }
         long startTime = System.currentTimeMillis();
         if (keys != null){
-            //待加密的json数据
+            //待加密的json数据`
             int randNum = new Random().nextInt(3);
             TulingSend send = new TulingSend();
             send.setInfo(keys);
@@ -155,9 +158,11 @@ public class MultiSearchController {
                     numHashMap.put(index, response.getHits().totalHits());
                 }
             }
+
             if (numHashMap.size() > 0) {
                 SearchRequestBuilder srb = null;
                 String selectIndex = null;
+                //如果category不为空,则获得对应的SearchRequestBuilder
                 if (category != null) {
                     selectIndex = category;
                     switch (category) {
@@ -179,6 +184,7 @@ public class MultiSearchController {
                         }
                     }
                 } else {
+                    //category为空,则查寻numHashMap中的第一个有记录的分类
                     for (String index : numHashMap.keySet()) {
                         if (numHashMap.get(index) != 0) {
                             selectIndex = index;
@@ -204,6 +210,7 @@ public class MultiSearchController {
                         }
                     }
                 }
+                //执行查询请求
                 SearchResponse response = srb.execute().actionGet();
                 totalCount = response.getHits().totalHits();
                 SearchHits searchHits = response.getHits();
