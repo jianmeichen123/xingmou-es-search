@@ -21,6 +21,8 @@ public class Pagination implements Serializable {
      */
     private Long total;
 
+    private long totalType;
+
     /**
      * 总命中条数
      * @param totalhit
@@ -91,4 +93,11 @@ public class Pagination implements Serializable {
         this.matchIndex = matchIndex;
     }
 
+    public long getTotalType() {
+        return totalType;
+    }
+
+    public void setTotalType(long totalType) {
+        this.totalType = totalType;
+    }
 }

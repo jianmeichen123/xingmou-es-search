@@ -158,7 +158,6 @@ public class MultiSearchController {
                     numHashMap.put(index, response.getHits().totalHits());
                 }
             }
-
             if (numHashMap.size() > 0) {
                 SearchRequestBuilder srb = null;
                 String selectIndex = null;
@@ -241,11 +240,11 @@ public class MultiSearchController {
                             e.printStackTrace();
                         }
                     }
-
                     dataList.add(entity);
                 }
                 Pagination page = new Pagination();
-                page.setTotal(totalCount);
+                page.setTotal(totalCount>200?200:totalCount);
+                page.setTotalType(totalCount);
                 page.setTotalhit(totalHit);
                 page.setMap(numHashMap);
                 page.setRecords(dataList);
