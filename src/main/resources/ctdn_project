@@ -1,0 +1,43 @@
+curl -XPUT 127.0.0.1:9200/ctdn_project -d '{
+  "mappings" : {
+    "project": {
+      "properties": {
+	"sid":{
+	 	"type": "long"
+	},
+	"industrySearch":{
+		"type": "keyword"
+	},
+	"newestEventRound":{
+		"type":"keyword"
+	},
+	"districtId":{
+		"type": "long"
+	},
+	"districtSubId":{
+		"type": "long"
+	},
+	"districtName":{
+		"type": "keyword"
+	},
+	"pic":{
+		"type": "keyword"
+	},
+	"title":{
+    		"type": "keyword"
+		
+	},
+        "createDate": {
+		"type": "date"	
+        },
+	"newestEventDate":{
+		"type": "date"
+	},
+	"newestEventMoney":{
+		"type": "text"
+	}
+      }
+    }
+  }
+}'
+

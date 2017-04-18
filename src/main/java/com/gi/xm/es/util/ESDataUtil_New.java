@@ -13,29 +13,32 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/*import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;*/
+
 /**
  * Created by zcy on 16-12-12.
  */
-public class ESDataUtil{
+public class ESDataUtil_New {
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
-    static final String HOST = "10.9.130.135";
+    static final String HOST = "127.0.0.1";
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
-    private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
+  //  private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
 
     //连接es client
     static {
@@ -45,7 +48,7 @@ public class ESDataUtil{
             client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST), 9300));
         } catch (UnknownHostException e) {
-            LOG.error("连接 client 异常", e);
+            //LOG.error("连接 client 异常", e);
             e.printStackTrace();
         }
     }
@@ -53,30 +56,33 @@ public class ESDataUtil{
     public static void main(String args[]) {
 
        importProjects();
-       // importInvestfirms();
+        //importInvestfirms();
         //importInvestor();
-        //importOriginator();
+       // importOriginator();
+
     }
 
     /**
      *  项目
      */
     public static void importProjects(){
-        boolean isDelete = deleteIndexData("xm_project_a","project");
+        boolean isDelete = deleteIndexData("ctdn_project","project");
         if(isDelete){
             String projectSql = "select " +
                     "p.id as sid," +
-                    "p.title," +
-                    "p.description," +
-                    "p.pic_big_xm as logo, " +
-                    "i.id as icon ," +
-                    "p.labels as labels," +
-                    "p.industry_name as indudstryName ," +
-                    "p.industry_sub_name as indudstrySubName," +
-                    "p.newest_event_round as roundName," +
-                    "p.create_date as createDate " +
-                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
-            excuteThread("xm_project_a","project",projectSql);
+                    "p.industry_name as industryName,"+
+                    "p.industry_sub_name as industrySubName,"+
+                    "p.district_id as districtId,"+
+                    "p.district_sub_id as districtSubId,"+
+                    "p.district_name as districtName,"+
+                    "p.pic,"+
+                    "p.title,"+
+                    "p.create_date as createDate,"+
+                    "p.newest_event_round as newestEventRound,"+
+                    "p.newest_event_date as newestEventDate,"+
+                    "p.newest_event_money as newestEventMoney "+
+                    "from edw2.dm_project p ";
+            excuteThread("ctdn_project","project",projectSql);
         }
     }
 
@@ -112,7 +118,6 @@ public class ESDataUtil{
                     "ps.postion_name as position," +
                     "ps.schools as schoolNames," +
                     "ps.description as jobDescription " +
-
                     "from edw2.dm_project_person ps," +
                     "edw2.dm_project pj " +
                     "where ps.project_id = pj.id and ps.is_core_member = 0";
@@ -141,7 +146,7 @@ public class ESDataUtil{
     public static void excuteThread(String index,String type,String sql){
         long startTime = System.currentTimeMillis();
         createIndex(index,type);
-        int rowcount = writeData(sql);
+        int rowcount = writeData(sql,"project");
         long endTime = System.currentTimeMillis();
         System.out.println(index+"数据写入完毕");
         System.out.println("总用时:"+(endTime - startTime)+"ms");
@@ -237,13 +242,11 @@ public class ESDataUtil{
      * 读取mysql 数据
      * @param sql 查询语句
      */
-    public static int writeData(String sql){
+    public static int writeData(String sql,String type){
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int count = 0;
-        String columnName = null;
-        String value = null;
+        int count =0;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
@@ -252,36 +255,9 @@ public class ESDataUtil{
             ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ps.setFetchSize(Integer.MIN_VALUE);
             rs = ps.executeQuery();
-
-            ResultSetMetaData data= rs.getMetaData();
-            int colCount = data.getColumnCount();       //获取查询列数
-            LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-            while(rs.next()){
-                for(int i = 1; i<= colCount; i++){
-                    columnName = data.getColumnName(i); //获取列名
-                    value = rs.getString(i);
-                    if (value != null && !"".equals(value.trim()) && value.trim().length() > 0) {
-                        map.put(columnName,HTMLFilter.Html2Text(value));
-                    }else{
-                        map.put(columnName,"");
-                    }
-                }
-                count++;
-
-                if(map.size()>0){
-                    queues.add(JSON.toJSONString(map));
-                }
-
-                if(count % 1000 == 0){
-                    int number = queues.size();
-                    int j = number/1000;
-                    try{
-                        Thread.sleep(j*1000);
-                    }catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    int number2 = queues.size();
-                    j = number2/1000;
+            switch (type){
+                case "project" :{
+                    count = readProjectRet(rs);
                 }
             }
             isInsert = new AtomicBoolean(false);
@@ -293,7 +269,6 @@ public class ESDataUtil{
         }catch(Exception e){
             e.printStackTrace();
         }
-
         return 0;
     }
 
@@ -325,4 +300,58 @@ public class ESDataUtil{
         return true;
     }
 
+    private static  int  readProjectRet(ResultSet rs) {
+        String columnName = null;
+        String value = null;
+        int count = 0;
+        LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+        try {
+            ResultSetMetaData data = rs.getMetaData();
+            int colCount = data.getColumnCount();       //获取查询列数
+            while (rs.next()) {
+                for (int i = 1; i <= colCount; i++) {
+                    columnName = data.getColumnName(i); //获取列名
+                    value = rs.getString(i);
+                    if (value != null && !"".equals(value.trim()) && value.trim().length() > 0) {
+                        map.put(columnName, HTMLFilter.Html2Text(value));
+                    } else {
+                        map.put(columnName, null);
+                    }
+                }
+                count++;
+               //拼接行业字符串
+                List<Object> industrySearch = new ArrayList<Object>();
+                if(map.get("industryName")!=null){
+                    industrySearch.add(map.get("industryName"));
+                }
+                if(map.get("industrySubName") != null){
+                    industrySearch.add(map.get("industrySubName"));
+                }
+                map.remove("industryName");
+                map.remove("industrySubName");
+                map.put("industrySearch",industrySearch);
+
+                if (map.size() > 0) {
+                    queues.add(JSON.toJSONString(map));
+                }
+
+                if (count % 1000 == 0) {
+                    int number = queues.size();
+                    int j = number / 1000;
+                    try {
+                        Thread.sleep(j * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    int number2 = queues.size();
+                    j = number2 / 1000;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 }
+

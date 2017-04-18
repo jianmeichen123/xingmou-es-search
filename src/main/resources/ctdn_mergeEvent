@@ -1,0 +1,54 @@
+curl -XPUT 127.0.0.1:9200/ctdn_mergeEvent -d '{
+  "mappings" : {
+    "project": {
+      "properties": {
+	"sid":{
+	 	"type": "long"
+	},
+	"industrySearch":{
+		"type": "keyword"
+	},
+	"mergeType":{
+		"type": "keyword"
+	},
+	"mergeStatus":{
+		"type": "keyword"
+	},
+	"currentcyTitle":{
+		"type": "keyword"
+	},
+	"investPer":{
+		"type":"short"
+	},
+	"investStartDate":{
+		"type":"date"
+	},
+	"investEndDate":{
+		"type":"date"
+	},
+	"pic":{
+		"type": "keyword"
+	},
+	"title":{
+    		"type": "keyword",
+	},
+	"investMoney":{
+		"type":"keyword"
+	},
+	"moneyUSD":{
+		"type":"keyword"
+	}
+	"moneyRMB":{
+		"type":"keyword"
+	},
+	"currentcyTitle":{
+		"type":"keyword"
+	},
+	"mergeInvestfirms":{
+		"type":"keyword"
+	}
+      }
+    }
+  }
+}'
+

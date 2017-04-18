@@ -1,0 +1,51 @@
+curl -XPUT 127.0.0.1:9200/ctdn_project -d '{
+  "mappings" : {
+    "project": {
+      "properties": {
+	"sid":{
+	 	"type": "long"
+	},
+	"industrySearch":{
+		"type": "keyword"
+	},
+	"newestEventRound":{
+		"type":"keyword"
+	},
+	"districtId":{
+		"type": "long"
+	},
+	"districtSubId":{
+		"type": "long"
+	},
+	"districtName":{
+		"type": "keyword"
+	},
+	"pic":{
+		"type": "keyword"
+	},
+	"title":{
+    	"type": "keyword",
+	},
+    "investDate": {
+        "type": "date"
+    },
+	"investMoney":{
+		"type":"keyword"
+	},
+	"moneyUSD":{
+		"type":"keyword"
+	}
+	"moneyRMB":{
+		"type":"keyword"
+	},
+	"currentcyTitle":{
+		"type":"keyword"
+	},
+	"investfirms":{
+		"type":"keyword"
+	}
+      }
+    }
+  }
+}'
+
