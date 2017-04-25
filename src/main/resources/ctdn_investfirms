@@ -1,0 +1,67 @@
+curl -XPUT 10.9.130.135:9200/ctdn_investfirms -d '{
+  "mappings" : {
+    "investfirms": {
+      "properties": {
+        "code":{
+            "type": "long"
+        },
+        "sourceId":{
+            "type": "long"
+        },
+        "focusDomain":{
+            "type": "keyword"
+        },
+        "industryIds":{
+             "type": "keyword"
+        },
+        "investStage":{
+            "type": "keyword"
+        },
+        "orgType":{
+            "type": "keyword"
+        },
+        "districtId":{
+            "type": "long"
+        },
+        "districtSubId":{
+            "type": "long"
+        },
+        "capitalType":{
+            "type":"keyword"
+        },
+        "currencyTitle":{
+            "type": "keyword"
+        },
+        "logo":{
+             "type": "keyword"
+        },
+        "orgName":{
+            "type": "keyword"
+        },
+        "investTotal":{
+            "type": "integer"
+        },
+        "totalRatio":{
+             "type": "integer"
+        },
+        "investAmountNum":{
+             "type": "long"
+        },
+        "investAmountStr":{
+            "type": "keyword"
+        },
+        "amountRatio":{
+            "type": "integer"
+        },
+        "investProj":{
+             "type": "keyword"
+        },
+        "newestInvestDate":{
+            "type": "date"
+        }
+
+      }
+    }
+  }
+}'
+

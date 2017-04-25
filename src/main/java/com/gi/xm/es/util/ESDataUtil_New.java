@@ -1,6 +1,7 @@
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.elasticsearch.action.bulk.*;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -17,9 +18,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -56,10 +55,10 @@ public class ESDataUtil_New {
     public static void main(String args[]) {
 
        importProjects();
-        //importInvestfirms();
-        //importInvestor();
-       // importOriginator();
-
+       importInvestfirms();
+       importInvestEvent();
+       importMergeEvent();
+       importQuitEvent();
     }
 
     /**
@@ -68,21 +67,26 @@ public class ESDataUtil_New {
     public static void importProjects(){
         boolean isDelete = deleteIndexData("ctdn_project","project");
         if(isDelete){
-            String projectSql = "select " +
-                    "p.id as sid," +
-                    "p.industry_name as industryName,"+
-                    "p.industry_sub_name as industrySubName,"+
-                    "p.district_id as districtId,"+
-                    "p.district_sub_id as districtSubId,"+
-                    "p.district_name as districtName,"+
-                    "p.pic,"+
-                    "p.title,"+
-                    "p.create_date as createDate,"+
-                    "p.newest_event_round as newestEventRound,"+
-                    "p.newest_event_date as newestEventDate,"+
-                    "p.newest_event_money as newestEventMoney "+
-                    "from edw2.dm_project p ";
-            excuteThread("ctdn_project","project",projectSql);
+            String sql = "select " +
+                    "code," +
+                    "id as sourceId,"+
+                    "industryName,"+
+                    "industrySubName,"+
+                    "industryGrandSonName,"+
+                    "industryIds,"+
+                    "districtId,"+
+                    "districtSubId,"+
+                    "addr,"+
+                    "logoSmall,"+
+                    "projTitle,"+
+                    "setupDT,"+
+                    "latestFinanceRound,"+
+                    "latestFinanceDT,"+
+                    "latestFinanceAmountStr,"+
+                    "latestFinanceAmountNum,"+
+                    "loadDate "+
+                    "from app.app_project_info";
+            excuteThread("ctdn_project","project",sql);
         }
     }
 
@@ -90,63 +94,127 @@ public class ESDataUtil_New {
      *  投资机构
      */
     public static void importInvestfirms(){
-        boolean isDelete = deleteIndexData("xm_investfirm_a","investfirm");
+        boolean isDelete = deleteIndexData("ctdn_investfirms","investfirms");
         if(isDelete) {
-            String investfirmsSql = " select " +
-                    " i.name, " +
-                    " i.description, " +
-                    " d.invest_industry as investIndustry," +
-                    " d.invest_round as roundNames," +
-                    " d.newest_invest_projects as recentProjects," +
-                    " d.newest_invest_projects_ids as projectIds," +
-                    " i.id as sid," +
-                    " i.icon_big_xm as logo" +
-                    " from edw2.dm_investfirms i left join edw2.dm_investfirms_data d  on d.investfirm_id = i.id";
-            excuteThread("xm_investfirm_a", "investfirm", investfirmsSql);
+            String sql = "select " +
+                    "code," +
+                    "id as sourceId,"+
+                    "focusDomain,"+
+                    "investStage,"+
+                    "orgType,"+
+                    "districtId,"+
+                    "districtSubId,"+
+                    "capitalType,"+
+                    "currencyTitle,"+
+                    "logo,"+
+                    "orgName,"+
+                    "investTotal,"+
+                    "totalRatio,"+
+                    "investAmountNum,"+
+                    "investAmountStr,"+
+                    "amountRatio,"+
+                    "investProj,"+
+                    "newestInvestDate "+
+                    "from app.app_org_info";
+            excuteThread("ctdn_investfirms", "investfirms", sql);
         }
     }
 
     /**
-     * 创 始人
+     * 投资事件
      */
-    public static void importOriginator(){
-        boolean isDelete = deleteIndexData("xm_originator_a","originator");
+    public static void importInvestEvent(){
+        boolean isDelete = deleteIndexData("ctdn_invest_event","investEvent");
         if(isDelete) {
-            String originatorSql = "select " +
-                    "ps.name," +
-                    "pj.title as projectName," +
-                    "ps.postion_name as position," +
-                    "ps.schools as schoolNames," +
-                    "ps.description as jobDescription " +
-                    "from edw2.dm_project_person ps," +
-                    "edw2.dm_project pj " +
-                    "where ps.project_id = pj.id and ps.is_core_member = 0";
-            excuteThread("xm_originator_a", "originator", originatorSql);
+            String sql = "select " +
+                    "code," +
+                    "id as sourceId,"+
+                    "industryIds,"+
+                    "round,"+
+                    "districtId,"+
+                    "districtSubId,"+
+                    "district,"+
+                    "logo,"+
+                    "company,"+
+                    "investdate,"+
+                    "amountStr,"+
+                    "amountNum,"+
+                    "currencyTitle,"+
+                    "investSideJson,"+
+                    "bodyRole,"+
+                    "sourceType,"+
+                    "isClick "+
+                    "from app.app_event_info";
+            excuteThread("ctdn_invest_event", "invest_event", sql);
         }
     }
 
     /**
-     *  投资人
+     *  并购事件
      */
-    public static void importInvestor(){
-        boolean isDelete = deleteIndexData("xm_investor_a","investor");
+    public static void importMergeEvent(){
+        boolean isDelete = deleteIndexData("ctdn_merge_event","mergeEvent");
         if(isDelete) {
-            String investorSql = "select " +
-                    "name," +
-                    "investfirm_name as investfirmName," +
-                    "investfirm_postion_name  as position," +
-                    "description," +
-                    "id as sid," +
-                    "icon_xm as avatar " +
-                    "from edw2.dm_investor";
-            excuteThread("xm_investor_a", "investor", investorSql);
+            String sql = "select " +
+                    "code," +
+                    "id as sourceId,"+
+                    "industryIds,"+
+                    "district,"+
+                    "mergeType,"+
+                    "mergeState,"+
+                    "currencyTitle,"+
+                    "equityRate,"+
+                    "mergeBeginDate,"+
+                    "mergeEndDate,"+
+                    "mergeOrderDate,"+
+                    "logo,"+
+                    "projTitle,"+
+                    "amountStr,"+
+                    "amountNum,"+
+                    "mergeSideJson,"+
+                    "bodyRole,"+
+                    "sourceType,"+
+                    "isClick "+
+                    "from app.app_project_merger";
+            excuteThread("ctdn_merge_event", "merge_event", sql);
         }
     }
+
+    /**
+     *  退出事件
+     */
+    public static void importQuitEvent(){
+        boolean isDelete = deleteIndexData("ctdn_quit_event","quit_event");
+        if(isDelete) {
+            String sql = "select " +
+                    "code," +
+                    "id as sourceId,"+
+                    "industryIds,"+
+                    "district,"+
+                    "quitType,"+
+                    "districtId,"+
+                    "districtSubId,"+
+                    "district,"+
+                    "logo,"+
+                    "company,"+
+                    "quitDate,"+
+                    "quitAmountStr,"+
+                    "quitAmountNum,"+
+                    "currencyTitle,"+
+                    "quitSideJson,"+
+                    "bodyRole,"+
+                    "sourceType,"+
+                    "isClick "+
+                    "from app.app_event_quit_info";
+            excuteThread("ctdn_quit_event", "quit_event", sql);
+        }
+    }
+
 
     public static void excuteThread(String index,String type,String sql){
         long startTime = System.currentTimeMillis();
         createIndex(index,type);
-        int rowcount = writeData(sql,"project");
+        int rowcount = writeData(sql,type);
         long endTime = System.currentTimeMillis();
         System.out.println(index+"数据写入完毕");
         System.out.println("总用时:"+(endTime - startTime)+"ms");
@@ -250,7 +318,7 @@ public class ESDataUtil_New {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
-            conn = DriverManager.getConnection(url, "xmuser", "qcDKywE7Ka52");
+            conn = DriverManager.getConnection(url, "root", "IhNtPz6E2V34");
             System.out.println("写入数据开始，成功连接MySQL SQL:" + sql);
             ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ps.setFetchSize(Integer.MIN_VALUE);
@@ -319,17 +387,14 @@ public class ESDataUtil_New {
                     }
                 }
                 count++;
-               //拼接行业字符串
-                List<Object> industrySearch = new ArrayList<Object>();
-                if(map.get("industryName")!=null){
-                    industrySearch.add(map.get("industryName"));
+                List<String> industryIds = new ArrayList<String>();
+                if(map.get("industryIds")!=null){
+                    String[] ls= map.get("industryIds").toString().split(",");
+                    for(String id:ls){
+                        industryIds.add(id);
+                    }
                 }
-                if(map.get("industrySubName") != null){
-                    industrySearch.add(map.get("industrySubName"));
-                }
-                map.remove("industryName");
-                map.remove("industrySubName");
-                map.put("industrySearch",industrySearch);
+                map.put("industryIds",industryIds);
 
                 if (map.size() > 0) {
                     queues.add(JSON.toJSONString(map));

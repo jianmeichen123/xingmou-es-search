@@ -1,52 +1,64 @@
-curl -XPUT 127.0.0.1:9200/ctdn_mergeEvent -d '{
+curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
   "mappings" : {
-    "project": {
+    "merge_event": {
       "properties": {
-	"sid":{
-	 	"type": "long"
-	},
-	"industrySearch":{
-		"type": "keyword"
-	},
-	"mergeType":{
-		"type": "keyword"
-	},
-	"mergeStatus":{
-		"type": "keyword"
-	},
-	"currentcyTitle":{
-		"type": "keyword"
-	},
-	"investPer":{
-		"type":"short"
-	},
-	"investStartDate":{
-		"type":"date"
-	},
-	"investEndDate":{
-		"type":"date"
-	},
-	"pic":{
-		"type": "keyword"
-	},
-	"title":{
-    		"type": "keyword",
-	},
-	"investMoney":{
-		"type":"keyword"
-	},
-	"moneyUSD":{
-		"type":"keyword"
-	}
-	"moneyRMB":{
-		"type":"keyword"
-	},
-	"currentcyTitle":{
-		"type":"keyword"
-	},
-	"mergeInvestfirms":{
-		"type":"keyword"
-	}
+        "code":{
+            "type": "keyword"
+        },
+        "sourceId":{
+            "type": "long"
+        },
+        "industryIds":{
+            "type": "keyword"
+        },
+        "district":{
+             "type": "keyword"
+        },
+        "mergeType":{
+            "type": "keyword"
+        },
+        "mergeState":{
+            "type": "keyword"
+        },
+        "currencyTitle":{
+            "type": "keyword"
+        },
+        "equityRate":{
+            "type":"integer"
+        },
+        "mergeBeginDate":{
+            "type":"date"
+        },
+        "mergeEndDate":{
+            "type":"date"
+        },
+        "mergeOrderDate":{
+            "type":"date"
+        },
+        "logo":{
+            "type": "keyword"
+        },
+        "projTitle":{
+            "type": "keyword"
+        },
+        "amountStr":{
+            "type":"keyword"
+        },
+        "amountNum":{
+            "type": "integer"
+        },
+        "mergeSideJson":{
+             "type":"keyword"
+        },
+        "bodyRole":{
+                "type":"keyword"
+        },
+        "sourceType":{
+            "type":"keyword"
+        },
+        "isClick":{
+            "type":"keyword"
+        }
       }
     }
   }

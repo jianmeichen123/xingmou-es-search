@@ -1,9 +1,9 @@
-curl -XPUT 10.9.130.135:9200/ctdn_invest_event -d '{
+curl -XPUT 10.9.130.135:9200/ctdn_quit_event -d '{
   "mappings" : {
-    "invest_event": {
+    "quit_event": {
       "properties": {
         "code":{
-            "type": "long"
+            "type": "keyword"
         },
         "sourceId":{
             "type": "long"
@@ -11,8 +11,8 @@ curl -XPUT 10.9.130.135:9200/ctdn_invest_event -d '{
         "industryIds":{
             "type": "keyword"
         },
-        "round":{
-            "type":"keyword"
+        "quitType":{
+            "type": "keyword"
         },
         "districtId":{
             "type": "long"
@@ -29,20 +29,20 @@ curl -XPUT 10.9.130.135:9200/ctdn_invest_event -d '{
         "company":{
             "type": "keyword"
         },
-        "investdate": {
+        "quitDate":{
             "type": "date"
         },
-        "amountStr":{
+        "quitAmountStr":{
             "type":"keyword"
         },
-        "amountNum":{
+        "quitAmountNum":{
             "type":"integer"
         },
         "currencyTitle":{
             "type":"keyword"
         },
-        "investSideJson":{
-           "type":"keyword"
+        "quitSideJson":{
+             "type":"keyword"
         },
         "bodyRole":{
             "type":"keyword"

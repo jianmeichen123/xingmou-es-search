@@ -1,41 +1,58 @@
-curl -XPUT 127.0.0.1:9200/ctdn_project -d '{
+curl -XPUT 10.9.130.135:9200/ctdn_project -d '{
   "mappings" : {
     "project": {
       "properties": {
-	"sid":{
-	 	"type": "long"
-	},
-	"industrySearch":{
-		"type": "keyword"
-	},
-	"newestEventRound":{
-		"type":"keyword"
-	},
-	"districtId":{
-		"type": "long"
-	},
-	"districtSubId":{
-		"type": "long"
-	},
-	"districtName":{
-		"type": "keyword"
-	},
-	"pic":{
-		"type": "keyword"
-	},
-	"title":{
-    		"type": "keyword"
-		
-	},
-        "createDate": {
-		"type": "date"	
+        "code":{
+            "type": "keyword"
         },
-	"newestEventDate":{
-		"type": "date"
-	},
-	"newestEventMoney":{
-		"type": "text"
-	}
+        "sourceId":{
+            "type": "long"
+        },
+        "industryName":{
+            "type": "keyword"
+        },
+        "industrySubName":{
+            "type": "keyword"
+        },
+        "industryGrandSonName":{
+             "type": "keyword"
+        },
+        "industryIds":{
+            "type": "keyword"
+        },
+        "latestFinanceRound":{
+            "type":"keyword"
+        },
+        "districtId":{
+            "type": "long"
+        },
+        "districtSubId":{
+            "type": "long"
+        },
+        "addr":{
+            "type": "keyword"
+        },
+        "logo":{
+            "type": "keyword"
+        },
+        "projTitle":{
+            "type": "keyword"
+        },
+        "setupDT": {
+            "type": "date"
+        },
+        "latestFinanceDT":{
+            "type": "date"
+        },
+        "latestFinanceAmountStr":{
+            "type": "keyword"
+        },
+        "latestFinanceAmountNum":{
+            "type": "integer"
+        },
+        "loadDate":{
+            "type":"date"
+        }
       }
     }
   }
