@@ -60,7 +60,7 @@ public class InvestEventIndex {
 
 
     /**
-     *  项目
+     *  投资事件
      */
     public  void importInvestEvent(){
         boolean isDelete = deleteIndexData();

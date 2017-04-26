@@ -60,7 +60,7 @@ public class MergeEventIndex {
 
 
     /**
-     *  项目
+     *  并购事件
      */
     public  void importMergeEvent(){
         boolean isDelete = deleteIndexData();

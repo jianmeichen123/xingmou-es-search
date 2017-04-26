@@ -61,7 +61,7 @@ public class InvestfirmsIndex {
 
 
     /**
-     *  项目
+     *  投资机构
      */
     public  void importInvestfirms(){
         boolean isDelete = deleteIndexData();

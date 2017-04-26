@@ -196,7 +196,6 @@ public class ProjectQuery extends Pagination implements Serializable{
         this.orderBy = orderBy;
     }
 
-
     public void setRoundList(List<String> roundList) {
         this.roundList = roundList;
     }

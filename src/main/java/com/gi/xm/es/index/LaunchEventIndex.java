@@ -60,9 +60,9 @@ public class LaunchEventIndex {
 
 
     /**
-     *  项目
+     *  上市挂牌
      */
-    public  void importInvestEvent(){
+    public  void importLaunchIndex(){
         boolean isDelete = deleteIndexData();
         if(isDelete){
             String sql = "select " +
