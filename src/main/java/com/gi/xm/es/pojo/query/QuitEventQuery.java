@@ -10,9 +10,17 @@ import java.util.List;
  */
 public class QuitEventQuery extends Pagination implements Serializable {
 
+    private Long id;
+
     private String code;
 
     private Long sourceId;
+
+    private Long sourceCode;
+
+    private String  industryName;
+
+    private String  industrySubName;
 
     private String quitType;
 
@@ -238,5 +246,37 @@ public class QuitEventQuery extends Pagination implements Serializable {
 
     public void setCurrencyList(List<String> currencyList) {
         this.currencyList = currencyList;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSourceCode() {
+        return sourceCode;
+    }
+
+    public void setSourceCode(Long sourceCode) {
+        this.sourceCode = sourceCode;
+    }
+
+    public String getIndustryName() {
+        return industryName;
+    }
+
+    public void setIndustryName(String industryName) {
+        this.industryName = industryName;
+    }
+
+    public String getIndustrySubName() {
+        return industrySubName;
+    }
+
+    public void setIndustrySubName(String industrySubName) {
+        this.industrySubName = industrySubName;
     }
 }

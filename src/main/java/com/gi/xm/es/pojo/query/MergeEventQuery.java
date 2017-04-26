@@ -10,9 +10,17 @@ import java.util.List;
  */
 public class MergeEventQuery extends Pagination implements Serializable {
 
+    private Long id;
+
     private String code;
 
     private Long sourceId;
+
+    private Long sourceCode;
+
+    private String  industryName;
+
+    private String  industrySubName;
 
     private String district;
 
@@ -268,5 +276,37 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setEquityRateStr(String equityRateStr) {
         this.equityRateStr = equityRateStr;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSourceCode() {
+        return sourceCode;
+    }
+
+    public void setSourceCode(Long sourceCode) {
+        this.sourceCode = sourceCode;
+    }
+
+    public String getIndustryName() {
+        return industryName;
+    }
+
+    public void setIndustryName(String industryName) {
+        this.industryName = industryName;
+    }
+
+    public String getIndustrySubName() {
+        return industrySubName;
+    }
+
+    public void setIndustrySubName(String industrySubName) {
+        this.industrySubName = industrySubName;
     }
 }

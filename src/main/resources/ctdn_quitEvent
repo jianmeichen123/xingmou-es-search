@@ -2,13 +2,25 @@ curl -XPUT 10.9.130.135:9200/ctdn_quit_event -d '{
   "mappings" : {
     "quit_event": {
       "properties": {
+        "id":{
+            "type": "long"
+        },
         "code":{
             "type": "keyword"
         },
         "sourceId":{
             "type": "long"
         },
+        "sourceCode":{
+            "type": "keyword"
+        },
         "industryIds":{
+            "type": "keyword"
+        },
+        "industryName":{
+            "type": "keyword"
+        },
+        "industrySubName":{
             "type": "keyword"
         },
         "quitType":{

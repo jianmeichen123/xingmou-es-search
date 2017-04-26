@@ -2,13 +2,25 @@ curl -XPUT 10.9.130.135:9200/ctdn_invest_event -d '{
   "mappings" : {
     "invest_event": {
       "properties": {
-        "code":{
+        "id":{
             "type": "long"
+        },
+        "code":{
+            "type": "keyword"
         },
         "sourceId":{
             "type": "long"
         },
+        "sourceCode":{
+            "type": "keyword"
+        },
         "industryIds":{
+            "type": "keyword"
+        },
+        "industryName":{
+            "type": "keyword"
+        },
+         "industrySubName":{
             "type": "keyword"
         },
         "round":{

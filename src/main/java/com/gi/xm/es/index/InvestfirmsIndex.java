@@ -68,7 +68,7 @@ public class InvestfirmsIndex {
         if(isDelete){
             String sql = "select " +
                     "code," +
-                    "id as sourceId,"+
+                    "id,"+
                     "focusDomain,"+
                     "investStage,"+
                     "orgType,"+

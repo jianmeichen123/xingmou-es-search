@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by zcy on 17-4-18.
  */
-public class InvestEventQuery extends Pagination implements Serializable {
+public class LaunchEventQuery extends Pagination implements Serializable {
 
     private Long id;
 
@@ -22,7 +22,15 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private String  industrySubName;
 
-    private String round;
+    private String type;
+
+    private String stockExchange;
+
+    private String transferType;
+
+    private String marketLayer;
+
+    private String listedDate;
 
     private String district;
 
@@ -30,25 +38,15 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private String company;
 
-    private String investDate;
+    private String stockCode;
 
-    private String amountStr;
+    private List<String> industryIds;
 
-    private Long amountNum;
+    private List<String> stockExchangeList;
 
-    private String currencyTitle;
+    private List<String> transferTypeList;
 
-    private String investSideJson;
-
-    private List<String> industryList;
-
-    private List<String> roundList;
-
-    private List<Long> districtIds;
-
-    private List<Long> districtSubIds;
-
-    private List<String> currencyList;
+    private List<String> marketLayerList;
 
     private String startDate;
 
@@ -80,52 +78,84 @@ public class InvestEventQuery extends Pagination implements Serializable {
         return sourceId;
     }
 
-    public String getCurrencyTitle() {
-        return currencyTitle;
+    public String getType() {
+        return type;
     }
 
-    public void setCurrencyTitle(String currencyTitle) {
-        this.currencyTitle = currencyTitle;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public List<String> getCurrencyList() {
-        return currencyList;
+    public String getStockExchange() {
+        return stockExchange;
     }
 
-    public void setCurrencyList(List<String> currencyList) {
-        this.currencyList = currencyList;
+    public void setStockExchange(String stockExchange) {
+        this.stockExchange = stockExchange;
     }
 
-    public List<String> getIndustryList() {
-        return industryList;
+    public String getTransferType() {
+        return transferType;
     }
 
-    public void setIndustryList(List<String> industryList) {
-        this.industryList = industryList;
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
     }
 
-    public List<String> getRoundList() {
-        return roundList;
+    public String getMarketLayer() {
+        return marketLayer;
     }
 
-    public void setRoundList(List<String> roundList) {
-        this.roundList = roundList;
+    public void setMarketLayer(String marketLayer) {
+        this.marketLayer = marketLayer;
     }
 
-    public List<Long> getDistrictIds() {
-        return districtIds;
+    public String getListedDate() {
+        return listedDate;
     }
 
-    public void setDistrictIds(List<Long> districtIds) {
-        this.districtIds = districtIds;
+    public void setListedDate(String listedDate) {
+        this.listedDate = listedDate;
     }
 
-    public List<Long> getDistrictSubIds() {
-        return districtSubIds;
+    public String getStockCode() {
+        return stockCode;
     }
 
-    public void setDistrictSubIds(List<Long> districtSubIds) {
-        this.districtSubIds = districtSubIds;
+    public void setStockCode(String stockCode) {
+        this.stockCode = stockCode;
+    }
+
+    public List<String> getIndustryIds() {
+        return industryIds;
+    }
+
+    public void setIndustryIds(List<String> industryIds) {
+        this.industryIds = industryIds;
+    }
+
+    public List<String> getStockExchangeList() {
+        return stockExchangeList;
+    }
+
+    public void setStockExchangeList(List<String> stockExchangeList) {
+        this.stockExchangeList = stockExchangeList;
+    }
+
+    public List<String> getTransferTypeList() {
+        return transferTypeList;
+    }
+
+    public void setTransferTypeList(List<String> transferTypeList) {
+        this.transferTypeList = transferTypeList;
+    }
+
+    public List<String> getMarketLayerList() {
+        return marketLayerList;
+    }
+
+    public void setMarketLayerList(List<String> marketLayerList) {
+        this.marketLayerList = marketLayerList;
     }
 
     public void setOrder(String order) {
@@ -160,14 +190,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
         return orderBy;
     }
 
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
-    }
-
     public String getDistrict() {
         return district;
     }
@@ -190,38 +212,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     public String getCompany() {
         return company;
-    }
-
-    public void setInvestDate(String investDate) {
-        this.investDate = investDate;
-    }
-
-    public String getInvestDate() {
-        return investDate;
-    }
-
-    public String getAmountStr() {
-        return amountStr;
-    }
-
-    public void setAmountStr(String amountStr) {
-        this.amountStr = amountStr;
-    }
-
-    public Long getAmountNum() {
-        return amountNum;
-    }
-
-    public void setAmountNum(Long amountNum) {
-        this.amountNum = amountNum;
-    }
-
-    public String getInvestSideJson() {
-        return investSideJson;
-    }
-
-    public void setInvestSideJson(String investSideJson) {
-        this.investSideJson = investSideJson;
     }
 
     public String getBodyRole() {

@@ -2,11 +2,11 @@ curl -XPUT 10.9.130.135:9200/ctdn_project -d '{
   "mappings" : {
     "project": {
       "properties": {
+        "id":{
+            "type": "long"
+        },
         "code":{
             "type": "keyword"
-        },
-        "sourceId":{
-            "type": "long"
         },
         "industryName":{
             "type": "keyword"

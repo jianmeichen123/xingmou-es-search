@@ -70,7 +70,7 @@ public class ProjectIndex {
         if(isDelete){
             String sql = "select " +
                     "code," +
-                    "id as sourceId,"+
+                    "id ,"+
                     "industryName,"+
                     "industrySubName,"+
                     "industryGrandSonName,"+

@@ -1,8 +1,8 @@
-curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
+curl -XPUT 10.9.130.135:9200/ctdn_invest_event -d '{
   "mappings" : {
-    "merge_event": {
+    "invest_event": {
       "properties": {
-       "id":{
+        "id":{
            "type": "long"
         },
         "code":{
@@ -23,47 +23,35 @@ curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
         "industrySubName":{
             "type": "keyword"
         },
+        "type":{
+            "type": "keyword"
+        },
+        "stockExchange":{
+            "type": "keyword"
+        },
+        "transferType":{
+            "type": "keyword"
+        },
+        "marketLayer":{
+            "type": "keyword"
+        },
+        "listedDate":{
+             "type": "date"
+        },
         "district":{
-             "type": "keyword"
-        },
-        "mergeType":{
             "type": "keyword"
-        },
-        "mergeState":{
-            "type": "keyword"
-        },
-        "currencyTitle":{
-            "type": "keyword"
-        },
-        "equityRate":{
-            "type":"integer"
-        },
-        "mergeBeginDate":{
-            "type":"date"
-        },
-        "mergeEndDate":{
-            "type":"date"
-        },
-        "mergeOrderDate":{
-            "type":"date"
         },
         "logo":{
             "type": "keyword"
         },
-        "projTitle":{
+        "company":{
             "type": "keyword"
         },
-        "amountStr":{
-            "type":"keyword"
-        },
-        "amountNum":{
-            "type": "integer"
-        },
-        "mergeSideJson":{
-             "type":"keyword"
+        "stockCode": {
+            "type": "keyword"
         },
         "bodyRole":{
-                "type":"keyword"
+            "type":"keyword"
         },
         "sourceType":{
             "type":"keyword"

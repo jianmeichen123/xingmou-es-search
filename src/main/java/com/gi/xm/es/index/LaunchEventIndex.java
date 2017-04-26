@@ -33,18 +33,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by zcy on 16-12-12.
  * 创建项目索引
  */
-public class MergeEventIndex {
+public class LaunchEventIndex {
 
     private ConcurrentLinkedQueue<String> queues ;
     private AtomicBoolean isInsert;
 
     static TransportClient client = null;
-    private static final Logger LOG = LoggerFactory.getLogger(MergeEventIndex.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LaunchEventIndex.class);
 
-    private String INDEX = "ctdn_merge_event";
-    private String TYPE = "merge_event";
+    private String INDEX = "ctdn_launch_event";
+    private String TYPE = "launch_event";
     //连接es client
-    public MergeEventIndex(String host, String clusterName) {
+    public LaunchEventIndex(String host, String clusterName) {
         queues = new ConcurrentLinkedQueue<String>();
         isInsert = new AtomicBoolean(true);
         try {
@@ -62,7 +62,7 @@ public class MergeEventIndex {
     /**
      *  项目
      */
-    public  void importMergeEvent(){
+    public  void importInvestEvent(){
         boolean isDelete = deleteIndexData();
         if(isDelete){
             String sql = "select " +
@@ -71,23 +71,21 @@ public class MergeEventIndex {
                     "sourceId,"+
                     "sourceCode,"+
                     "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
+                    "type,"+
+                    "stockExchange,"+
+                    "transferType,"+
+                    "marketLayer,"+
+                    "listedDate,"+
                     "district,"+
-                    "mergeType,"+
-                    "mergeState,"+
-                    "currencyTitle,"+
-                    "equityRate,"+
-                    "mergeBeginDate,"+
-                    "mergeEndDate,"+
-                    "mergeOrderDate,"+
                     "logo,"+
-                    "projTitle,"+
-                    "amountStr,"+
-                    "amountNum,"+
-                    "mergeSideJson,"+
+                    "company,"+
+                    "stockCode,"+
                     "bodyRole,"+
                     "sourceType,"+
                     "isClick "+
-                    "from app.app_project_merger";
+                    "from app.app_event_listed_info";
             excuteThread(sql);
         }
     }
@@ -101,7 +99,7 @@ public class MergeEventIndex {
         System.out.println(INDEX+"数据写入完毕");
         System.out.println("总用时:"+(endTime - startTime)+"ms");
         System.out.println("总条数:"+rowcount+"条");
-        LOG.info("项目索引更新,总条数："+rowcount);
+        LOG.info("索引更新,总条数："+rowcount);
     }
 
     public  void  createIndex(){

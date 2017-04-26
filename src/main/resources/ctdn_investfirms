@@ -2,12 +2,12 @@ curl -XPUT 10.9.130.135:9200/ctdn_investfirms -d '{
   "mappings" : {
     "investfirms": {
       "properties": {
-        "code":{
-            "type": "long"
-        },
-        "sourceId":{
-            "type": "long"
-        },
+        "id":{
+           "type": "long"
+       },
+       "code":{
+           "type": "long"
+       },
         "focusDomain":{
             "type": "keyword"
         },

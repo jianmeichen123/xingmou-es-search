@@ -66,8 +66,10 @@ public class QuitEventIndex {
         boolean isDelete = deleteIndexData();
         if(isDelete){
             String sql = "select " +
-                    "code," +
-                    "id as sourceId,"+
+                    "id," +
+                    "code,"+
+                    "sourceId,"+
+                    "sourceCode,"+
                     "industryIds,"+
                     "district,"+
                     "quitType,"+

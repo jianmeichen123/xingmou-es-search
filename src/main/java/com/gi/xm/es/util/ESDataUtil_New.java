@@ -1,7 +1,6 @@
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.elasticsearch.action.bulk.*;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -18,25 +17,26 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/*import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;*/
+
 
 /**
  * Created by zcy on 16-12-12.
  */
 public class ESDataUtil_New {
 
-    static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
-    static AtomicBoolean isInsert = new AtomicBoolean(true);
-    static final String HOST = "127.0.0.1";
-    static final String clustername = "elasticsearch";
-    static TransportClient client = null;
+    private static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<>();
+    private static AtomicBoolean isInsert = new AtomicBoolean(true);
+    private static final String HOST = "127.0.0.1";
+    private static final String clustername = "elasticsearch";
+    private static TransportClient client = null;
   //  private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
 
     //连接es client
@@ -68,12 +68,11 @@ public class ESDataUtil_New {
         boolean isDelete = deleteIndexData("ctdn_project","project");
         if(isDelete){
             String sql = "select " +
+                    "id,"+
                     "code," +
-                    "id as sourceId,"+
+                    "industryIds,"+
                     "industryName,"+
                     "industrySubName,"+
-                    "industryGrandSonName,"+
-                    "industryIds,"+
                     "districtId,"+
                     "districtSubId,"+
                     "addr,"+
@@ -97,8 +96,8 @@ public class ESDataUtil_New {
         boolean isDelete = deleteIndexData("ctdn_investfirms","investfirms");
         if(isDelete) {
             String sql = "select " +
+                    "id,"+
                     "code," +
-                    "id as sourceId,"+
                     "focusDomain,"+
                     "investStage,"+
                     "orgType,"+
@@ -124,12 +123,16 @@ public class ESDataUtil_New {
      * 投资事件
      */
     public static void importInvestEvent(){
-        boolean isDelete = deleteIndexData("ctdn_invest_event","investEvent");
+        boolean isDelete = deleteIndexData("ctdn_invest_event","invest_event");
         if(isDelete) {
             String sql = "select " +
-                    "code," +
-                    "id as sourceId,"+
+                    "id," +
+                    "code,"+
+                    "sourceId,"+
+                    "sourceCode,"+
                     "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
                     "round,"+
                     "districtId,"+
                     "districtSubId,"+
@@ -153,12 +156,16 @@ public class ESDataUtil_New {
      *  并购事件
      */
     public static void importMergeEvent(){
-        boolean isDelete = deleteIndexData("ctdn_merge_event","mergeEvent");
+        boolean isDelete = deleteIndexData("ctdn_merge_event","merge_event");
         if(isDelete) {
             String sql = "select " +
-                    "code," +
-                    "id as sourceId,"+
+                    "id," +
+                    "code,"+
+                    "sourceId,"+
+                    "sourceCode,"+
                     "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
                     "district,"+
                     "mergeType,"+
                     "mergeState,"+
@@ -179,7 +186,36 @@ public class ESDataUtil_New {
             excuteThread("ctdn_merge_event", "merge_event", sql);
         }
     }
-
+    /**
+     * 上市挂牌事件
+     */
+    public static void importLaunchEvent(){
+        boolean isDelete = deleteIndexData("ctdn_launch_event","launch_event");
+        if(isDelete) {
+            String sql = "select " +
+                    "id," +
+                    "code,"+
+                    "sourceId,"+
+                    "sourceCode,"+
+                    "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
+                    "type,"+
+                    "stockExchange,"+
+                    "transferType,"+
+                    "marketLayer,"+
+                    "listedDate,"+
+                    "district,"+
+                    "logo,"+
+                    "company,"+
+                    "stockCode,"+
+                    "bodyRole,"+
+                    "sourceType,"+
+                    "isClick "+
+                    "from app.app_event_listed_info";
+            excuteThread("ctdn_launch_event", "launch_event", sql);
+        }
+    }
     /**
      *  退出事件
      */
@@ -187,9 +223,13 @@ public class ESDataUtil_New {
         boolean isDelete = deleteIndexData("ctdn_quit_event","quit_event");
         if(isDelete) {
             String sql = "select " +
-                    "code," +
-                    "id as sourceId,"+
+                    "id," +
+                    "code,"+
+                    "sourceId,"+
+                    "sourceCode,"+
                     "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
                     "district,"+
                     "quitType,"+
                     "districtId,"+
