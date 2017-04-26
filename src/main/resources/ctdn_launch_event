@@ -1,6 +1,6 @@
-curl -XPUT 10.9.130.135:9200/ctdn_invest_event -d '{
+curl -XPUT 10.9.130.135:9200/ctdn_launch_event -d '{
   "mappings" : {
-    "invest_event": {
+    "launch_event": {
       "properties": {
         "id":{
            "type": "long"

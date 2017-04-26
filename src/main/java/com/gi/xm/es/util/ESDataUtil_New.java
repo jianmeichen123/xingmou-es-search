@@ -34,7 +34,7 @@ public class ESDataUtil_New {
 
     private static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<>();
     private static AtomicBoolean isInsert = new AtomicBoolean(true);
-    private static final String HOST = "127.0.0.1";
+    private static final String HOST = "10.9.130.135";
     private static final String clustername = "elasticsearch";
     private static TransportClient client = null;
   //  private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
@@ -59,6 +59,7 @@ public class ESDataUtil_New {
        importInvestEvent();
        importMergeEvent();
        importQuitEvent();
+       importLaunchEvent();
     }
 
     /**
