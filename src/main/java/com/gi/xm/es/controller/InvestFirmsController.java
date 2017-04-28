@@ -1,19 +1,18 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.gi.xm.es.pojo.query.InvestEventQuery;
 import com.gi.xm.es.pojo.query.InvestFirmsQuery;
-import com.gi.xm.es.pojo.query.MergeEventQuery;
+import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
+import io.netty.util.internal.StringUtil;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -22,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
@@ -54,32 +54,32 @@ public class InvestFirmsController {
         Integer pageNum = investFirmsQuery.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按行业
-        if(investFirmsQuery.getIndustryIds() != null && !investFirmsQuery.getIndustryIds().isEmpty() ){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getIndustryIds())){
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",investFirmsQuery.getIndustryIds()));
         }
         //按投资阶段
-        if(investFirmsQuery.getInvestStageList() != null && !investFirmsQuery.getInvestStageList().isEmpty() ){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getInvestStageList())){
             queryBuilder.must(QueryBuilders.termsQuery("investStage",investFirmsQuery.getInvestStageList()));
         }
         //按机构类型
-        if(investFirmsQuery.getOrgTypeList() != null && !investFirmsQuery.getOrgTypeList().isEmpty() ){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getOrgTypeList())){
             queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypeList()));
         }
         //按地区
-        if(investFirmsQuery.getDistrictIds() != null && !investFirmsQuery.getDistrictIds().isEmpty()){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())){
             queryBuilder.must(QueryBuilders.termsQuery("districtId",investFirmsQuery.getDistrictIds()));
         }
-        if(investFirmsQuery.getDistrictSubIds() != null && !investFirmsQuery.getDistrictSubIds().isEmpty()){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())){
             queryBuilder.must(QueryBuilders.termsQuery("districtSubId",investFirmsQuery.getDistrictSubIds()));
         }
         //按资本类型
-        if(investFirmsQuery.getCapitalTypeList() != null && !investFirmsQuery.getCapitalTypeList().isEmpty() ){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypeList())){
             queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypeList()));
         }
-        if(investFirmsQuery.getCurrencyList() != null){
+        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencyList())){
             queryBuilder.must(QueryBuilders.termsQuery("currentcyTitle",investFirmsQuery.getCurrencyList()));
         }
-        if(investFirmsQuery.getOrgName() != null){
+        if(StringUtils.isEmpty(investFirmsQuery.getOrgName())){
             queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
         }
 
@@ -90,7 +90,7 @@ public class InvestFirmsController {
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
 
-        if(investFirmsQuery.getOrder() != null){
+        if(StringUtils.isEmpty(investFirmsQuery.getOrder())){
             sb.addSort(investFirmsQuery.getOrderBy(), SortOrder.fromString(investFirmsQuery.getOrderBy()));
         }else {
             sb.addSort("newestInvestDate", SortOrder.DESC);
@@ -118,10 +118,9 @@ public class InvestFirmsController {
                     String rep = "<span class = 'highlight'>"+entity.getOrgName()+"</span>";
                     //替换
                     field.set(entity, value.replaceAll(entity.getOrgName(),rep));
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
+                    return errorRet;
                 }
             }
             entityList.add(entity);

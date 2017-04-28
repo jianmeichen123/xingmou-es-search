@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,9 +20,7 @@ import java.net.UnknownHostException;
  *
  */
 @Configuration
-@EnableMongoRepositories(basePackages = "com.gi.xm.es")
 @EntityScan(basePackages = "com.gi.xm.es.pojo")
-@EnableJpaRepositories(basePackages = "com.gi.xm.es")
 public class ClientConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClientConfiguration.class);

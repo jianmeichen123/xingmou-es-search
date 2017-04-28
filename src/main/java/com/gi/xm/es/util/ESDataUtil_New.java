@@ -13,6 +13,8 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,7 +39,7 @@ public class ESDataUtil_New {
     private static final String HOST = "10.9.130.135";
     private static final String clustername = "elasticsearch";
     private static TransportClient client = null;
-  //  private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil_New.class);
 
     //连接es client
     static {
@@ -47,7 +49,7 @@ public class ESDataUtil_New {
             client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST), 9300));
         } catch (UnknownHostException e) {
-            //LOG.error("连接 client 异常", e);
+            LOG.error("连接 client 异常", e);
             e.printStackTrace();
         }
     }

@@ -70,6 +70,10 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private List<Integer> equityRateList;
 
+    private List<String> mergeTypeList;
+
+    private List<String> mergeStateList;
+
     public String getMergeType() {
         return mergeType;
     }
@@ -308,5 +312,21 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setIndustrySubName(String industrySubName) {
         this.industrySubName = industrySubName;
+    }
+
+    public List<String> getMergeTypeList() {
+        return mergeTypeList;
+    }
+
+    public void setMergeTypeList(List<String> mergeTypeList) {
+        this.mergeTypeList = mergeTypeList;
+    }
+
+    public List<String> getMergeStateList() {
+        return mergeStateList;
+    }
+
+    public void setMergeStateList(List<String> mergeStateList) {
+        this.mergeStateList = mergeStateList;
     }
 }

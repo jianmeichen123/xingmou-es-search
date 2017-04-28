@@ -1,8 +1,8 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.gi.xm.es.pojo.query.InvestEventQuery;
 import com.gi.xm.es.pojo.query.MergeEventQuery;
+import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
@@ -45,7 +46,7 @@ public class MergeEventController {
 
     private static Result errorRet = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
 
-    @RequestMapping(value="mergeEvent",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "mergeEvent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Result queryMergeEvent(@RequestBody MergeEventQuery mergeEvent) {
         Result ret = new Result();
@@ -53,55 +54,66 @@ public class MergeEventController {
         Integer pageNum = mergeEvent.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按行业
-        if(mergeEvent.getIndustryIds() != null && !mergeEvent.getIndustryIds().isEmpty() ){
-            queryBuilder.must(QueryBuilders.termsQuery("industryIds",mergeEvent.getIndustryIds()));
+        if (ListUtil.isNotEmpty(mergeEvent.getIndustryIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("industryIds", mergeEvent.getIndustryIds()));
         }
         //按title
-        if(mergeEvent.getProjTitle() != null){
-            queryBuilder.should(QueryBuilders.wildcardQuery("projTitle","*"+mergeEvent.getProjTitle()+"*"));
-            queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson","*"+mergeEvent.getProjTitle()+"*"));
+        if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
+            queryBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle() + "*"));
+            queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
         }
         //股权占比
-        if(mergeEvent.getEquityRateList() != null && !mergeEvent.getEquityRateList().isEmpty() ){
-            queryBuilder.must(QueryBuilders.termsQuery("equityRateNum",mergeEvent.getEquityRateList()));
+        if (!StringUtils.isEmpty(mergeEvent.getEquityRateList())) {
+            queryBuilder.must(QueryBuilders.termsQuery("equityRateNum", mergeEvent.getEquityRateList()));
         }
-
+        //按币种
+        if (!StringUtils.isEmpty(mergeEvent.getCurrencyTitle())) {
+            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencyList()));
+        }
+        //按并购状态
+        if (ListUtil.isNotEmpty(mergeEvent.getMergeStateList())) {
+            queryBuilder.must(QueryBuilders.termsQuery("mergeState", mergeEvent.getMergeStateList()));
+        }
+        //按并购类型
+        if (ListUtil.isNotEmpty(mergeEvent.getMergeTypeList())) {
+            queryBuilder.must(QueryBuilders.termsQuery("mergeType", mergeEvent.getMergeTypeList()));
+        }
         //按并购结束时间
-        if(mergeEvent.getStartDate() != null || mergeEvent.getEndDate()!= null){
+        if (!StringUtils.isEmpty(mergeEvent.getStartDate()) || !StringUtils.isEmpty(mergeEvent.getEndDate())) {
             RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("mergeEndDate");
-            if(mergeEvent.getStartDate() != null ){
+            if (!StringUtils.isEmpty(mergeEvent.getStartDate())) {
                 rangeq.gte(mergeEvent.getStartDate());
             }
-            if(mergeEvent.getEndDate() != null ){
+            if (!StringUtils.isEmpty(mergeEvent.getEndDate())) {
                 rangeq.lte(mergeEvent.getEndDate());
             }
             queryBuilder.filter(rangeq);
         }
 
-        if(mergeEvent.getCurrencyTitle() != null){
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle",mergeEvent.getCurrencyList()));
+        if (!StringUtils.isEmpty(mergeEvent.getCurrencyTitle())) {
+            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencyList()));
         }
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
         //求总数
-        SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
-        Long  totalHit = res.getHits().totalHits();
+        SearchResponse res = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
+        Long totalHit = res.getHits().totalHits();
 
-        if(mergeEvent.getOrder() != null){
+        if (!StringUtils.isEmpty(mergeEvent.getOrder())) {
             sb.addSort(mergeEvent.getOrderBy(), SortOrder.fromString(mergeEvent.getOrderBy()));
-        }else {
+        } else {
             sb.addSort("mergeOrderDate", SortOrder.DESC);
         }
         sb.setFrom(pageNum);
         sb.setSize(pageSize);
         //返回响应
-        SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
+        SearchResponse response = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();
         List<Object> entityList = new ArrayList<>();
         for (SearchHit it : shs) {
             Map source = it.getSource();
-            MergeEventQuery entity =  JSON.parseObject(JSON.toJSONString(source),MergeEventQuery.class);
+            MergeEventQuery entity = JSON.parseObject(JSON.toJSONString(source), MergeEventQuery.class);
             //获取对应的高亮域
             Map<String, HighlightField> result = it.highlightFields();
             //从设定的高亮域中取得指定域
@@ -113,19 +125,18 @@ public class MergeEventController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<span class = 'highlight'>"+entity.getProjTitle()+"</span>";
+                    String rep = "<comp>" + entity.getProjTitle() + "</comp>";
                     //替换
-                    field.set(entity, value.replaceAll(entity.getProjTitle(),rep));
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    field.set(entity, value.replaceAll(entity.getProjTitle(), rep));
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
+                    return errorRet;
                 }
+                entityList.add(entity);
             }
-            entityList.add(entity);
         }
         Pagination page = new Pagination();
-        page.setTotal(totalHit>SEARCHLIMIT?SEARCHLIMIT:totalHit);
+        page.setTotal(totalHit > SEARCHLIMIT ? SEARCHLIMIT : totalHit);
         page.setTotalhit(totalHit);
         page.setRecords(entityList);
         ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);

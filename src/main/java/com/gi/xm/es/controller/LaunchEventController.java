@@ -3,6 +3,7 @@ package com.gi.xm.es.controller;
 import com.alibaba.fastjson.JSON;
 import com.gi.xm.es.pojo.query.InvestEventQuery;
 import com.gi.xm.es.pojo.query.LaunchEventQuery;
+import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
@@ -53,36 +55,36 @@ public class LaunchEventController {
         Integer pageNum = launchEventQuery.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按行业
-        if(launchEventQuery.getIndustryIds() != null && !launchEventQuery.getIndustryIds().isEmpty() ){
+        if(ListUtil.isNotEmpty(launchEventQuery.getIndustryIds())){
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",launchEventQuery.getIndustryIds()));
         }
         //按title
-        if(launchEventQuery.getCompany() != null){
+        if(!StringUtils.isEmpty(launchEventQuery.getCompany())){
             queryBuilder.should(QueryBuilders.wildcardQuery("company","*"+launchEventQuery.getCompany()+"*"));
         }
         //按type
-        if(launchEventQuery.getType()  != null){
+        if(!StringUtils.isEmpty(launchEventQuery.getType())){
             queryBuilder.must(QueryBuilders.termQuery("type",launchEventQuery.getType()));
         }
         //按交易所
-        if(launchEventQuery.getStockExchangeList() != null || !launchEventQuery.getStockExchangeList().isEmpty()){
+        if(ListUtil.isNotEmpty(launchEventQuery.getStockExchangeList())){
             queryBuilder.must(QueryBuilders.termsQuery("stockExchange",launchEventQuery.getStockExchangeList()));
         }
         //按转让方式
-        if(launchEventQuery.getTransferTypeList() != null || !launchEventQuery.getTransferTypeList().isEmpty()){
+        if(ListUtil.isNotEmpty(launchEventQuery.getTransferTypeList())){
             queryBuilder.must(QueryBuilders.termsQuery("transferType",launchEventQuery.getTransferTypeList()));
         }
         //市场封层
-        if(launchEventQuery.getMarketLayerList() != null || !launchEventQuery.getMarketLayerList().isEmpty()){
+        if(ListUtil.isNotEmpty(launchEventQuery.getMarketLayerList())){
             queryBuilder.must(QueryBuilders.termsQuery("marketLayer",launchEventQuery.getMarketLayerList()));
         }
         //按createDate
-        if(launchEventQuery.getStartDate() != null || launchEventQuery.getEndDate() != null){
+        if(!StringUtils.isEmpty(launchEventQuery.getStartDate()) || !StringUtils.isEmpty(launchEventQuery.getEndDate())){
             RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("listedDate");
-            if(launchEventQuery.getStartDate() != null ){
+            if(!StringUtils.isEmpty(launchEventQuery.getStartDate())){
                 rangeq.gte(launchEventQuery.getStartDate());
             }
-            if(launchEventQuery.getEndDate() != null ){
+            if(!StringUtils.isEmpty(launchEventQuery.getEndDate())){
                 rangeq.lte(launchEventQuery.getEndDate());
             }
             queryBuilder.filter(rangeq);
@@ -90,7 +92,7 @@ public class LaunchEventController {
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
-        if(launchEventQuery.getOrder() != null){
+        if(!StringUtils.isEmpty(launchEventQuery.getOrder())){
             sb.addSort(launchEventQuery.getOrderBy(), SortOrder.fromString(launchEventQuery.getOrderBy()));
         }else {
             sb.addSort("listedDate", SortOrder.DESC);
@@ -118,13 +120,12 @@ public class LaunchEventController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<span class = 'highlight'>"+entity.getCompany()+"</span>";
+                    String rep = "<comp'>"+entity.getCompany()+"</comp>";
                     //替换
                     field.set(entity, value.replaceAll(entity.getCompany(),rep));
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
+                    return errorRet;
                 }
             }
             entityList.add(entity);
