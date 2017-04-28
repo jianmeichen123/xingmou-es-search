@@ -115,7 +115,7 @@ public class InvestFirmsController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<span class = 'highlight'>"+entity.getOrgName()+"</span>";
+                    String rep = "<firm>"+entity.getOrgName()+"</firm>";
                     //替换
                     field.set(entity, value.replaceAll(entity.getOrgName(),rep));
                 } catch (Exception e) {

@@ -65,21 +65,21 @@ public class ESDataUtil{
      */
     public static void importProjects(){
         boolean isDelete = deleteIndexData("xm_project_a","project");
-        if(isDelete){
-            String projectSql = "select " +
-                    "p.id as sid," +
-                    "p.title," +
-                    "p.description," +
-                    "p.pic_big_xm as logo, " +
-                    "i.id as icon ," +
-                    "p.labels as labels," +
-                    "p.industry_name as indudstryName ," +
-                    "p.industry_sub_name as indudstrySubName," +
-                    "p.newest_event_round as roundName," +
-                    "p.create_date as createDate " +
-                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
-            excuteThread("xm_project_a","project",projectSql);
-        }
+//        if(isDelete){
+//            String projectSql = "select " +
+//                    "p.id as sid," +
+//                    "p.title," +
+//                    "p.description," +
+//                    "p.pic_big_xm as logo, " +
+//                    "i.id as icon ," +
+//                    "p.labels as labels," +
+//                    "p.industry_name as indudstryName ," +
+//                    "p.industry_sub_name as indudstrySubName," +
+//                    "p.newest_event_round as roundName," +
+//                    "p.create_date as createDate " +
+//                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
+//            excuteThread("xm_project_a","project",projectSql);
+ //       }
     }
 
     /**
