@@ -4,27 +4,28 @@ import com.alibaba.fastjson.JSON;
 import org.elasticsearch.action.bulk.*;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -34,8 +35,8 @@ public class ESDataUtil{
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
-    private static final String HOST = "10.9.130.135";
-    private static final String clustername = "elasticsearch";
+    static final String HOST = "10.9.130.135";
+    static final String clustername = "elasticsearch";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(ESDataUtil.class);
 
@@ -57,7 +58,7 @@ public class ESDataUtil{
         importProjects();
         // importInvestfirms();
         //importInvestor();
-        //importOriginator();
+        // importOriginator();
     }
 
     /**
@@ -65,21 +66,21 @@ public class ESDataUtil{
      */
     public static void importProjects(){
         boolean isDelete = deleteIndexData("xm_project_a","project");
-//        if(isDelete){
-//            String projectSql = "select " +
-//                    "p.id as sid," +
-//                    "p.title," +
-//                    "p.description," +
-//                    "p.pic_big_xm as logo, " +
-//                    "i.id as icon ," +
-//                    "p.labels as labels," +
-//                    "p.industry_name as indudstryName ," +
-//                    "p.industry_sub_name as indudstrySubName," +
-//                    "p.newest_event_round as roundName," +
-//                    "p.create_date as createDate " +
-//                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
-//            excuteThread("xm_project_a","project",projectSql);
- //       }
+        if(isDelete){
+            String projectSql = "select " +
+                    "p.id as sid," +
+                    "p.title," +
+                    "p.description," +
+                    "p.pic_big_xm as logo, " +
+                    "i.id as icon ," +
+                    "p.labels as labels," +
+                    "p.industry_name as indudstryName ," +
+                    "p.industry_sub_name as indudstrySubName," +
+                    "p.newest_event_round as roundName," +
+                    "p.create_date as createDate " +
+                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
+            excuteThread("xm_project_a","project",projectSql);
+        }
     }
 
     /**
@@ -142,23 +143,24 @@ public class ESDataUtil{
 
     public static void excuteThread(String index,String type,String sql){
         long startTime = System.currentTimeMillis();
-        createIndex(index,type);
+        long endTime = createIndex(index,type);
         int rowcount = writeData(sql);
-        long endTime = System.currentTimeMillis();
         System.out.println(index+"数据写入完毕");
         System.out.println("总用时:"+(endTime - startTime)+"ms");
         System.out.println("总条数:"+rowcount+"条");
     }
 
-    public static void  createIndex( final String index,  final String type){
-        final long currentTime = System.currentTimeMillis();
+    public static long  createIndex( final String index,  final String type){
         final ConcurrentHashMap<String, Boolean> hashMap = new ConcurrentHashMap();
+        Long endTime = null;
+        ExecutorService exe = Executors.newFixedThreadPool(50);
         //开多线程读队列的数据
-        for(int t =0 ;t<10; t++){
-            new Thread(new Runnable() {
+        for(int t =0 ;t<2; t++){
+            exe.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
+                    System.out.println(Thread.currentThread().getName()+"dd");
+                   hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
                     int currentCount = 0;
                     final BulkProcessor bulkProcessor = BulkProcessor.builder(
                             client,
@@ -173,7 +175,6 @@ public class ESDataUtil{
                                             if (item.isFailed()) {
                                                 System.out.println("失败信息:--------" +
                                                         item.getFailureMessage());
-
                                             }
                                         }
                                     }
@@ -209,6 +210,7 @@ public class ESDataUtil{
                             bulkProcessor.add(new IndexRequest(index,type).source(json));
                             currentCount++;
                         }
+                        //队列为空,并且MySQL读取数据完毕
                         if (queues.isEmpty() && !isInsert.get()) {
                             bulkProcessor.flush();
                             hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
@@ -220,17 +222,27 @@ public class ESDataUtil{
                                 }
                             }
                             try {
-                                bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
+                                //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
+                                bulkProcessor.awaitClose(1, TimeUnit.SECONDS);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
+                            System.out.println(Thread.currentThread().getName()+": break");
                             break;
-
                         }
                     }
                 }
-            }).start();
+            }));
         }
+        exe.shutdown();
+//        while (true) {
+//            if (exe.isTerminated()) {
+//                System.out.println("结束了: "+endTime);
+//                endTime = System.currentTimeMillis();
+//                break;
+//            }
+//        }
+        return System.currentTimeMillis();
     }
 
 
@@ -288,6 +300,10 @@ public class ESDataUtil{
             }
             isInsert = new AtomicBoolean(false);
             return count;
+        }catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }catch (SQLException e){
+            e.printStackTrace();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -295,15 +311,12 @@ public class ESDataUtil{
         return 0;
     }
 
-    private static boolean  deleteIndexData(String index,String type) {
-        boolean flag = false;
-        int timeMillis = 60000;
+    private static boolean deleteIndexData(String index,String type) {
         long startTime = System.currentTimeMillis();
         try {
-            Runtime.getRuntime().exec("curl -XDELETE 10.9.130.135:9200/"+index);
+            Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
             Runtime.getRuntime().exec(ESEXEC.ADDINDEX.get(index));
         } catch (IOException e) {
-            System.err.print("error");
             e.printStackTrace();
         }
         long endTime = System.currentTimeMillis();
