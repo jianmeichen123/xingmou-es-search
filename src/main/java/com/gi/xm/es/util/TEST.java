@@ -100,6 +100,7 @@ public class TEST{
                                 //批量成功后执行
                                 public void afterBulk(long l, BulkRequest bulkRequest,
                                                       BulkResponse bulkResponse) {
+
                                     System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
                                     if (bulkResponse.hasFailures()) {
                                         for (BulkItemResponse item :
@@ -130,7 +131,7 @@ public class TEST{
                             .setBackoffPolicy(
                                     BackoffPolicy.exponentialBackoff(
                                             TimeValue.timeValueMillis(100), 3))
-                            .setConcurrentRequests(5)
+                            .setConcurrentRequests(1)
                             .setFlushInterval(TimeValue.timeValueSeconds(5))
                             .build();
 
@@ -140,6 +141,7 @@ public class TEST{
                             String json = queues.poll();
                             if (json == null) continue;
                             bulkProcessor.add(new IndexRequest(index,type).source(json));
+                            json = null;
                             currentCount++;
                         }
                         //队列为空,并且MySQL读取数据完毕
