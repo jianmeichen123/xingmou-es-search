@@ -126,7 +126,7 @@ public class TEST{
                                             failure.getMessage() + " , cause = " + failure.getCause());
                                 }
                             })
-                            .setBulkActions(10000)
+                            .setBulkActions(5000)
                             .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
                             .setBackoffPolicy(
                                     BackoffPolicy.exponentialBackoff(
@@ -164,6 +164,7 @@ public class TEST{
                             System.out.println(Thread.currentThread().getName()+": break");
                             break;
                         }
+
                     }
                 }
             }));
@@ -244,7 +245,10 @@ public class TEST{
                 total+=perCount;
                 from+=limit;
                 to +=limit;
-                System.out.println(perCount+":"+total);
+                data = null;
+                map = null;
+                ps = null;
+                System.out.println("total:"+total);
                 System.out.println("from :"+from+" to:"+to);
             }
             isInsert = new AtomicBoolean(false);
