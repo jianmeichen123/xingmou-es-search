@@ -39,6 +39,7 @@ public class TEST{
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(TEST.class);
+    static String[] titles = new String[]{"ts","id","code","description","logo","indudstryName","indudstrySubName","roundName","createDate"};
 
     //连接es client
     static {
@@ -209,6 +210,8 @@ public class TEST{
         Long total = 0l;
         ResultSetMetaData data= null;
         LinkedHashMap<String, Object> map = null;
+
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
@@ -230,7 +233,7 @@ public class TEST{
                 }
                 while(rs.next()){
                     for(int i = 1; i<= colCount; i++){
-                        columnName = data.getColumnName(i); //获取列名
+                        columnName = titles[i]; //获取列名
                         value = rs.getString(i);
                         if (value != null && !"".equals(value.trim()) && value.trim().length() > 0) {
                             map.put(columnName,value);
