@@ -205,20 +205,18 @@ public class TEST{
         int from = 0;
         int to = limit;
         Long total = 0l;
-        ResultSetMetaData data= null;
-        LinkedHashMap<String, Object> map = null;
-
         try {
-            Connection conn = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            String columnName = null;
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
-            conn = DriverManager.getConnection(url, "xmuser", "qcDKywE7Ka52");
-            System.out.println("写入数据开始，成功连接MySQL SQL:" + sql);
-
             while(true){
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
+                Connection conn = null;
+                conn = DriverManager.getConnection(url, "xmuser", "qcDKywE7Ka52");
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                String columnName = null;
+                ResultSetMetaData data= null;
+                LinkedHashMap<String, Object> map = null;
+
                 ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
                 ps.setInt(1, from);
                 ps.setInt(2, to);
