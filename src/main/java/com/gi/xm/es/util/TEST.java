@@ -55,13 +55,18 @@ public class TEST{
 
     public static void main(String args[]) {
         importProjects();
+
+//        for(int i=0;i<1000000000;i++){
+//            System.out.println(i);
+//            queues.add("ssss");
+//        }
     }
 
     /**
      *  项目
      */
     public static void importProjects(){
-        boolean isDelete = deleteIndexData("xm_project_a","project");
+        boolean isDelete = deleteIndexData("xm_project","project");
         if(isDelete){
             String projectSql = "select " +
                     "p.id as sid," +
@@ -73,35 +78,37 @@ public class TEST{
                     "p.newest_event_round as roundName," +
                     "p.create_date as createDate " +
                     "from edw2.dm_project p where id > ? and id <= ?";
-            excuteThread("xm_project_a","project",projectSql);
+            excuteThread("xm_project","project",projectSql);
         }
     }
 
     public static void excuteThread(String index,String type,String sql){
         createIndex(index,type);
-        int rowcount = writeData(sql);
+        Long rowcount = writeData(sql);
         System.out.println("总条数:"+rowcount+"条");
     }
 
     public static long  createIndex( final String index,  final String type){
         final ConcurrentHashMap<String, Boolean> hashMap = new ConcurrentHashMap();
         Long endTime = null;
-        ExecutorService exe = Executors.newFixedThreadPool(50);
+        ExecutorService exe = Executors.newFixedThreadPool(5);
         //开多线程读队列的数据
-        for(int t =0 ;t<2; t++){
+        for(int t =0 ;t<3; t++){
             exe.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
                     hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
                     int currentCount = 0;
-                    final BulkProcessor bulkProcessor = BulkProcessor.builder(
+
+                   // BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance();
+                    BulkProcessor bulkProcessor = BulkProcessor.builder(
                             client,
                             new BulkProcessor.Listener() {
                                 //批量成功后执行
                                 public void afterBulk(long l, BulkRequest bulkRequest,
                                                       BulkResponse bulkResponse) {
-
                                     System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
+                                    System.out.println(Thread.currentThread().getName()+" :queues: "+queues.size());
                                     if (bulkResponse.hasFailures()) {
                                         for (BulkItemResponse item :
                                                 bulkResponse.getItems()) {
@@ -126,20 +133,20 @@ public class TEST{
                                             failure.getMessage() + " , cause = " + failure.getCause());
                                 }
                             })
-                            .setBulkActions(5000)
+                            .setBulkActions(10000)
                             .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
                             .setBackoffPolicy(
                                     BackoffPolicy.exponentialBackoff(
                                             TimeValue.timeValueMillis(100), 3))
                             .setConcurrentRequests(1)
-                            .setFlushInterval(TimeValue.timeValueSeconds(5))
+                            .setFlushInterval(TimeValue.timeValueSeconds(3))
                             .build();
-
                     //读取队列里的数据
                     while(true){
                         if(!queues.isEmpty()){
                             String json = queues.poll();
-                            if (json == null) continue;
+                            if
+                                    (json == null) continue;
                             bulkProcessor.add(new IndexRequest(index,type).source(json));
                             json = null;
                             currentCount++;
@@ -157,7 +164,7 @@ public class TEST{
                             }
                             try {
                                 //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-                                bulkProcessor.awaitClose(1, TimeUnit.SECONDS);
+                                bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -167,7 +174,9 @@ public class TEST{
 
                     }
                 }
-            }));
+            }
+            )
+            );
         }
 //        exe.shutdown();
 //        while (true) {
@@ -186,7 +195,7 @@ public class TEST{
      * 读取mysql 数据
      * @param sql 查询语句
      */
-    public static int writeData(String sql){
+    public static Long writeData(String sql){
         Long start = System.currentTimeMillis();
         Connection conn = null;
         PreparedStatement ps = null;
@@ -196,7 +205,9 @@ public class TEST{
         int limit = 10000;
         int from = 0;
         int to = limit;
-        int total = 0;
+        Long total = 0l;
+        ResultSetMetaData data= null;
+        LinkedHashMap<String, Object> map = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
@@ -209,9 +220,9 @@ public class TEST{
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
                 rs = ps.executeQuery();
-                ResultSetMetaData data= rs.getMetaData();
+                data = rs.getMetaData();
                 int colCount = data.getColumnCount();
-                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+                map =  new LinkedHashMap<String, Object>();
                 int perCount = 0;
                 if(total >  limit*2000){
                     break;
@@ -230,16 +241,15 @@ public class TEST{
                     if(map.size()>0){
                         queues.add(JSON.toJSONString(map));
                     }
-                    if(perCount % 10000 == 0){
+                    if(perCount % 5000 == 0){
                         int number = queues.size();
-                        int j = number/10000;
+                        int j = number/5000;
                         try{
                             Thread.sleep(j*1000);
+                            System.out.println("sleep:"+j+"s");
                         }catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        int number2 = queues.size();
-                        j = number2/10000;
                     }
                 }
                 total+=perCount;
