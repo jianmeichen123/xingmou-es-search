@@ -199,10 +199,7 @@ public class TEST{
      */
     public static Long writeData(String sql){
         Long start = System.currentTimeMillis();
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        String columnName = null;
+
         String value = null;
         int limit = 10000;
         int from = 0;
@@ -211,8 +208,11 @@ public class TEST{
         ResultSetMetaData data= null;
         LinkedHashMap<String, Object> map = null;
 
-
         try {
+            Connection conn = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            String columnName = null;
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
             conn = DriverManager.getConnection(url, "xmuser", "qcDKywE7Ka52");
@@ -242,27 +242,20 @@ public class TEST{
                         }
                     }
                     perCount = perCount+1;
-//                    if(map.size()>0){
-//                        queues.add(JSON.toJSONString(map));
-//                        queues.poll();
-//                    }
-//                    if(perCount % 5000 == 0){
-//                        int number = queues.size();
-//                        int j = number/5000;
-//                        try{
-//                            Thread.sleep(j*1000);
-//                            System.out.println("sleep:"+j+"s");
-//                        }catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
+                    try {
+                        rs.close();
+                        ps.close();
+                        conn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 total+=perCount;
                 from+=limit;
                 to +=limit;
-                data = null;
-                map = null;
-                ps = null;
+//                data = null;
+//                map = null;
+//                ps = null;
                 System.out.println("total:"+total);
                 System.out.println("from :"+from+" to:"+to);
             }
@@ -270,13 +263,6 @@ public class TEST{
         }catch(Exception e){
             e.printStackTrace();
 
-        }finally {
-            try {
-                ps.close();
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         System.out.println("mysql 用时:"+(System.currentTimeMillis()-start)+" ms");
         return total;
