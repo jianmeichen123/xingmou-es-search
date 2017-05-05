@@ -59,6 +59,7 @@ public class TEST{
 //        for(int i=0;i<1000000000;i++){
 //            System.out.println(i);
 //            queues.add("ssss");
+//            queues.poll();
 //        }
     }
 
@@ -83,7 +84,7 @@ public class TEST{
     }
 
     public static void excuteThread(String index,String type,String sql){
-        createIndex(index,type);
+        //createIndex(index,type);
         Long rowcount = writeData(sql);
         System.out.println("总条数:"+rowcount+"条");
     }
@@ -238,19 +239,20 @@ public class TEST{
                         }
                     }
                     perCount = perCount+1;
-                    if(map.size()>0){
-                        queues.add(JSON.toJSONString(map));
-                    }
-                    if(perCount % 5000 == 0){
-                        int number = queues.size();
-                        int j = number/5000;
-                        try{
-                            Thread.sleep(j*1000);
-                            System.out.println("sleep:"+j+"s");
-                        }catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+//                    if(map.size()>0){
+//                        queues.add(JSON.toJSONString(map));
+//                        queues.poll();
+//                    }
+//                    if(perCount % 5000 == 0){
+//                        int number = queues.size();
+//                        int j = number/5000;
+//                        try{
+//                            Thread.sleep(j*1000);
+//                            System.out.println("sleep:"+j+"s");
+//                        }catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
                 }
                 total+=perCount;
                 from+=limit;
@@ -264,6 +266,14 @@ public class TEST{
             isInsert = new AtomicBoolean(false);
         }catch(Exception e){
             e.printStackTrace();
+
+        }finally {
+            try {
+                ps.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("mysql 用时:"+(System.currentTimeMillis()-start)+" ms");
         return total;
