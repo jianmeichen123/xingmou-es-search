@@ -39,7 +39,7 @@ public class TEST{
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(TEST.class);
-    static String[] titles = new String[]{"ts","id","code","description","logo","indudstryName","indudstrySubName","roundName","createDate"};
+    static String[] titles = new String[]{"ts","id","code","title","description","logo","indudstryName","indudstrySubName","roundName","createDate"};
 
     //连接es client
     static {
@@ -68,8 +68,6 @@ public class TEST{
      *  项目
      */
     public static void importProjects(){
-        boolean isDelete = deleteIndexData("xm_project","project");
-        if(isDelete){
             String projectSql = "select " +
                     "p.id as sid," +
                     "p.title," +
@@ -81,11 +79,10 @@ public class TEST{
                     "p.create_date as createDate " +
                     "from edw2.dm_project p where id > ? and id <= ?";
             excuteThread("xm_project","project",projectSql);
-        }
     }
 
     public static void excuteThread(String index,String type,String sql){
-        //createIndex(index,type);
+        createIndex(index,type);
         Long rowcount = writeData(sql);
         System.out.println("总条数:"+rowcount+"条");
     }
@@ -141,14 +138,13 @@ public class TEST{
                                     BackoffPolicy.exponentialBackoff(
                                             TimeValue.timeValueMillis(100), 3))
                             .setConcurrentRequests(1)
-                            .setFlushInterval(TimeValue.timeValueSeconds(3))
+                            .setFlushInterval(TimeValue.timeValueSeconds(5))
                             .build();
                     //读取队列里的数据
                     while(true){
                         if(!queues.isEmpty()){
                             String json = queues.poll();
-                            if
-                                    (json == null) continue;
+                            if(json == null) continue;
                             bulkProcessor.add(new IndexRequest(index,type).source(json));
                             json = null;
                             currentCount++;
@@ -240,12 +236,13 @@ public class TEST{
                         }
                     }
                     perCount = perCount+1;
-                    try {
-                        rs.close();
-                        ps.close();
-                        conn.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    if(map.size()>0){
+                        queues.add(JSON.toJSONString(map));
+                        queues.poll();
+                    }
+                    if(perCount % 5000 == 0){
+                        int number = queues.size();
+                        int j = number/5000;
                     }
                 }
                 total+=perCount;
@@ -256,6 +253,9 @@ public class TEST{
 //                ps = null;
                 System.out.println("total:"+total);
                 System.out.println("from :"+from+" to:"+to);
+                ps.close();
+                rs.close();
+                conn.close();
             }
             isInsert = new AtomicBoolean(false);
         }catch(Exception e){
