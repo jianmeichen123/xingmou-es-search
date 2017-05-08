@@ -1,21 +1,15 @@
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
+import com.gi.xm.es.dbutil.ConnectionManager;
 import org.elasticsearch.action.bulk.*;
-import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,18 +50,13 @@ public class TEST{
 
     public static void main(String args[]) {
         importProjects();
-
-//        for(int i=0;i<1000000000;i++){
-//            System.out.println(i);
-//            queues.add("ssss");
-//            queues.poll();
-//        }
     }
 
     /**
      *  项目
      */
     public static void importProjects(){
+        if(deleteIndexData("xm_project","project")){
             String projectSql = "select " +
                     "p.id as sid," +
                     "p.title," +
@@ -79,6 +68,7 @@ public class TEST{
                     "p.create_date as createDate " +
                     "from edw2.dm_project p where id > ? and id <= ?";
             excuteThread("xm_project","project",projectSql);
+        }
     }
 
     public static void excuteThread(String index,String type,String sql){
@@ -94,96 +84,48 @@ public class TEST{
         //开多线程读队列的数据
         for(int t =0 ;t<3; t++){
             exe.execute(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
-                    int currentCount = 0;
+                        @Override
+                        public void run() {
+                            hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
+                            int currentCount = 0;
 
-                   // BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance();
-                    BulkProcessor bulkProcessor = BulkProcessor.builder(
-                            client,
-                            new BulkProcessor.Listener() {
-                                //批量成功后执行
-                                public void afterBulk(long l, BulkRequest bulkRequest,
-                                                      BulkResponse bulkResponse) {
-                                    System.out.println(Thread.currentThread().getName()+"请求数量："+ bulkRequest.numberOfActions());
-                                    System.out.println(Thread.currentThread().getName()+" :queues: "+queues.size());
-                                    if (bulkResponse.hasFailures()) {
-                                        for (BulkItemResponse item :
-                                                bulkResponse.getItems()) {
-                                            if (item.isFailed()) {
-                                                System.out.println("失败信息:--------" +
-                                                        item.getFailureMessage());
-                                            }
+                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance();
+                            //读取队列里的数据
+                            while(true){
+                                if(!queues.isEmpty()){
+                                    String json = queues.poll();
+                                    if(json == null) continue;
+                                    bulkProcessor.add(new IndexRequest(index,type).source(json));
+                                    json = null;
+                                    currentCount++;
+                                }
+                                //队列为空,并且MySQL读取数据完毕
+                                if (queues.isEmpty() && !isInsert.get()) {
+                                    bulkProcessor.flush();
+                                    hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
+                                    while (hashMap.values().contains(Boolean.FALSE)) {
+                                        try {
+                                            Thread.currentThread().sleep(1 * 1000);
+                                        } catch (Exception e) {
+                                            e.printStackTrace(System.out);
                                         }
                                     }
+                                    try {
+                                        //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
+                                        bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    System.out.println(Thread.currentThread().getName()+": break");
+                                    break;
                                 }
 
-                                //批量提交之前执行
-                                public void beforeBulk(long executionId,
-                                                       BulkRequest request) {
-                                }
-
-                                //批量失败后执行
-                                public void afterBulk(long executionId,
-                                                      BulkRequest request,
-                                                      Throwable failure) {
-                                    System.out.println("happen fail = " +
-                                            failure.getMessage() + " , cause = " + failure.getCause());
-                                }
-                            })
-                            .setBulkActions(10000)
-                            .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
-                            .setBackoffPolicy(
-                                    BackoffPolicy.exponentialBackoff(
-                                            TimeValue.timeValueMillis(100), 3))
-                            .setConcurrentRequests(1)
-                            .setFlushInterval(TimeValue.timeValueSeconds(5))
-                            .build();
-                    //读取队列里的数据
-                    while(true){
-                        if(!queues.isEmpty()){
-                            String json = queues.poll();
-                            if(json == null) continue;
-                            bulkProcessor.add(new IndexRequest(index,type).source(json));
-                            json = null;
-                            currentCount++;
-                        }
-                        //队列为空,并且MySQL读取数据完毕
-                        if (queues.isEmpty() && !isInsert.get()) {
-                            bulkProcessor.flush();
-                            hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
-                            while (hashMap.values().contains(Boolean.FALSE)) {
-                                try {
-                                    Thread.currentThread().sleep(1 * 1000);
-                                } catch (Exception e) {
-                                    e.printStackTrace(System.out);
-                                }
                             }
-                            try {
-                                //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-                                bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            System.out.println(Thread.currentThread().getName()+": break");
-                            break;
                         }
-
                     }
-                }
-            }
-            )
+                    )
             );
         }
-//        exe.shutdown();
-//        while (true) {
-//            if (exe.isTerminated()) {
-//                System.out.println("结束了: "+endTime);
-//                endTime = System.currentTimeMillis();
-//                break;
-//            }
-//        }
         return System.currentTimeMillis();
     }
 
@@ -203,10 +145,8 @@ public class TEST{
         Long total = 0l;
         try {
             while(true){
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
-                Connection conn = null;
-                conn = DriverManager.getConnection(url, "xmuser", "qcDKywE7Ka52");
+                ConnectionManager cm = ConnectionManager.getInstance();
+                Connection conn = cm.getConnection();
                 PreparedStatement ps = null;
                 ResultSet rs = null;
                 String columnName = null;
@@ -222,7 +162,7 @@ public class TEST{
                 int colCount = data.getColumnCount();
                 map =  new LinkedHashMap<String, Object>();
                 int perCount = 0;
-                if(total >  limit*2000){
+                if(total >  limit*20){
                     break;
                 }
                 while(rs.next()){
@@ -238,7 +178,6 @@ public class TEST{
                     perCount = perCount+1;
                     if(map.size()>0){
                         queues.add(JSON.toJSONString(map));
-                        queues.poll();
                     }
                     if(perCount % 5000 == 0){
                         int number = queues.size();
@@ -248,11 +187,6 @@ public class TEST{
                 total+=perCount;
                 from+=limit;
                 to +=limit;
-//                data = null;
-//                map = null;
-//                ps = null;
-                System.out.println("total:"+total);
-                System.out.println("from :"+from+" to:"+to);
                 ps.close();
                 rs.close();
                 conn.close();
