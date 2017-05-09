@@ -13,6 +13,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -33,7 +34,7 @@ public class TEST{
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(TEST.class);
-    static String[] titles = new String[]{"ts","id","code","title","description","logo","indudstryName","indudstrySubName","roundName","createDate"};
+    static String[] proHeader = new String[]{"id","code","industryIds","industryName","industrySubName","districtId","districtSubId","addr","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currentcyTitle","loadDate"};
 
     //连接es client
     static {
@@ -56,24 +57,34 @@ public class TEST{
      *  项目
      */
     public static void importProjects(){
-        if(deleteIndexData("xm_project","project")){
-            String projectSql = "select " +
-                    "p.id as sid," +
-                    "p.title," +
-                    "p.description," +
-                    "p.pic_big_xm as logo, " +
-                    "p.industry_name as indudstryName ," +
-                    "p.industry_sub_name as indudstrySubName," +
-                    "p.newest_event_round as roundName," +
-                    "p.create_date as createDate " +
-                    "from edw2.dm_project p where id > ? and id <= ?";
-            excuteThread("xm_project","project",projectSql);
-        }
+        //boolean isDelete = deleteIndexData("ctdn_project","project");
+        //if(isDelete){
+            String sql = "select " +
+                    "id,"+
+                    "code," +
+                    "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
+                    "districtId,"+
+                    "districtSubId,"+
+                    "addr,"+
+                    "logoSmall,"+
+                    "projTitle,"+
+                    "setupDT,"+
+                    "latestFinanceRound,"+
+                    "latestFinanceDT,"+
+                    "latestFinanceAmountStr,"+
+                    "latestFinanceAmountNum,"+
+                    "currentcyTitle,"+
+                    "loadDate "+
+                    "from app.app_project_info where id > ? and id <= ?";
+            excuteThread("ctdn_project","project",sql,"app_project_info");
+        //}
     }
 
-    public static void excuteThread(String index,String type,String sql){
+    public static void excuteThread(String index,String type,String sql,String tableName){
         createIndex(index,type);
-        Long rowcount = writeData(sql);
+        Long rowcount = writeData(sql,tableName);
         System.out.println("总条数:"+rowcount+"条");
     }
 
@@ -135,15 +146,24 @@ public class TEST{
      * 读取mysql 数据
      * @param sql 查询语句
      */
-    public static Long writeData(String sql){
+    public static Long writeData(String sql,String tabelName){
         Long start = System.currentTimeMillis();
-
         String value = null;
         int limit = 10000;
         int from = 0;
         int to = limit;
+        Long tmp = 0l;
         Long total = 0l;
         try {
+            Connection connection = ConnectionManager.getInstance().getConnection();
+            Statement stmt = connection.createStatement();
+            ResultSet ret = stmt.executeQuery("select count(id) from "+tabelName);
+            while(ret.next()){
+                total =ret.getLong(1);
+            }
+            ret.close();
+            stmt.close();
+            connection.close();
             while(true){
                 ConnectionManager cm = ConnectionManager.getInstance();
                 Connection conn = cm.getConnection();
@@ -159,23 +179,32 @@ public class TEST{
                 ps.setFetchSize(limit);
                 rs = ps.executeQuery();
                 data = rs.getMetaData();
-                int colCount = data.getColumnCount();
                 map =  new LinkedHashMap<String, Object>();
                 int perCount = 0;
-                if(total >  limit*20){
+                if(tmp > total){
                     break;
                 }
                 while(rs.next()){
-                    for(int i = 1; i<= colCount; i++){
-                        columnName = titles[i]; //获取列名
+                    for(int i = 1; i<=proHeader.length; i++){
+                        columnName = proHeader[i-1]; //获取列名
                         value = rs.getString(i);
-                        if (value != null && !"".equals(value.trim()) && value.trim().length() > 0) {
+                        if (!StringUtils.isEmpty(value)) {
                             map.put(columnName,value);
                         }else{
                             map.put(columnName,null);
                         }
                     }
-                    perCount = perCount+1;
+                    perCount = perCount++;
+
+                    if(map.get("industryIds")!=null){
+                        List<String> industryIds = new ArrayList<String>();
+                        String[] ls= map.get("industryIds").toString().split(",");
+                        for(String id:ls){
+                            industryIds.add(id);
+                        }
+                        map.put("industryIds",industryIds);
+                    }
+
                     if(map.size()>0){
                         queues.add(JSON.toJSONString(map));
                     }
@@ -184,7 +213,7 @@ public class TEST{
                         int j = number/5000;
                     }
                 }
-                total+=perCount;
+                tmp+=perCount;
                 from+=limit;
                 to +=limit;
                 ps.close();
@@ -204,6 +233,7 @@ public class TEST{
         long startTime = System.currentTimeMillis();
         try {
             Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
+            System.out.println(ESEXEC.ADDINDEX.get(index));
             Runtime.getRuntime().exec(ESEXEC.ADDINDEX.get(index));
         } catch (IOException e) {
             e.printStackTrace();
