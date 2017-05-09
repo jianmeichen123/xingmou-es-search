@@ -83,18 +83,18 @@ public class ProjectController {
         }
         //按地区
         if (ListUtil.isNotEmpty(project.getDistrictIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
         }
         if (ListUtil.isNotEmpty(project.getDistrictSubIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
         }
         sb.setQuery(queryBuilder);
         //求总数
         SearchResponse res = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long totalHit = res.getHits().totalHits();
         //排序
-        if (project.getOrder() != null) {
-            sb.addSort(project.getOrder(), SortOrder.fromString(project.getOrderBy()));
+        if (project.getOrderBy() != null) {
+            sb.addSort(project.getOrderBy(), SortOrder.fromString(project.getOrder()));
         } else {
             sb.addSort("loadDate", SortOrder.DESC);
         }
