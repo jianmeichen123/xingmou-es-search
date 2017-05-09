@@ -6,7 +6,6 @@ import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
-import io.netty.util.internal.StringUtil;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/search/")
 public class InvestFirmsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(InvestFirmsController.class);

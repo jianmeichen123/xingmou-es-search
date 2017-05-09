@@ -54,7 +54,6 @@ public class ESDataUtil{
     }
 
     public static void main(String args[]) {
-
         importProjects();
         // importInvestfirms();
         //importInvestor();
@@ -65,22 +64,20 @@ public class ESDataUtil{
      *  项目
      */
     public static void importProjects(){
-        boolean isDelete = deleteIndexData("xm_project_a","project");
-        if(isDelete){
-            String projectSql = "select " +
-                    "p.id as sid," +
-                    "p.title," +
-                    "p.description," +
-                    "p.pic_big_xm as logo, " +
-                    "i.id as icon ," +
-                    "p.labels as labels," +
-                    "p.industry_name as indudstryName ," +
-                    "p.industry_sub_name as indudstrySubName," +
-                    "p.newest_event_round as roundName," +
-                    "p.create_date as createDate " +
-                    "from edw2.dm_es_project p left join edw2.dw_v_industry  i on  p.industry_id = i.id ";
-            excuteThread("xm_project_a","project",projectSql);
-        }
+        boolean isDelete = deleteIndexData("xm_project","project");
+//        if(isDelete){
+//            String projectSql = "select " +
+//                    "p.id as sid," +
+//                    "p.title," +
+//                    "p.description," +
+//                    "p.pic_big_xm as logo, " +
+//                    "p.industry_name as indudstryName ," +
+//                    "p.industry_sub_name as indudstrySubName," +
+//                    "p.newest_event_round as roundName," +
+//                    "p.create_date as createDate " +
+//                    "from edw2.dm_project p";
+//            excuteThread("xm_project_a","project",projectSql);
+//        }
     }
 
     /**
@@ -142,11 +139,11 @@ public class ESDataUtil{
     }
 
     public static void excuteThread(String index,String type,String sql){
-        long startTime = System.currentTimeMillis();
-        long endTime = createIndex(index,type);
+//        long startTime = System.currentTimeMillis();
+//        long endTime = createIndex(index,type);
         int rowcount = writeData(sql);
         System.out.println(index+"数据写入完毕");
-        System.out.println("总用时:"+(endTime - startTime)+"ms");
+       // System.out.println("总用时:"+(endTime - startTime)+"ms");
         System.out.println("总条数:"+rowcount+"条");
     }
 
@@ -235,13 +232,13 @@ public class ESDataUtil{
             }));
         }
         exe.shutdown();
-//        while (true) {
-//            if (exe.isTerminated()) {
-//                System.out.println("结束了: "+endTime);
-//                endTime = System.currentTimeMillis();
-//                break;
-//            }
-//        }
+        while (true) {
+            if (exe.isTerminated()) {
+                System.out.println("结束了: "+endTime);
+                endTime = System.currentTimeMillis();
+                break;
+            }
+        }
         return System.currentTimeMillis();
     }
 
@@ -252,6 +249,7 @@ public class ESDataUtil{
      * @param sql 查询语句
      */
     public static int writeData(String sql){
+        Long start = System.currentTimeMillis();
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -307,7 +305,7 @@ public class ESDataUtil{
         }catch(Exception e){
             e.printStackTrace();
         }
-
+        System.out.println("mysql 用时:"+(System.currentTimeMillis()-start)+" ms");
         return 0;
     }
 

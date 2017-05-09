@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/search/")
 public class MergeEventController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MergeEventController.class);
@@ -132,8 +131,8 @@ public class MergeEventController {
                     LOG.error(e.getMessage());
                     return errorRet;
                 }
-                entityList.add(entity);
             }
+            entityList.add(entity);
         }
         Pagination page = new Pagination();
         page.setTotal(totalHit > SEARCHLIMIT ? SEARCHLIMIT : totalHit);

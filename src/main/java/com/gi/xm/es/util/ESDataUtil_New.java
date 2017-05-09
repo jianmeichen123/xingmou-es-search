@@ -16,15 +16,14 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -56,11 +55,11 @@ public class ESDataUtil_New {
 
     public static void main(String args[]) {
 
-       importProjects();
-       importInvestfirms();
-       importInvestEvent();
-       importMergeEvent();
-       importQuitEvent();
+   //    importProjects();
+//       importInvestfirms();
+//       importInvestEvent();
+//       importMergeEvent();
+//       importQuitEvent();
        importLaunchEvent();
     }
 
@@ -225,8 +224,8 @@ public class ESDataUtil_New {
     public static void importQuitEvent(){
         boolean isDelete = deleteIndexData("ctdn_quit_event","quit_event");
         if(isDelete) {
-            String sql = "select " +
-                    "id," +
+            String sql = "select"+
+                    "id"+
                     "code,"+
                     "sourceId,"+
                     "sourceCode,"+
@@ -267,9 +266,10 @@ public class ESDataUtil_New {
     public static void  createIndex( final String index,  final String type){
         final long currentTime = System.currentTimeMillis();
         final ConcurrentHashMap<String, Boolean> hashMap = new ConcurrentHashMap();
+        ExecutorService exe = Executors.newFixedThreadPool(50);
         //开多线程读队列的数据
         for(int t =0 ;t<10; t++){
-            new Thread(new Runnable() {
+            exe.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
                     hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
@@ -343,7 +343,7 @@ public class ESDataUtil_New {
                         }
                     }
                 }
-            }).start();
+            }));
         }
     }
 
@@ -360,17 +360,17 @@ public class ESDataUtil_New {
         int count =0;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://10.9.130.142/edw2?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
+            String url = "jdbc:mysql://10.9.130.142/app?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true";
             conn = DriverManager.getConnection(url, "root", "IhNtPz6E2V34");
             System.out.println("写入数据开始，成功连接MySQL SQL:" + sql);
             ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ps.setFetchSize(Integer.MIN_VALUE);
             rs = ps.executeQuery();
-            switch (type){
-                case "project" :{
+//            switch (type){
+//                case "project" :{
                     count = readProjectRet(rs);
-                }
-            }
+//                }
+//            }
             isInsert = new AtomicBoolean(false);
             return count;
         }catch (ClassNotFoundException e) {
@@ -384,27 +384,12 @@ public class ESDataUtil_New {
     }
 
     private static boolean deleteIndexData(String index,String type) {
-        boolean flag = false;
-        int timeMillis = 60000;
         long startTime = System.currentTimeMillis();
-        SearchResponse scrollResp = client.prepareSearch(index)
-                .setScroll(new TimeValue(timeMillis))
-                .setSize(5000).execute().actionGet();
-        while (true) {
-            BulkRequestBuilder bulkRequest = client.prepareBulk();
-            SearchHit[] hits = scrollResp.getHits().getHits();
-            System.out.println("共拉取："+hits.length+"条");
-            if(hits.length > 0){
-                for (SearchHit searchHit : hits) {
-                    bulkRequest.add(new DeleteRequest(index,type,searchHit.getId()));
-                }
-                bulkRequest.execute().actionGet();
-            }
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId())
-                    .setScroll(new TimeValue(timeMillis)).execute().actionGet();
-            if (scrollResp.getHits().getHits().length == 0) {
-                break;
-            }
+        try {
+            //Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
+            Runtime.getRuntime().exec(ESEXEC.ADDINDEX.get(index));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         long endTime = System.currentTimeMillis();
         System.out.println("删除"+index+"数据共用时：" + (endTime - startTime)+"ms");

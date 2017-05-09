@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/search/")
 public class QuitEventController {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuitEventController.class);

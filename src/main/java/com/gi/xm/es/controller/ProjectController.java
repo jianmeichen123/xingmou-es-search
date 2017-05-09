@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/search/")
 public class ProjectController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
@@ -127,8 +126,8 @@ public class ProjectController {
                     LOG.error(e.getMessage());
                     return errorRet;
                 }
-                entityList.add(p);
             }
+            entityList.add(p);
         }
         Pagination page = new Pagination();
         page.setTotal(totalHit > SEARCHLIMIT ? SEARCHLIMIT : totalHit);

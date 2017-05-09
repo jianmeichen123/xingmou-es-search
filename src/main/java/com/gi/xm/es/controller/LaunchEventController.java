@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/search/")
 public class LaunchEventController {
 
     private static final Logger LOG = LoggerFactory.getLogger(LaunchEventController.class);
