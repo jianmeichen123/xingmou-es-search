@@ -13,7 +13,7 @@ public class Pagination implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer pageSize =30;
+    private Integer pageSize =15;
 
     private Integer pageNo =1;
     /**
