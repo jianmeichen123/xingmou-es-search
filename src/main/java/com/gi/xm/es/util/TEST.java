@@ -1,6 +1,7 @@
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.dbutil.ConnectionManager;
 import org.elasticsearch.action.bulk.*;
 import org.elasticsearch.action.index.IndexRequest;
@@ -31,10 +32,11 @@ public class TEST{
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
     static final String HOST = "10.9.130.135";
+    static final String PORT = "9200";
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(TEST.class);
-    static String[] proHeader = new String[]{"id","code","industryIds","industryName","industrySubName","districtId","districtSubId","addr","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currentcyTitle","loadDate"};
+    static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currentcyTitle","loadDate"};
 
     //连接es client
     static {
@@ -57,29 +59,11 @@ public class TEST{
      *  项目
      */
     public static void importProjects(){
-        //boolean isDelete = deleteIndexData("ctdn_project","project");
-        //if(isDelete){
-            String sql = "select " +
-                    "id,"+
-                    "code," +
-                    "industryIds,"+
-                    "industryName,"+
-                    "industrySubName,"+
-                    "districtId,"+
-                    "districtSubId,"+
-                    "addr,"+
-                    "logoSmall,"+
-                    "projTitle,"+
-                    "setupDT,"+
-                    "latestFinanceRound,"+
-                    "latestFinanceDT,"+
-                    "latestFinanceAmountStr,"+
-                    "latestFinanceAmountNum,"+
-                    "currentcyTitle,"+
-                    "loadDate "+
-                    "from app.app_project_info where id > ? and id <= ?";
-            excuteThread("ctdn_project","project",sql,"app_project_info");
-        //}
+        deleteIndexData("ctdn_project","project");
+        String sql = "select projectId,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
+                "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currentcyTitle,loadDate "+
+                "from app.app_project_info where projectId > ? and projectId <= ?";
+        excuteThread("ctdn_project","project",sql,"app_project_info");
     }
 
     public static void excuteThread(String index,String type,String sql,String tableName){
@@ -90,7 +74,6 @@ public class TEST{
 
     public static long  createIndex( final String index,  final String type){
         final ConcurrentHashMap<String, Boolean> hashMap = new ConcurrentHashMap();
-        Long endTime = null;
         ExecutorService exe = Executors.newFixedThreadPool(5);
         //开多线程读队列的数据
         for(int t =0 ;t<3; t++){
@@ -123,7 +106,7 @@ public class TEST{
                                     }
                                     try {
                                         //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-                                        bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
+                                        bulkProcessor.awaitClose(1, TimeUnit.SECONDS);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
@@ -157,7 +140,7 @@ public class TEST{
         try {
             Connection connection = ConnectionManager.getInstance().getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet ret = stmt.executeQuery("select count(id) from "+tabelName);
+            ResultSet ret = stmt.executeQuery("select count(*) from "+tabelName);
             while(ret.next()){
                 total =ret.getLong(1);
             }
@@ -170,7 +153,6 @@ public class TEST{
                 PreparedStatement ps = null;
                 ResultSet rs = null;
                 String columnName = null;
-                ResultSetMetaData data= null;
                 LinkedHashMap<String, Object> map = null;
 
                 ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -178,10 +160,9 @@ public class TEST{
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
                 rs = ps.executeQuery();
-                data = rs.getMetaData();
                 map =  new LinkedHashMap<String, Object>();
                 int perCount = 0;
-                if(tmp > total){
+                if(tmp >= total){
                     break;
                 }
                 while(rs.next()){
@@ -194,7 +175,7 @@ public class TEST{
                             map.put(columnName,null);
                         }
                     }
-                    perCount = perCount++;
+                    perCount++;
 
                     if(map.get("industryIds")!=null){
                         List<String> industryIds = new ArrayList<String>();
@@ -208,10 +189,10 @@ public class TEST{
                     if(map.size()>0){
                         queues.add(JSON.toJSONString(map));
                     }
-                    if(perCount % 5000 == 0){
-                        int number = queues.size();
-                        int j = number/5000;
-                    }
+//                    if(perCount % 5000 == 0){
+//                        int number = queues.size();
+//                        int j = number/5000;
+//                    }
                 }
                 tmp+=perCount;
                 from+=limit;
@@ -223,24 +204,21 @@ public class TEST{
             isInsert = new AtomicBoolean(false);
         }catch(Exception e){
             e.printStackTrace();
-
         }
         System.out.println("mysql 用时:"+(System.currentTimeMillis()-start)+" ms");
         return total;
     }
 
-    private static boolean deleteIndexData(String index,String type) {
-        long startTime = System.currentTimeMillis();
+    private static void deleteIndexData(String index,String type) {
         try {
+            //删除索引
             Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
-            System.out.println(ESEXEC.ADDINDEX.get(index));
-            Runtime.getRuntime().exec(ESEXEC.ADDINDEX.get(index));
+            //新建索引
+            String command = "curl -XPUT "+HOST+":9200/"+index +" -d "+ESEXEC.ADDINDEX.get(index).toJSONString();
+            Runtime.getRuntime().exec(command);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("删除"+index+"数据共用时：" + (endTime - startTime)+"ms");
-        return true;
     }
 
 }

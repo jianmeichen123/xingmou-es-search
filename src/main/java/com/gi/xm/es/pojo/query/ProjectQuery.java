@@ -24,7 +24,7 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     private String latestFinanceRound;
 
-    private String addr;
+    private String districtSubName;
 
     private String  logoSmall;
 
@@ -116,12 +116,12 @@ public class ProjectQuery extends Pagination implements Serializable{
         this.latestFinanceRound = latestFinanceRound;
     }
 
-    public String getAddr() {
-        return addr;
+    public String getDistrictSubName() {
+        return districtSubName;
     }
 
-    public void setAddr(String addr) {
-        this.addr = addr;
+    public void setDistrictSubName(String districtSubName) {
+        this.districtSubName = districtSubName;
     }
 
     public String getLogoSmall() {

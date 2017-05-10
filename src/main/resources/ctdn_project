@@ -2,7 +2,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_project -d '{
   "mappings" : {
     "project": {
       "properties": {
-        "id":{
+        "projectId":{
             "type": "long"
         },
         "code":{
@@ -26,7 +26,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_project -d '{
         "districtSubId":{
             "type": "long"
         },
-        "addr":{
+        "districtSubName":{
             "type": "keyword"
         },
         "logoSmall":{
@@ -51,8 +51,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_project -d '{
             "type": "keyword"
         },
         "loadDate":{
-            "type":"date",
-            "format": "yyyy-MM-dd HH:mm:ss"
+           "type":"long"
         }
       }
     }
