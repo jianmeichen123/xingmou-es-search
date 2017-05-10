@@ -245,7 +245,7 @@ public class TEST2{
         long startTime = System.currentTimeMillis();
         try {
             Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
-            Runtime.getRuntime().exec(ESEXEC.ADDINDEX.get(index));
+            Runtime.getRuntime().exec(String.valueOf(ESEXEC.ADDINDEX.get(index)));
         } catch (IOException e) {
             e.printStackTrace();
         }
