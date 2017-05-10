@@ -17,21 +17,21 @@ import java.net.UnknownHostException;
  */
 public enum BulkProcessorSingleTon {
     INSTANCE;
-    public Client getClient(){
+    public Client getClient(String clusterName,String host){
         Client client = null;
         try {
             Settings settings = Settings.builder()
-                    .put("cluster.name", "elasticsearch").build();
+                    .put("cluster.name", clusterName).build();
             client = new PreBuiltTransportClient(settings)
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.9.130.135"), 9300));
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), 9300));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return client;
     }
-    public BulkProcessor getInstance() {
+    public BulkProcessor getInstance(String clusterName,String host) {
         BulkProcessor bulkProcessor = BulkProcessor.builder(
-                getClient(),
+                getClient( clusterName, host),
                 new BulkProcessor.Listener() {
                     //批量成功后执行
                     public void afterBulk(long l, BulkRequest bulkRequest,

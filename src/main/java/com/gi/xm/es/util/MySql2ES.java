@@ -1,16 +1,12 @@
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.dbutil.ConnectionManager;
 import org.elasticsearch.action.bulk.*;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by zcy on 16-12-12.
  */
-public class TEST{
+public class MySql2ES {
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
     static AtomicBoolean isInsert = new AtomicBoolean(true);
@@ -35,7 +31,7 @@ public class TEST{
     static final String PORT = "9200";
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
-    private static final Logger LOG = LoggerFactory.getLogger(TEST.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MySql2ES.class);
     static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currentcyTitle","loadDate"};
 
     //连接es client
@@ -81,17 +77,14 @@ public class TEST{
                         @Override
                         public void run() {
                             hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
-                            int currentCount = 0;
 
-                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance();
+                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance(clustername,HOST);
                             //读取队列里的数据
                             while(true){
                                 if(!queues.isEmpty()){
                                     String json = queues.poll();
                                     if(json == null) continue;
                                     bulkProcessor.add(new IndexRequest(index,type).source(json));
-                                    json = null;
-                                    currentCount++;
                                 }
                                 //队列为空,并且MySQL读取数据完毕
                                 if (queues.isEmpty() && !isInsert.get()) {
@@ -106,11 +99,10 @@ public class TEST{
                                     }
                                     try {
                                         //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-                                        bulkProcessor.awaitClose(1, TimeUnit.SECONDS);
+                                        bulkProcessor.awaitClose(5, TimeUnit.SECONDS);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
-                                    System.out.println(Thread.currentThread().getName()+": break");
                                     break;
                                 }
 
@@ -138,6 +130,7 @@ public class TEST{
         Long tmp = 0l;
         Long total = 0l;
         try {
+            //查询总数
             Connection connection = ConnectionManager.getInstance().getConnection();
             Statement stmt = connection.createStatement();
             ResultSet ret = stmt.executeQuery("select count(*) from "+tabelName);
@@ -147,20 +140,17 @@ public class TEST{
             ret.close();
             stmt.close();
             connection.close();
+            //每次读取1w条数据
             while(true){
                 ConnectionManager cm = ConnectionManager.getInstance();
                 Connection conn = cm.getConnection();
-                PreparedStatement ps = null;
-                ResultSet rs = null;
+                PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);;
+                ResultSet rs = ps.executeQuery();
                 String columnName = null;
-                LinkedHashMap<String, Object> map = null;
-
-                ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();;
                 ps.setInt(1, from);
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
-                rs = ps.executeQuery();
-                map =  new LinkedHashMap<String, Object>();
                 int perCount = 0;
                 if(tmp >= total){
                     break;
@@ -176,7 +166,6 @@ public class TEST{
                         }
                     }
                     perCount++;
-
                     if(map.get("industryIds")!=null){
                         List<String> industryIds = new ArrayList<String>();
                         String[] ls= map.get("industryIds").toString().split(",");
@@ -185,7 +174,6 @@ public class TEST{
                         }
                         map.put("industryIds",industryIds);
                     }
-
                     if(map.size()>0){
                         queues.add(JSON.toJSONString(map));
                     }
