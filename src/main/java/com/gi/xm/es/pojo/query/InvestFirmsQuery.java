@@ -42,17 +42,17 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private List<String> industryIds;
 
-    private List<String> investStageList;
+    private List<String> investStages;
 
-    private List<String> orgTypeList;
+    private List<String> orgTypes;
 
     private List<Long> districtIds;
 
     private List<Long> districtSubIds;
 
-    private List<String> capitalTypeList;
+    private List<String> capitalTypes;
 
-    private List<String> currencyList;
+    private List<String> currencys;
 
     private String order;
 
@@ -186,20 +186,36 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
         this.industryIds = industryIds;
     }
 
-    public List<String> getInvestStageList() {
-        return investStageList;
+    public List<String> getInvestStages() {
+        return investStages;
     }
 
-    public void setInvestStageList(List<String> investStageList) {
-        this.investStageList = investStageList;
+    public void setInvestStages(List<String> investStages) {
+        this.investStages = investStages;
     }
 
-    public List<String> getOrgTypeList() {
-        return orgTypeList;
+    public List<String> getOrgTypes() {
+        return orgTypes;
     }
 
-    public void setOrgTypeList(List<String> orgTypeList) {
-        this.orgTypeList = orgTypeList;
+    public void setOrgTypes(List<String> orgTypes) {
+        this.orgTypes = orgTypes;
+    }
+
+    public List<String> getCapitalTypes() {
+        return capitalTypes;
+    }
+
+    public void setCapitalTypes(List<String> capitalTypes) {
+        this.capitalTypes = capitalTypes;
+    }
+
+    public List<String> getCurrencys() {
+        return currencys;
+    }
+
+    public void setCurrencys(List<String> currencys) {
+        this.currencys = currencys;
     }
 
     public List<Long> getDistrictIds() {
@@ -216,22 +232,6 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     public void setDistrictSubIds(List<Long> districtSubIds) {
         this.districtSubIds = districtSubIds;
-    }
-
-    public List<String> getCapitalTypeList() {
-        return capitalTypeList;
-    }
-
-    public void setCapitalTypeList(List<String> capitalTypeList) {
-        this.capitalTypeList = capitalTypeList;
-    }
-
-    public List<String> getCurrencyList() {
-        return currencyList;
-    }
-
-    public void setCurrencyList(List<String> currencyList) {
-        this.currencyList = currencyList;
     }
 
     public String getOrder() {

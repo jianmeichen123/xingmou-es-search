@@ -53,8 +53,8 @@ public class InvestEventController {
         Integer pageNum = investEvent.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按行业
-        if(ListUtil.isNotEmpty(investEvent.getIndustryList())){
-            queryBuilder.must(QueryBuilders.termsQuery("industryIds",investEvent.getIndustryList()));
+        if(ListUtil.isNotEmpty(investEvent.getIndustrys())){
+            queryBuilder.must(QueryBuilders.termsQuery("industryIds",investEvent.getIndustrys()));
         }
         //按title
         if(!StringUtils.isEmpty(investEvent.getCompany())){
@@ -62,8 +62,8 @@ public class InvestEventController {
             queryBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
         }
         //按round
-        if(ListUtil.isNotEmpty(investEvent.getRoundList())){
-            queryBuilder.must(QueryBuilders.termsQuery("round",investEvent.getRoundList()));
+        if(ListUtil.isNotEmpty(investEvent.getRounds())){
+            queryBuilder.must(QueryBuilders.termsQuery("round",investEvent.getRounds()));
         }
         //按createDate
         if(!StringUtils.isEmpty(investEvent.getStartDate()) || !StringUtils.isEmpty(investEvent.getEndDate())){
@@ -78,13 +78,13 @@ public class InvestEventController {
         }
         //按地区
         if(ListUtil.isNotEmpty(investEvent.getDistrictIds())){
-            queryBuilder.must(QueryBuilders.termsQuery("districtId",investEvent.getDistrictIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtId",investEvent.getDistrictIds()));
         }
         if(ListUtil.isNotEmpty(investEvent.getDistrictSubIds())){
-            queryBuilder.must(QueryBuilders.termsQuery("districtSubId",investEvent.getDistrictSubIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId",investEvent.getDistrictSubIds()));
         }
-        if(!StringUtils.isEmpty(investEvent.getCurrencyTitle())){
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle",investEvent.getCurrencyList()));
+        if(ListUtil.isNotEmpty(investEvent.getCurrencys())){
+            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle",investEvent.getCurrencys()));
         }
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);

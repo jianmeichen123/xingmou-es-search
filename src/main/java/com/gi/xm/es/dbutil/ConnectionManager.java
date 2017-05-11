@@ -17,7 +17,6 @@ public final class ConnectionManager {
     private ConnectionManager() throws Exception {  
 
         ds = new ComboPooledDataSource();
-  
         ds.setDriverClass("com.mysql.cj.jdbc.Driver");
         ds.setJdbcUrl("jdbc:mysql://10.9.130.142/app?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true");
         ds.setUser("root");

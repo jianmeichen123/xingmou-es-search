@@ -64,15 +64,15 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private String orderBy;
 
-    private List<String> currencyList;
+    private List<String> currencys;
 
     private List<String> industryIds;
 
-    private List<Integer> equityRateList;
+    private List<Integer> equityRates;
 
-    private List<String> mergeTypeList;
+    private List<String> mergeTypes;
 
-    private List<String> mergeStateList;
+    private List<String> mergeStates;
 
     public String getMergeType() {
         return mergeType;
@@ -96,14 +96,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setCurrencyTitle(String currencyTitle) {
         this.currencyTitle = currencyTitle;
-    }
-
-    public List<String> getCurrencyList() {
-        return currencyList;
-    }
-
-    public void setCurrencyList(List<String> currencyList) {
-        this.currencyList = currencyList;
     }
 
     public List<String> getIndustryIds() {
@@ -266,14 +258,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.isClick = isClick;
     }
 
-    public List<Integer> getEquityRateList() {
-        return equityRateList;
-    }
-
-    public void setEquityRateList(List<Integer> equityRateList) {
-        this.equityRateList = equityRateList;
-    }
-
     public String getEquityRateStr() {
         return equityRateStr;
     }
@@ -314,19 +298,35 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.industrySubName = industrySubName;
     }
 
-    public List<String> getMergeTypeList() {
-        return mergeTypeList;
+    public List<String> getCurrencys() {
+        return currencys;
     }
 
-    public void setMergeTypeList(List<String> mergeTypeList) {
-        this.mergeTypeList = mergeTypeList;
+    public void setCurrencys(List<String> currencys) {
+        this.currencys = currencys;
     }
 
-    public List<String> getMergeStateList() {
-        return mergeStateList;
+    public List<Integer> getEquityRates() {
+        return equityRates;
     }
 
-    public void setMergeStateList(List<String> mergeStateList) {
-        this.mergeStateList = mergeStateList;
+    public void setEquityRates(List<Integer> equityRates) {
+        this.equityRates = equityRates;
+    }
+
+    public List<String> getMergeTypes() {
+        return mergeTypes;
+    }
+
+    public void setMergeTypes(List<String> mergeTypes) {
+        this.mergeTypes = mergeTypes;
+    }
+
+    public List<String> getMergeStates() {
+        return mergeStates;
+    }
+
+    public void setMergeStates(List<String> mergeStates) {
+        this.mergeStates = mergeStates;
     }
 }

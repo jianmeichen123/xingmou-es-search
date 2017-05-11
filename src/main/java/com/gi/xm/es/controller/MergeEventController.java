@@ -99,8 +99,8 @@ public class MergeEventController {
         SearchResponse res = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long totalHit = res.getHits().totalHits();
 
-        if (!StringUtils.isEmpty(mergeEvent.getOrder())) {
-            sb.addSort(mergeEvent.getOrderBy(), SortOrder.fromString(mergeEvent.getOrderBy()));
+        if (!StringUtils.isEmpty(mergeEvent.getOrderBy())) {
+            sb.addSort(mergeEvent.getOrderBy(), SortOrder.fromString(mergeEvent.getOrder()));
         } else {
             sb.addSort("mergeOrderDate", SortOrder.DESC);
         }

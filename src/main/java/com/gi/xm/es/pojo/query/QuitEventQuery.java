@@ -46,9 +46,9 @@ public class QuitEventQuery extends Pagination implements Serializable {
 
     private List<String> industryIds;
 
-    private List<String> quitTypeList;
+    private List<String> quitTypes;
 
-    private List<String> currencyList;
+    private List<String> currencys;
 
     private List<Long> districtIds;
 
@@ -232,20 +232,20 @@ public class QuitEventQuery extends Pagination implements Serializable {
         this.isClick = isClick;
     }
 
-    public List<String> getQuitTypeList() {
-        return quitTypeList;
+    public List<String> getCurrencys() {
+        return currencys;
     }
 
-    public void setQuitTypeList(List<String> quitTypeList) {
-        this.quitTypeList = quitTypeList;
+    public void setCurrencys(List<String> currencys) {
+        this.currencys = currencys;
     }
 
-    public List<String> getCurrencyList() {
-        return currencyList;
+    public List<String> getQuitTypes() {
+        return quitTypes;
     }
 
-    public void setCurrencyList(List<String> currencyList) {
-        this.currencyList = currencyList;
+    public void setQuitTypes(List<String> quitTypes) {
+        this.quitTypes = quitTypes;
     }
 
     public Long getId() {

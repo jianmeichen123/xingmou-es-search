@@ -56,26 +56,26 @@ public class InvestFirmsController {
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",investFirmsQuery.getIndustryIds()));
         }
         //按投资阶段
-        if(ListUtil.isNotEmpty(investFirmsQuery.getInvestStageList())){
-            queryBuilder.must(QueryBuilders.termsQuery("investStage",investFirmsQuery.getInvestStageList()));
+        if(ListUtil.isNotEmpty(investFirmsQuery.getInvestStages())){
+            queryBuilder.must(QueryBuilders.termsQuery("investStage",investFirmsQuery.getInvestStages()));
         }
         //按机构类型
-        if(ListUtil.isNotEmpty(investFirmsQuery.getOrgTypeList())){
-            queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypeList()));
+        if(ListUtil.isNotEmpty(investFirmsQuery.getOrgTypes())){
+            queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypes()));
         }
         //按地区
         if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())){
-            queryBuilder.must(QueryBuilders.termsQuery("districtId",investFirmsQuery.getDistrictIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtId",investFirmsQuery.getDistrictIds()));
         }
         if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())){
-            queryBuilder.must(QueryBuilders.termsQuery("districtSubId",investFirmsQuery.getDistrictSubIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId",investFirmsQuery.getDistrictSubIds()));
         }
         //按资本类型
-        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypeList())){
-            queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypeList()));
+        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypes())){
+            queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypes()));
         }
-        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencyList())){
-            queryBuilder.must(QueryBuilders.termsQuery("currentcyTitle",investFirmsQuery.getCurrencyList()));
+        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencys())){
+            queryBuilder.must(QueryBuilders.termsQuery("currentcyTitle",investFirmsQuery.getCurrencys()));
         }
         if(StringUtils.isEmpty(investFirmsQuery.getOrgName())){
             queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
@@ -88,8 +88,8 @@ public class InvestFirmsController {
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
 
-        if(StringUtils.isEmpty(investFirmsQuery.getOrder())){
-            sb.addSort(investFirmsQuery.getOrderBy(), SortOrder.fromString(investFirmsQuery.getOrderBy()));
+        if(StringUtils.isEmpty(investFirmsQuery.getOrderBy())){
+            sb.addSort(investFirmsQuery.getOrderBy(), SortOrder.fromString(investFirmsQuery.getOrder()));
         }else {
             sb.addSort("newestInvestDate", SortOrder.DESC);
         }

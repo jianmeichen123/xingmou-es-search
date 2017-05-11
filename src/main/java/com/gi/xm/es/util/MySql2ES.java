@@ -46,11 +46,9 @@ public class MySql2ES {
             e.printStackTrace();
         }
     }
-
     public static void main(String args[]) {
         importProjects();
     }
-
     /**
      *  项目
      */
@@ -61,7 +59,18 @@ public class MySql2ES {
                 "from app.app_project_info where projectId > ? and projectId <= ?";
         excuteThread("ctdn_project","project",sql,"app_project_info");
     }
-
+    /**
+     *   删除重建索引
+     */
+    private static void deleteIndexData(String index,String type) {
+        try {
+            Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
+            String command = "curl -XPUT "+HOST+":9200/"+index +" -d "+ESEXEC.ADDINDEX.get(index).toJSONString();
+            Runtime.getRuntime().exec(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static void excuteThread(String index,String type,String sql,String tableName){
         createIndex(index,type);
         Long rowcount = writeData(sql,tableName);
@@ -121,7 +130,7 @@ public class MySql2ES {
      * 读取mysql 数据
      * @param sql 查询语句
      */
-    public static Long writeData(String sql,String tabelName){
+    public static Long writeData(String sql,String tabelName) {
         Long start = System.currentTimeMillis();
         String value = null;
         int limit = 10000;
@@ -133,48 +142,48 @@ public class MySql2ES {
             //查询总数
             Connection connection = ConnectionManager.getInstance().getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet ret = stmt.executeQuery("select count(*) from "+tabelName);
-            while(ret.next()){
-                total =ret.getLong(1);
+            ResultSet ret = stmt.executeQuery("select count(*) from " + tabelName);
+            while (ret.next()) {
+                total = ret.getLong(1);
             }
             ret.close();
             stmt.close();
             connection.close();
             //每次读取1w条数据
-            while(true){
+            while (true) {
                 ConnectionManager cm = ConnectionManager.getInstance();
                 Connection conn = cm.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);;
+                PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
                 ResultSet rs = ps.executeQuery();
                 String columnName = null;
-                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();;
+                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
                 ps.setInt(1, from);
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
                 int perCount = 0;
-                if(tmp >= total){
+                if (tmp >= total) {
                     break;
                 }
-                while(rs.next()){
-                    for(int i = 1; i<=proHeader.length; i++){
-                        columnName = proHeader[i-1]; //获取列名
+                while (rs.next()) {
+                    for (int i = 1; i <= proHeader.length; i++) {
+                        columnName = proHeader[i - 1]; //获取列名
                         value = rs.getString(i);
                         if (!StringUtils.isEmpty(value)) {
-                            map.put(columnName,value);
-                        }else{
-                            map.put(columnName,null);
+                            map.put(columnName, value);
+                        } else {
+                            map.put(columnName, null);
                         }
                     }
                     perCount++;
-                    if(map.get("industryIds")!=null){
+                    if (map.get("industryIds") != null) {
                         List<String> industryIds = new ArrayList<String>();
-                        String[] ls= map.get("industryIds").toString().split(",");
-                        for(String id:ls){
+                        String[] ls = map.get("industryIds").toString().split(",");
+                        for (String id : ls) {
                             industryIds.add(id);
                         }
-                        map.put("industryIds",industryIds);
+                        map.put("industryIds", industryIds);
                     }
-                    if(map.size()>0){
+                    if (map.size() > 0) {
                         queues.add(JSON.toJSONString(map));
                     }
 //                    if(perCount % 5000 == 0){
@@ -182,31 +191,19 @@ public class MySql2ES {
 //                        int j = number/5000;
 //                    }
                 }
-                tmp+=perCount;
-                from+=limit;
-                to +=limit;
+                tmp += perCount;
+                from += limit;
+                to += limit;
                 ps.close();
                 rs.close();
                 conn.close();
             }
             isInsert = new AtomicBoolean(false);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("mysql 用时:"+(System.currentTimeMillis()-start)+" ms");
+        System.out.println("mysql 用时:" + (System.currentTimeMillis() - start) + " ms");
         return total;
-    }
-
-    private static void deleteIndexData(String index,String type) {
-        try {
-            //删除索引
-            Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
-            //新建索引
-            String command = "curl -XPUT "+HOST+":9200/"+index +" -d "+ESEXEC.ADDINDEX.get(index).toJSONString();
-            Runtime.getRuntime().exec(command);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -66,16 +66,16 @@ public class LaunchEventController {
             queryBuilder.must(QueryBuilders.termQuery("type",launchEventQuery.getType()));
         }
         //按交易所
-        if(ListUtil.isNotEmpty(launchEventQuery.getStockExchangeList())){
-            queryBuilder.must(QueryBuilders.termsQuery("stockExchange",launchEventQuery.getStockExchangeList()));
+        if(ListUtil.isNotEmpty(launchEventQuery.getStockExchanges())){
+            queryBuilder.must(QueryBuilders.termsQuery("stockExchange",launchEventQuery.getStockExchanges()));
         }
         //按转让方式
-        if(ListUtil.isNotEmpty(launchEventQuery.getTransferTypeList())){
-            queryBuilder.must(QueryBuilders.termsQuery("transferType",launchEventQuery.getTransferTypeList()));
+        if(ListUtil.isNotEmpty(launchEventQuery.getTransferTypes())){
+            queryBuilder.must(QueryBuilders.termsQuery("transferType",launchEventQuery.getTransferTypes()));
         }
         //市场封层
-        if(ListUtil.isNotEmpty(launchEventQuery.getMarketLayerList())){
-            queryBuilder.must(QueryBuilders.termsQuery("marketLayer",launchEventQuery.getMarketLayerList()));
+        if(ListUtil.isNotEmpty(launchEventQuery.getMarketLayers())){
+            queryBuilder.must(QueryBuilders.termsQuery("marketLayer",launchEventQuery.getMarketLayers()));
         }
         //按createDate
         if(!StringUtils.isEmpty(launchEventQuery.getStartDate()) || !StringUtils.isEmpty(launchEventQuery.getEndDate())){
@@ -91,8 +91,8 @@ public class LaunchEventController {
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
-        if(!StringUtils.isEmpty(launchEventQuery.getOrder())){
-            sb.addSort(launchEventQuery.getOrderBy(), SortOrder.fromString(launchEventQuery.getOrderBy()));
+        if(!StringUtils.isEmpty(launchEventQuery.getOrderBy())){
+            sb.addSort(launchEventQuery.getOrderBy(), SortOrder.fromString(launchEventQuery.getOrder()));
         }else {
             sb.addSort("listedDate", SortOrder.DESC);
         }

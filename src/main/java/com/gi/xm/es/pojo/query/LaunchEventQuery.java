@@ -42,11 +42,11 @@ public class LaunchEventQuery extends Pagination implements Serializable {
 
     private List<String> industryIds;
 
-    private List<String> stockExchangeList;
+    private List<String> stockExchanges;
 
-    private List<String> transferTypeList;
+    private List<String> transferTypes;
 
-    private List<String> marketLayerList;
+    private List<String> marketLayers;
 
     private String startDate;
 
@@ -134,28 +134,28 @@ public class LaunchEventQuery extends Pagination implements Serializable {
         this.industryIds = industryIds;
     }
 
-    public List<String> getStockExchangeList() {
-        return stockExchangeList;
+    public List<String> getStockExchanges() {
+        return stockExchanges;
     }
 
-    public void setStockExchangeList(List<String> stockExchangeList) {
-        this.stockExchangeList = stockExchangeList;
+    public void setStockExchanges(List<String> stockExchanges) {
+        this.stockExchanges = stockExchanges;
     }
 
-    public List<String> getTransferTypeList() {
-        return transferTypeList;
+    public List<String> getTransferTypes() {
+        return transferTypes;
     }
 
-    public void setTransferTypeList(List<String> transferTypeList) {
-        this.transferTypeList = transferTypeList;
+    public void setTransferTypes(List<String> transferTypes) {
+        this.transferTypes = transferTypes;
     }
 
-    public List<String> getMarketLayerList() {
-        return marketLayerList;
+    public List<String> getMarketLayers() {
+        return marketLayers;
     }
 
-    public void setMarketLayerList(List<String> marketLayerList) {
-        this.marketLayerList = marketLayerList;
+    public void setMarketLayers(List<String> marketLayers) {
+        this.marketLayers = marketLayers;
     }
 
     public void setOrder(String order) {

@@ -57,12 +57,12 @@ public class QuitEventController {
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",quitEvent.getIndustryIds()));
         }
         //按退出方式
-        if(ListUtil.isNotEmpty(quitEvent.getQuitTypeList())){
-            queryBuilder.must(QueryBuilders.termsQuery("quitType",quitEvent.getQuitTypeList()));
+        if(ListUtil.isNotEmpty(quitEvent.getQuitTypes())){
+            queryBuilder.must(QueryBuilders.termsQuery("quitType",quitEvent.getQuitTypes()));
         }
         //按币种
-        if(ListUtil.isNotEmpty(quitEvent.getCurrencyList())){
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle",quitEvent.getCurrencyList()));
+        if(ListUtil.isNotEmpty(quitEvent.getCurrencys())){
+            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle",quitEvent.getCurrencys()));
         }
         //按title
         if(!StringUtils.isEmpty(quitEvent.getCompany())){
@@ -82,10 +82,10 @@ public class QuitEventController {
         }
         //按地区
         if(ListUtil.isNotEmpty(quitEvent.getDistrictIds())){
-            queryBuilder.must(QueryBuilders.termsQuery("districtId",quitEvent.getDistrictIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtId",quitEvent.getDistrictIds()));
         }
         if(ListUtil.isNotEmpty(quitEvent.getDistrictSubIds())){
-            queryBuilder.must(QueryBuilders.termsQuery("districtSubId",quitEvent.getDistrictSubIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId",quitEvent.getDistrictSubIds()));
         }
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);
@@ -94,8 +94,8 @@ public class QuitEventController {
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
 
-        if(!StringUtils.isEmpty(quitEvent.getOrder())){
-            sb.addSort(quitEvent.getOrderBy(), SortOrder.fromString(quitEvent.getOrderBy()));
+        if(!StringUtils.isEmpty(quitEvent.getOrderBy())){
+            sb.addSort(quitEvent.getOrderBy(), SortOrder.fromString(quitEvent.getOrder()));
         }else {
             sb.addSort("quitDate", SortOrder.DESC);
         }
