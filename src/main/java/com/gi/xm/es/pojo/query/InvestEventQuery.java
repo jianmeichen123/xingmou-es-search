@@ -42,7 +42,7 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private List<String> industrys;
 
-    private List<String> rounds;
+    private List<String> investRounds;
 
     private List<Long> districtIds;
 
@@ -96,12 +96,12 @@ public class InvestEventQuery extends Pagination implements Serializable {
         this.industrys = industrys;
     }
 
-    public List<String> getRounds() {
-        return rounds;
+    public List<String> getInvestRounds() {
+        return investRounds;
     }
 
-    public void setRounds(List<String> rounds) {
-        this.rounds = rounds;
+    public void setInvestRounds(List<String> investRounds) {
+        this.investRounds = investRounds;
     }
 
     public List<String> getCurrencys() {

@@ -38,7 +38,7 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     private List<String> industryIds;
 
-    private List<String> rounds;
+    private List<String> investRounds;
 
     private List<Long> districtIds;
 
@@ -196,13 +196,6 @@ public class ProjectQuery extends Pagination implements Serializable{
         this.orderBy = orderBy;
     }
 
-    public List<String> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<String> rounds) {
-        this.rounds = rounds;
-    }
 
     public void setIndustryGrandSonName(String industryGrandSonName) {
         this.industryGrandSonName = industryGrandSonName;
@@ -218,5 +211,13 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     public List<String> getIndustryIds() {
         return industryIds;
+    }
+
+    public List<String> getInvestRounds() {
+        return investRounds;
+    }
+
+    public void setInvestRounds(List<String> investRounds) {
+        this.investRounds = investRounds;
     }
 }

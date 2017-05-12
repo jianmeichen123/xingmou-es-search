@@ -62,8 +62,8 @@ public class InvestEventController {
             queryBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
         }
         //按round
-        if(ListUtil.isNotEmpty(investEvent.getRounds())){
-            queryBuilder.must(QueryBuilders.termsQuery("round",investEvent.getRounds()));
+        if(ListUtil.isNotEmpty(investEvent.getInvestRounds())){
+            queryBuilder.must(QueryBuilders.termsQuery("round",investEvent.getInvestRounds()));
         }
         //按createDate
         if(!StringUtils.isEmpty(investEvent.getStartDate()) || !StringUtils.isEmpty(investEvent.getEndDate())){

@@ -78,8 +78,8 @@ public class ProjectController {
             queryBuilder.filter(rangeq);
         }
         //按round
-        if (ListUtil.isNotEmpty(project.getRounds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("latestFinanceRound", project.getRounds()));
+        if (ListUtil.isNotEmpty(project.getInvestRounds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("latestFinanceRound", project.getInvestRounds()));
         }
         //按地区
         if (ListUtil.isNotEmpty(project.getDistrictIds())) {

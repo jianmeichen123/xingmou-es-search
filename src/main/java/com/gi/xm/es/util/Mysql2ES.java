@@ -23,16 +23,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by zcy on 16-12-12.
  */
-public class MySql2ES {
+public class Mysql2ES {
 
     static ConcurrentLinkedQueue<String> queues = new ConcurrentLinkedQueue<String>();
+    private static final Logger LOG = LoggerFactory.getLogger(Mysql2ES.class);
     static AtomicBoolean isInsert = new AtomicBoolean(true);
     static final String HOST = "10.9.130.135";
     static final String PORT = "9200";
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
-    private static final Logger LOG = LoggerFactory.getLogger(MySql2ES.class);
-    static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currentcyTitle","loadDate"};
+    static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currencyTitle","loadDate"};
     static String[] investEventHeader = new String[]{"eventId","code","sourceId","sourceCode","industryIds","industryName","industrySubName","round","districtId","districtSubId","districtSubName","logo","company","investdate","amountStr","amountNum","currencyTitle","investSideJson","bodyRole","sourceType","isClick"};
     //连接es client
     static {
@@ -47,9 +47,8 @@ public class MySql2ES {
         }
     }
     public static void main(String args[]) {
-
-        //importProjects();
-        importInvestEvent();
+        importProjects();
+        //importInvestEvent();
     }
     /**
      *  项目
@@ -61,9 +60,6 @@ public class MySql2ES {
                 "from app.app_project_info where projectId > ? and projectId <= ?";
         excuteThread("ctdn_project","project",sql,"app_project_info",proHeader);
     }
-    /**
-     *  项目
-     */
     /**
      * 投资事件
      */
@@ -101,42 +97,44 @@ public class MySql2ES {
             exe.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
-
-                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance(clustername,HOST);
-                            //读取队列里的数据
-                            while(true){
-                                if(!queues.isEmpty()){
-                                    String json = queues.poll();
-                                    if(json == null) continue;
-                                    bulkProcessor.add(new IndexRequest(index,type).source(json));
-                                }
-                                //队列为空,并且MySQL读取数据完毕
-                                if (queues.isEmpty() && !isInsert.get()) {
-                                    bulkProcessor.flush();
-                                    hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
-                                    while (hashMap.values().contains(Boolean.FALSE)) {
-                                        try {
-                                            Thread.currentThread().sleep(1 * 1000);
-                                        } catch (Exception e) {
-                                            e.printStackTrace(System.out);
-                                        }
-                                    }
-                                    try {
-                                        //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-                                        bulkProcessor.awaitClose(5, TimeUnit.SECONDS);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-                                }
-
-                            }
+                            System.out.println(Thread.currentThread().getName()+"wwwwwwwww");
+//                            hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
+//
+//                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance(clustername,HOST);
+//                            //读取队列里的数据
+//                            while(true){
+//                                if(!queues.isEmpty()){
+//                                     String json = queues.poll();
+//                                    if(json == null) continue;
+//                                    bulkProcessor.add(new IndexRequest(index,type).source(json));
+//                                }
+//                                //队列为空,并且MySQL读取数据完毕
+//                                if (queues.isEmpty() && !isInsert.get()) {
+//                                    bulkProcessor.flush();
+//                                    hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
+//                                    while (hashMap.values().contains(Boolean.FALSE)) {
+//                                        try {
+//                                            Thread.currentThread().sleep(1 * 1000);
+//                                        } catch (Exception e) {
+//                                            e.printStackTrace(System.out);
+//                                        }
+//                                    }
+//                                    try {
+//                                        //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
+//                                        bulkProcessor.awaitClose(5, TimeUnit.SECONDS);
+//                                    } catch (InterruptedException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                    break;
+//                                }
+//
+//                            }
                         }
                     }
                     )
             );
         }
+        exe.shutdown();
         return System.currentTimeMillis();
     }
 
@@ -174,6 +172,7 @@ public class MySql2ES {
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
                 ResultSet rs = ps.executeQuery();
+
                 String columnName = null;
                 LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
                 int perCount = 0;
@@ -203,8 +202,9 @@ public class MySql2ES {
                         queues.add(JSON.toJSONString(map));
                     }
 //                    if(perCount % 5000 == 0){
-//                        int number = queues.size();
+//                       int number = queues.size();
 //                        int j = number/5000;
+//                        Thread.sleep(j*1000);
 //                    }
                 }
                 tmp += perCount;
