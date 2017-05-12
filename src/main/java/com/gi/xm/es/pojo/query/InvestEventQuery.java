@@ -24,7 +24,7 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private String round;
 
-    private String district;
+    private String districtSubName;
 
     private String logo;
 
@@ -168,12 +168,12 @@ public class InvestEventQuery extends Pagination implements Serializable {
         this.round = round;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getDistrictSubName() {
+        return districtSubName;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setDistrictSubName(String districtSubName) {
+        this.districtSubName = districtSubName;
     }
 
     public String getLogo() {
