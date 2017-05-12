@@ -97,38 +97,37 @@ public class Mysql2ES {
             exe.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println(Thread.currentThread().getName()+"wwwwwwwww");
-//                            hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
-//
-//                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance(clustername,HOST);
-//                            //读取队列里的数据
-//                            while(true){
-//                                if(!queues.isEmpty()){
-//                                     String json = queues.poll();
-//                                    if(json == null) continue;
-//                                    bulkProcessor.add(new IndexRequest(index,type).source(json));
-//                                }
-//                                //队列为空,并且MySQL读取数据完毕
-//                                if (queues.isEmpty() && !isInsert.get()) {
-//                                    bulkProcessor.flush();
-//                                    hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
-//                                    while (hashMap.values().contains(Boolean.FALSE)) {
-//                                        try {
-//                                            Thread.currentThread().sleep(1 * 1000);
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace(System.out);
-//                                        }
-//                                    }
-//                                    try {
-//                                        //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-//                                        bulkProcessor.awaitClose(5, TimeUnit.SECONDS);
-//                                    } catch (InterruptedException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    break;
-//                                }
-//
-//                            }
+                            hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
+
+                            BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance(clustername,HOST);
+                            //读取队列里的数据
+                            while(true){
+                                if(!queues.isEmpty()){
+                                     String json = queues.poll();
+                                    if(json == null) continue;
+                                    bulkProcessor.add(new IndexRequest(index,type).source(json));
+                                }
+                                //队列为空,并且MySQL读取数据完毕
+                                if (queues.isEmpty() && !isInsert.get()) {
+                                    bulkProcessor.flush();
+                                    hashMap.put(Thread.currentThread().getName(), Boolean.TRUE);
+                                    while (hashMap.values().contains(Boolean.FALSE)) {
+                                        try {
+                                            Thread.currentThread().sleep(1 * 1000);
+                                        } catch (Exception e) {
+                                            e.printStackTrace(System.out);
+                                        }
+                                    }
+                                    try {
+                                        //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
+                                        bulkProcessor.awaitClose(5, TimeUnit.SECONDS);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+                                }
+
+                            }
                         }
                     }
                     )
