@@ -33,7 +33,7 @@ public class MySql2ES {
     static TransportClient client = null;
     private static final Logger LOG = LoggerFactory.getLogger(MySql2ES.class);
     static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currentcyTitle","loadDate"};
-
+    static String[] investEventHeader = new String[]{"eventId","code","sourceId","sourceCode","industryIds","industryName","industrySubName","round","districtId","districtSubId","districtSubName","logo","company","investdate","amountStr","amountNum","currencyTitle","investSideJson","bodyRole","sourceType","isClick"};
     //连接es client
     static {
         try {
@@ -47,7 +47,9 @@ public class MySql2ES {
         }
     }
     public static void main(String args[]) {
-        importProjects();
+
+        //importProjects();
+        importInvestEvent();
     }
     /**
      *  项目
@@ -55,10 +57,24 @@ public class MySql2ES {
     public static void importProjects(){
         deleteIndexData("ctdn_project","project");
         String sql = "select projectId,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
-                "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currentcyTitle,loadDate "+
+                "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyTitle,loadDate "+
                 "from app.app_project_info where projectId > ? and projectId <= ?";
-        excuteThread("ctdn_project","project",sql,"app_project_info");
+        excuteThread("ctdn_project","project",sql,"app_project_info",proHeader);
     }
+    /**
+     *  项目
+     */
+    /**
+     * 投资事件
+     */
+    public static void importInvestEvent(){
+        deleteIndexData("ctdn_invest_event","invest_event");
+        String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
+                    "districtSubName,logo,company,investdate,amountStr,amountNum,currencyTitle,investSideJson,bodyRole,sourceType,isClick "+
+                    "from app.app_event_info where eventId > ? and eventId <= ?";
+        excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info",investEventHeader);
+    }
+
     /**
      *   删除重建索引
      */
@@ -71,9 +87,9 @@ public class MySql2ES {
             e.printStackTrace();
         }
     }
-    public static void excuteThread(String index,String type,String sql,String tableName){
+    public static void excuteThread(String index,String type,String sql,String tableName,String[] headerTitle){
         createIndex(index,type);
-        Long rowcount = writeData(sql,tableName);
+        Long rowcount = writeData(sql,tableName,headerTitle);
         System.out.println("总条数:"+rowcount+"条");
     }
 
@@ -130,7 +146,7 @@ public class MySql2ES {
      * 读取mysql 数据
      * @param sql 查询语句
      */
-    public static Long writeData(String sql,String tabelName) {
+    public static Long writeData(String sql,String tabelName,String[] headerTitle) {
         Long start = System.currentTimeMillis();
         String value = null;
         int limit = 10000;
@@ -154,19 +170,19 @@ public class MySql2ES {
                 ConnectionManager cm = ConnectionManager.getInstance();
                 Connection conn = cm.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-                ResultSet rs = ps.executeQuery();
-                String columnName = null;
-                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
                 ps.setInt(1, from);
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
+                ResultSet rs = ps.executeQuery();
+                String columnName = null;
+                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
                 int perCount = 0;
                 if (tmp >= total) {
                     break;
                 }
                 while (rs.next()) {
-                    for (int i = 1; i <= proHeader.length; i++) {
-                        columnName = proHeader[i - 1]; //获取列名
+                    for (int i = 1; i <= headerTitle.length; i++) {
+                        columnName = headerTitle[i - 1]; //获取列名
                         value = rs.getString(i);
                         if (!StringUtils.isEmpty(value)) {
                             map.put(columnName, value);

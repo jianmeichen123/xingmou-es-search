@@ -62,20 +62,20 @@ public class MergeEventController {
             queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
         }
         //股权占比
-        if (!StringUtils.isEmpty(mergeEvent.getEquityRateList())) {
-            queryBuilder.must(QueryBuilders.termsQuery("equityRateNum", mergeEvent.getEquityRateList()));
+        if (!StringUtils.isEmpty(mergeEvent.getEquityRates())) {
+            queryBuilder.must(QueryBuilders.termsQuery("equityRateNum", mergeEvent.getEquityRates()));
         }
         //按币种
-        if (!StringUtils.isEmpty(mergeEvent.getCurrencyTitle())) {
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencyList()));
+        if (!StringUtils.isEmpty(mergeEvent.getCurrencys())) {
+            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencys()));
         }
         //按并购状态
-        if (ListUtil.isNotEmpty(mergeEvent.getMergeStateList())) {
-            queryBuilder.must(QueryBuilders.termsQuery("mergeState", mergeEvent.getMergeStateList()));
+        if (ListUtil.isNotEmpty(mergeEvent.getMergeStates())) {
+            queryBuilder.must(QueryBuilders.termsQuery("mergeState", mergeEvent.getMergeStates()));
         }
         //按并购类型
-        if (ListUtil.isNotEmpty(mergeEvent.getMergeTypeList())) {
-            queryBuilder.must(QueryBuilders.termsQuery("mergeType", mergeEvent.getMergeTypeList()));
+        if (ListUtil.isNotEmpty(mergeEvent.getMergeTypes())) {
+            queryBuilder.must(QueryBuilders.termsQuery("mergeType", mergeEvent.getMergeTypes()));
         }
         //按并购结束时间
         if (!StringUtils.isEmpty(mergeEvent.getStartDate()) || !StringUtils.isEmpty(mergeEvent.getEndDate())) {
@@ -90,7 +90,7 @@ public class MergeEventController {
         }
 
         if (!StringUtils.isEmpty(mergeEvent.getCurrencyTitle())) {
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencyList()));
+            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencys()));
         }
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);

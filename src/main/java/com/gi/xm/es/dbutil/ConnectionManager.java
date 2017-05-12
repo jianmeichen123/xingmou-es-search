@@ -59,7 +59,8 @@ public final class ConnectionManager {
         //保留，并在下次调用getConnection()的时候继续尝试获取连接。如果设为true，那么在尝试  
         //获取连接失败后该数据源将申明已断开并永久关闭。Default: false  breakAfterAcquireFailure  
         ds.setBreakAfterAcquireFailure(true);  
-         
+         //
+        //
          
   
         //        <!--当连接池用完时客户端调用getConnection()后等待获取新连接的时间，超时后将抛出  
