@@ -63,7 +63,7 @@ public class MergeEventController {
         }
         //股权占比
         if (!StringUtils.isEmpty(mergeEvent.getEquityRates())) {
-            queryBuilder.must(QueryBuilders.termsQuery("equityRateNum", mergeEvent.getEquityRates()));
+            queryBuilder.must(QueryBuilders.termsQuery("equityRateRange", mergeEvent.getEquityRates()));
         }
         //按币种
         if (!StringUtils.isEmpty(mergeEvent.getCurrencys())) {
@@ -79,7 +79,7 @@ public class MergeEventController {
         }
         //按并购结束时间
         if (!StringUtils.isEmpty(mergeEvent.getStartDate()) || !StringUtils.isEmpty(mergeEvent.getEndDate())) {
-            RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("mergeEndDate");
+            RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("mergeDate");
             if (!StringUtils.isEmpty(mergeEvent.getStartDate())) {
                 rangeq.gte(mergeEvent.getStartDate());
             }
@@ -102,7 +102,7 @@ public class MergeEventController {
         if (!StringUtils.isEmpty(mergeEvent.getOrderBy())) {
             sb.addSort(mergeEvent.getOrderBy(), SortOrder.fromString(mergeEvent.getOrder()));
         } else {
-            sb.addSort("mergeOrderDate", SortOrder.DESC);
+            sb.addSort("mergeDate", SortOrder.DESC);
         }
         sb.setFrom(pageNum);
         sb.setSize(pageSize);

@@ -60,43 +60,32 @@ public class Mysql2ES {
         excuteThread("ctdn_project","project",sql,"app_project_info");
     }
     /**
-     *  并购事件
-     */
-    public static void importMergeEvent(){
-            String sql = "select " +
-                    "eventId," +
-                    "code,"+
-                    "sourceId,"+
-                    "sourceCode,"+
-                    "industryIds,"+
-                    "industryName,"+
-                    "industrySubName,"+
-                    "districtSubName,"+
-                    "mergeType,"+
-                    "mergeState,"+
-                    "currencyType,"+
-                    "equityRate,"+
-                    "equityrateRange,"+
-                    "mergeDate,"+
-                    "logo,"+
-                    "projTitle,"+
-                    "amountStr,"+
-                    "mergeSideJson,"+
-                    "bodyRole,"+
-                    "sourceType,"+
-                    "isClick "+
-                    "from app.app_project_merger";
-            excuteThread("ctdn_merge_event", "merge_event", sql,"app_project_merger");
-    }
-    /**
      * 投资事件
      */
     public static void importInvestEvent(){
         deleteIndexData("ctdn_invest_event","invest_event");
         String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
-                    "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson,bodyRole,sourceType,isClick "+
+                    "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson "+
                     "from app.app_event_info where eventId > ? and eventId <= ?";
         excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
+    }
+    /**
+     *  并购事件
+     */
+    public static void importMergeEvent(){
+        String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
+                "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
+                "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
+        excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
+    }
+    /**
+     *  投资机构
+     */
+    public static void importInvestfirms(){
+            String sql = "select orgId,code,focusDomain,investStage,orgType,districtId,districtSubId,capitalType,currencyType,logo,orgName,"+
+                    "investTotal,totalRatio,investAmountNum,investAmountStr,amountRatio,investProj,newestInvestDate "+
+                    "from app.app_org_info where orgId > ? and orgId <= ?";
+            excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
     }
 
     /**

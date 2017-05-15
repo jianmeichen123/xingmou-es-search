@@ -32,8 +32,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private Integer equityRate;
 
-    private String equityRateStr;
-
     private String mergeBeginDate;
 
     private String mergeEndDate;
@@ -68,7 +66,7 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private List<String> industryIds;
 
-    private List<Integer> equityRates;
+    private List<String> equityRates;
 
     private List<String> mergeTypes;
 
@@ -258,14 +256,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.isClick = isClick;
     }
 
-    public String getEquityRateStr() {
-        return equityRateStr;
-    }
-
-    public void setEquityRateStr(String equityRateStr) {
-        this.equityRateStr = equityRateStr;
-    }
-
     public Long getId() {
         return id;
     }
@@ -306,14 +296,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.currencys = currencys;
     }
 
-    public List<Integer> getEquityRates() {
-        return equityRates;
-    }
-
-    public void setEquityRates(List<Integer> equityRates) {
-        this.equityRates = equityRates;
-    }
-
     public List<String> getMergeTypes() {
         return mergeTypes;
     }
@@ -328,5 +310,13 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setMergeStates(List<String> mergeStates) {
         this.mergeStates = mergeStates;
+    }
+
+    public List<String> getEquityRates() {
+        return equityRates;
+    }
+
+    public void setEquityRates(List<String> equityRates) {
+        this.equityRates = equityRates;
     }
 }
