@@ -2,7 +2,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
   "mappings" : {
     "merge_event": {
       "properties": {
-       "id":{
+       "eventId":{
            "type": "long"
         },
         "code":{
@@ -23,7 +23,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
         "industrySubName":{
             "type": "keyword"
         },
-        "district":{
+        "districtSubName":{
              "type": "keyword"
         },
         "mergeType":{
@@ -32,19 +32,16 @@ curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
         "mergeState":{
             "type": "keyword"
         },
-        "currencyTitle":{
+        "currencyType":{
             "type": "keyword"
         },
         "equityRate":{
             "type":"integer"
         },
-        "mergeBeginDate":{
-            "type":"date"
+        "equityRateRange":{
+            "type":"integer"
         },
-        "mergeEndDate":{
-            "type":"date"
-        },
-        "mergeOrderDate":{
+        "mergeDate":{
             "type":"date"
         },
         "logo":{
@@ -61,15 +58,6 @@ curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
         },
         "mergeSideJson":{
              "type":"keyword"
-        },
-        "bodyRole":{
-                "type":"keyword"
-        },
-        "sourceType":{
-            "type":"keyword"
-        },
-        "isClick":{
-            "type":"keyword"
         }
       }
     }

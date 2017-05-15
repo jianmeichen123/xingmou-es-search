@@ -62,12 +62,12 @@ public class MergeEventController {
             queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
         }
         //股权占比
-        if (!StringUtils.isEmpty(mergeEvent.getEquityRates())) {
+        if (ListUtil.isNotEmpty(mergeEvent.getEquityRates())) {
             queryBuilder.must(QueryBuilders.termsQuery("equityRateRange", mergeEvent.getEquityRates()));
         }
         //按币种
-        if (!StringUtils.isEmpty(mergeEvent.getCurrencys())) {
-            queryBuilder.must(QueryBuilders.termsQuery("currencyType", mergeEvent.getCurrencys()));
+        if (ListUtil.isNotEmpty(mergeEvent.getCurrencyTypes())) {
+            queryBuilder.must(QueryBuilders.termsQuery("currencyType", mergeEvent.getCurrencyTypes()));
         }
         //按并购状态
         if (ListUtil.isNotEmpty(mergeEvent.getMergeStates())) {
@@ -89,8 +89,8 @@ public class MergeEventController {
             queryBuilder.filter(rangeq);
         }
 
-        if (!StringUtils.isEmpty(mergeEvent.getCurrencyTitle())) {
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencys()));
+        if (ListUtil.isNotEmpty(mergeEvent.getCurrencyTypes())) {
+            queryBuilder.must(QueryBuilders.termsQuery("currencyType", mergeEvent.getCurrencyTypes()));
         }
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);

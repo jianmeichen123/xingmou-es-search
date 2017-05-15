@@ -28,7 +28,7 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private String mergeState;
 
-    private String currencyTitle;
+    private String currencyType;
 
     private Integer equityRate;
 
@@ -62,7 +62,7 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private String orderBy;
 
-    private List<String> currencys;
+    private List<String> currencyTypes;
 
     private List<String> industryIds;
 
@@ -86,14 +86,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setDistrict(String district) {
         this.district = district;
-    }
-
-    public String getCurrencyTitle() {
-        return currencyTitle;
-    }
-
-    public void setCurrencyTitle(String currencyTitle) {
-        this.currencyTitle = currencyTitle;
     }
 
     public List<String> getIndustryIds() {
@@ -288,14 +280,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.industrySubName = industrySubName;
     }
 
-    public List<String> getCurrencys() {
-        return currencys;
-    }
-
-    public void setCurrencys(List<String> currencys) {
-        this.currencys = currencys;
-    }
-
     public List<String> getMergeTypes() {
         return mergeTypes;
     }
@@ -318,5 +302,21 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setEquityRates(List<String> equityRates) {
         this.equityRates = equityRates;
+    }
+
+    public String getCurrencyType() {
+        return currencyType;
+    }
+
+    public void setCurrencyType(String currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public List<String> getCurrencyTypes() {
+        return currencyTypes;
+    }
+
+    public void setCurrencyTypes(List<String> currencyTypes) {
+        this.currencyTypes = currencyTypes;
     }
 }
