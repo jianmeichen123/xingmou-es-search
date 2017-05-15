@@ -74,6 +74,7 @@ public class Mysql2ES {
      *  并购事件
      */
     public static void importMergeEvent(){
+        deleteIndexData("ctdn_merge_event","merge_event");
         String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
                 "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
                 "from app.app_event_merger_info where eventId > ? and eventId <= ? ";

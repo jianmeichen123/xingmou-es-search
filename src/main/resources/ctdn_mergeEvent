@@ -38,8 +38,8 @@ curl -XPUT 10.9.130.135:9200/ctdn_merge_event -d '{
         "equityRate":{
             "type":"integer"
         },
-        "equityRateRange":{
-            "type":"integer"
+        "equityrateRange":{
+            "type":"keyword"
         },
         "mergeDate":{
             "type":"date"

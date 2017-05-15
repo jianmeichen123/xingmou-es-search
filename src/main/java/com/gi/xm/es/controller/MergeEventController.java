@@ -81,10 +81,10 @@ public class MergeEventController {
         if (!StringUtils.isEmpty(mergeEvent.getStartDate()) || !StringUtils.isEmpty(mergeEvent.getEndDate())) {
             RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("mergeDate");
             if (!StringUtils.isEmpty(mergeEvent.getStartDate())) {
-                rangeq.gte(mergeEvent.getStartDate());
+                rangeq.gte(mergeEvent.getMergeDate());
             }
             if (!StringUtils.isEmpty(mergeEvent.getEndDate())) {
-                rangeq.lte(mergeEvent.getEndDate());
+                rangeq.lte(mergeEvent.getMergeDate());
             }
             queryBuilder.filter(rangeq);
         }
