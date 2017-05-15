@@ -67,7 +67,7 @@ public class MergeEventController {
         }
         //按币种
         if (!StringUtils.isEmpty(mergeEvent.getCurrencys())) {
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle", mergeEvent.getCurrencys()));
+            queryBuilder.must(QueryBuilders.termsQuery("currencyType", mergeEvent.getCurrencys()));
         }
         //按并购状态
         if (ListUtil.isNotEmpty(mergeEvent.getMergeStates())) {

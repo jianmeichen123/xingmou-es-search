@@ -96,7 +96,7 @@ public class ProjectController {
         if (project.getOrderBy() != null) {
             sb.addSort(project.getOrderBy(), SortOrder.fromString(project.getOrder()));
         } else {
-            sb.addSort("loadDate", SortOrder.ASC);
+            sb.addSort("loadDate", SortOrder.DESC);
         }
         //设置分页参数和请求参数
         sb.setFrom(pageNum);

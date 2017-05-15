@@ -46,7 +46,8 @@ public class Mysql2ES {
     }
     public static void main(String args[]) {
         //importProjects();
-       importInvestEvent();
+       //importInvestEvent();
+        importMergeEvent();
     }
     /**
      *  项目
@@ -57,6 +58,35 @@ public class Mysql2ES {
                 "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
                 "from app.app_project_info where projectId > ? and projectId <= ?";
         excuteThread("ctdn_project","project",sql,"app_project_info");
+    }
+    /**
+     *  并购事件
+     */
+    public static void importMergeEvent(){
+            String sql = "select " +
+                    "eventId," +
+                    "code,"+
+                    "sourceId,"+
+                    "sourceCode,"+
+                    "industryIds,"+
+                    "industryName,"+
+                    "industrySubName,"+
+                    "districtSubName,"+
+                    "mergeType,"+
+                    "mergeState,"+
+                    "currencyType,"+
+                    "equityRate,"+
+                    "equityrateRange,"+
+                    "mergeDate,"+
+                    "logo,"+
+                    "projTitle,"+
+                    "amountStr,"+
+                    "mergeSideJson,"+
+                    "bodyRole,"+
+                    "sourceType,"+
+                    "isClick "+
+                    "from app.app_project_merger";
+            excuteThread("ctdn_merge_event", "merge_event", sql,"app_project_merger");
     }
     /**
      * 投资事件

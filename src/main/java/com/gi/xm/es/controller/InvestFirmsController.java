@@ -75,7 +75,7 @@ public class InvestFirmsController {
             queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypes()));
         }
         if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencys())){
-            queryBuilder.must(QueryBuilders.termsQuery("currentcyTitle",investFirmsQuery.getCurrencys()));
+            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
         }
         if(StringUtils.isEmpty(investFirmsQuery.getOrgName())){
             queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
