@@ -36,7 +36,7 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private Long amountNum;
 
-    private String currencyTitle;
+    private String currencyType;
 
     private String investSideJson;
 
@@ -48,7 +48,7 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private List<Long> districtSubIds;
 
-    private List<String> currencys;
+    private List<String> currencyTypes;
 
     private String startDate;
 
@@ -80,14 +80,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
         return sourceId;
     }
 
-    public String getCurrencyTitle() {
-        return currencyTitle;
-    }
-
-    public void setCurrencyTitle(String currencyTitle) {
-        this.currencyTitle = currencyTitle;
-    }
-
     public List<String> getIndustrys() {
         return industrys;
     }
@@ -104,12 +96,20 @@ public class InvestEventQuery extends Pagination implements Serializable {
         this.investRounds = investRounds;
     }
 
-    public List<String> getCurrencys() {
-        return currencys;
+    public String getCurrencyType() {
+        return currencyType;
     }
 
-    public void setCurrencys(List<String> currencys) {
-        this.currencys = currencys;
+    public void setCurrencyType(String currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public List<String> getCurrencyTypes() {
+        return currencyTypes;
+    }
+
+    public void setCurrencyTypes(List<String> currencyTypes) {
+        this.currencyTypes = currencyTypes;
     }
 
     public List<Long> getDistrictIds() {

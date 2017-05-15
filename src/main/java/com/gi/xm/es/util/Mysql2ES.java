@@ -32,8 +32,6 @@ public class Mysql2ES {
     static final String PORT = "9200";
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
-    static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currencyTitle","loadDate"};
-    static String[] investEventHeader = new String[]{"eventId","code","sourceId","sourceCode","industryIds","industryName","industrySubName","round","districtId","districtSubId","districtSubName","logo","company","investDate","amountStr","amountNum","currencyTitle","investSideJson","bodyRole","sourceType","isClick"};
     //连接es client
     static {
         try {
@@ -48,7 +46,7 @@ public class Mysql2ES {
     }
     public static void main(String args[]) {
         //importProjects();
-        importInvestEvent();
+       importInvestEvent();
     }
     /**
      *  项目
@@ -56,9 +54,9 @@ public class Mysql2ES {
     public static void importProjects(){
         deleteIndexData("ctdn_project","project");
         String sql = "select projectId,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
-                "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyTitle,loadDate "+
+                "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
                 "from app.app_project_info where projectId > ? and projectId <= ?";
-        excuteThread("ctdn_project","project",sql,"app_project_info",proHeader);
+        excuteThread("ctdn_project","project",sql,"app_project_info");
     }
     /**
      * 投资事件
@@ -66,9 +64,9 @@ public class Mysql2ES {
     public static void importInvestEvent(){
         deleteIndexData("ctdn_invest_event","invest_event");
         String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
-                    "districtSubName,logo,company,investDate,amountStr,amountNum,currencyTitle,investSideJson,bodyRole,sourceType,isClick "+
+                    "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson,bodyRole,sourceType,isClick "+
                     "from app.app_event_info where eventId > ? and eventId <= ?";
-        excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info",investEventHeader);
+        excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
     }
 
     /**
@@ -83,9 +81,9 @@ public class Mysql2ES {
             e.printStackTrace();
         }
     }
-    public static void excuteThread(String index,String type,String sql,String tableName,String[] headerTitle){
+    public static void excuteThread(String index,String type,String sql,String tableName){
         createIndex(index,type);
-        Long rowcount = writeData(sql,tableName,headerTitle);
+        Long rowcount = writeData(sql,tableName);
         System.out.println("总条数:"+rowcount+"条");
     }
 
@@ -142,7 +140,7 @@ public class Mysql2ES {
      * 读取mysql 数据
      * @param sql 查询语句
      */
-    public static Long writeData(String sql,String tabelName,String[] headerTitle) {
+    public static Long writeData(String sql,String tabelName) {
         Long start = System.currentTimeMillis();
         String value = null;
         int limit = 10000;
@@ -170,6 +168,8 @@ public class Mysql2ES {
                 ps.setInt(2, to);
                 ps.setFetchSize(limit);
                 ResultSet rs = ps.executeQuery();
+                ResultSetMetaData data = rs.getMetaData();
+                int colCount = data.getColumnCount();       //获取查询列数
 
                 String columnName = null;
                 LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
@@ -178,8 +178,8 @@ public class Mysql2ES {
                     break;
                 }
                 while (rs.next()) {
-                    for (int i = 1; i <= headerTitle.length; i++) {
-                        columnName = headerTitle[i - 1]; //获取列名
+                    for (int i = 1; i <=colCount; i++) {
+                        columnName = data.getColumnName(i); //获取列名
                         value = rs.getString(i);
                         if (!StringUtils.isEmpty(value)) {
                             map.put(columnName, value);

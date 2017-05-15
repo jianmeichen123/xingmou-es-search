@@ -76,6 +76,7 @@ public class InvestEventController {
             }
             queryBuilder.filter(rangeq);
         }
+
         //按地区
         if(ListUtil.isNotEmpty(investEvent.getDistrictIds())){
             queryBuilder.should(QueryBuilders.termsQuery("districtId",investEvent.getDistrictIds()));
@@ -83,13 +84,18 @@ public class InvestEventController {
         if(ListUtil.isNotEmpty(investEvent.getDistrictSubIds())){
             queryBuilder.should(QueryBuilders.termsQuery("districtSubId",investEvent.getDistrictSubIds()));
         }
-        if(ListUtil.isNotEmpty(investEvent.getCurrencys())){
-            queryBuilder.must(QueryBuilders.termsQuery("currencyTitle",investEvent.getCurrencys()));
+        if(ListUtil.isNotEmpty(investEvent.getCurrencyTypes())){
+            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investEvent.getCurrencyTypes()));
         }
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
-        sb.addSort("investDate", SortOrder.DESC);
+        if(!StringUtils.isEmpty(investEvent.getOrderBy())){
+            sb.addSort("investDate", SortOrder.fromString(investEvent.getOrder()));
+        }else{
+            sb.addSort("investDate", SortOrder.DESC);
+        }
+
         //求总数
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
