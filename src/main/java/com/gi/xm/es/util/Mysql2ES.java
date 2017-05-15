@@ -33,7 +33,7 @@ public class Mysql2ES {
     static final String clustername = "elasticsearch";
     static TransportClient client = null;
     static String[] proHeader = new String[]{"projectId","code","industryIds","industryName","industrySubName","districtId","districtSubId","districtSubName","logoSmall","projTitle","setupDT","latestFinanceRound","latestFinanceDT","latestFinanceAmountStr","latestFinanceAmountNum","currencyTitle","loadDate"};
-    static String[] investEventHeader = new String[]{"eventId","code","sourceId","sourceCode","industryIds","industryName","industrySubName","round","districtId","districtSubId","districtSubName","logo","company","investdate","amountStr","amountNum","currencyTitle","investSideJson","bodyRole","sourceType","isClick"};
+    static String[] investEventHeader = new String[]{"eventId","code","sourceId","sourceCode","industryIds","industryName","industrySubName","round","districtId","districtSubId","districtSubName","logo","company","investDate","amountStr","amountNum","currencyTitle","investSideJson","bodyRole","sourceType","isClick"};
     //连接es client
     static {
         try {
@@ -47,8 +47,8 @@ public class Mysql2ES {
         }
     }
     public static void main(String args[]) {
-        importProjects();
-        //importInvestEvent();
+        //importProjects();
+        importInvestEvent();
     }
     /**
      *  项目
@@ -66,7 +66,7 @@ public class Mysql2ES {
     public static void importInvestEvent(){
         deleteIndexData("ctdn_invest_event","invest_event");
         String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
-                    "districtSubName,logo,company,investdate,amountStr,amountNum,currencyTitle,investSideJson,bodyRole,sourceType,isClick "+
+                    "districtSubName,logo,company,investDate,amountStr,amountNum,currencyTitle,investSideJson,bodyRole,sourceType,isClick "+
                     "from app.app_event_info where eventId > ? and eventId <= ?";
         excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info",investEventHeader);
     }
@@ -98,7 +98,6 @@ public class Mysql2ES {
                         @Override
                         public void run() {
                             hashMap.put(Thread.currentThread().getName(), Boolean.FALSE);
-
                             BulkProcessor bulkProcessor = BulkProcessorSingleTon.INSTANCE.getInstance(clustername,HOST);
                             //读取队列里的数据
                             while(true){
@@ -124,10 +123,11 @@ public class Mysql2ES {
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
+
                                     break;
                                 }
-
                             }
+
                         }
                     }
                     )
@@ -136,7 +136,6 @@ public class Mysql2ES {
         exe.shutdown();
         return System.currentTimeMillis();
     }
-
 
 
     /**

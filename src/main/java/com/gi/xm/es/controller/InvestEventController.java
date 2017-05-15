@@ -67,7 +67,7 @@ public class InvestEventController {
         }
         //按investdate
         if(!StringUtils.isEmpty(investEvent.getStartDate()) || !StringUtils.isEmpty(investEvent.getEndDate())){
-            RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("investdate");
+            RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("investDate");
             if(!StringUtils.isEmpty(investEvent.getStartDate())){
                 rangeq.gte(investEvent.getStartDate());
             }
@@ -89,7 +89,7 @@ public class InvestEventController {
         //设置分页参数和请求参数
         SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
-        sb.addSort("investdate", SortOrder.DESC);
+        sb.addSort("investDate", SortOrder.DESC);
         //求总数
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
