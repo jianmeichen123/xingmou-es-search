@@ -32,11 +32,7 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private Integer equityRate;
 
-    private String mergeBeginDate;
-
-    private String mergeEndDate;
-
-    private String mergeOrderDate;
+    private String mergeDate;
 
     private String logo;
 
@@ -192,28 +188,12 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.amountNum = amountNum;
     }
 
-    public String getMergeBeginDate() {
-        return mergeBeginDate;
+    public String getMergeDate() {
+        return mergeDate;
     }
 
-    public void setMergeBeginDate(String mergeBeginDate) {
-        this.mergeBeginDate = mergeBeginDate;
-    }
-
-    public String getMergeEndDate() {
-        return mergeEndDate;
-    }
-
-    public void setMergeEndDate(String mergeEndDate) {
-        this.mergeEndDate = mergeEndDate;
-    }
-
-    public String getMergeOrderDate() {
-        return mergeOrderDate;
-    }
-
-    public void setMergeOrderDate(String mergeOrderDate) {
-        this.mergeOrderDate = mergeOrderDate;
+    public void setMergeDate(String mergeDate) {
+        this.mergeDate = mergeDate;
     }
 
     public String getMergeSideJson() {

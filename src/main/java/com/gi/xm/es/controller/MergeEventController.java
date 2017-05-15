@@ -63,7 +63,7 @@ public class MergeEventController {
         }
         //股权占比
         if (ListUtil.isNotEmpty(mergeEvent.getEquityRates())) {
-            queryBuilder.must(QueryBuilders.termsQuery("equityRateRange", mergeEvent.getEquityRates()));
+            queryBuilder.must(QueryBuilders.termsQuery("equityrateRange", mergeEvent.getEquityRates()));
         }
         //按币种
         if (ListUtil.isNotEmpty(mergeEvent.getCurrencyTypes())) {
