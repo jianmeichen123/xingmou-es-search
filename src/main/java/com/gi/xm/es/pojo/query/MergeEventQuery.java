@@ -22,7 +22,7 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private String  industrySubName;
 
-    private String district;
+    private String districtSubName;
 
     private String mergeType;
 
@@ -76,12 +76,12 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.mergeType = mergeType;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getDistrictSubName() {
+        return districtSubName;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setDistrictSubName(String districtSubName) {
+        this.districtSubName = districtSubName;
     }
 
     public List<String> getIndustryIds() {
