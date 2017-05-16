@@ -2,7 +2,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_investfirms -d '{
   "mappings" : {
     "investfirms": {
       "properties": {
-        "id":{
+        "orgId":{
            "type": "long"
        },
        "code":{
@@ -29,7 +29,7 @@ curl -XPUT 10.9.130.135:9200/ctdn_investfirms -d '{
         "capitalType":{
             "type":"keyword"
         },
-        "currencyTitle":{
+        "currencyType":{
             "type": "keyword"
         },
         "logo":{

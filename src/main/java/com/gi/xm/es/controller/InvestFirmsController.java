@@ -71,12 +71,12 @@ public class InvestFirmsController {
             queryBuilder.should(QueryBuilders.termsQuery("districtSubId",investFirmsQuery.getDistrictSubIds()));
         }
         //按资本类型
-        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypes())){
-            queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypes()));
-        }
-        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencys())){
-            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
-        }
+//        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypes())){
+//            queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypes()));
+//        }
+//        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencys())){
+//            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
+//        }
         if(StringUtils.isEmpty(investFirmsQuery.getOrgName())){
             queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
         }
@@ -88,7 +88,7 @@ public class InvestFirmsController {
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
 
-        if(StringUtils.isEmpty(investFirmsQuery.getOrderBy())){
+        if(!StringUtils.isEmpty(investFirmsQuery.getOrderBy())){
             sb.addSort(investFirmsQuery.getOrderBy(), SortOrder.fromString(investFirmsQuery.getOrder()));
         }else {
             sb.addSort("newestInvestDate", SortOrder.DESC);

@@ -47,8 +47,8 @@ public class Mysql2ES {
     public static void main(String args[]) {
         //importProjects();
        //importInvestEvent();
-        importMergeEvent();
-        //importInvestfirms();
+        //importMergeEvent();
+        importInvestfirms();
     }
     /**
      *  项目
@@ -84,10 +84,11 @@ public class Mysql2ES {
      *  投资机构
      */
     public static void importInvestfirms(){
-            String sql = "select orgId,code,focusDomain,investStage,orgType,districtId,districtSubId,capitalType,currencyType,logo,orgName,"+
-                    "investTotal,totalRatio,investAmountNum,investAmountStr,amountRatio,investProj,newestInvestDate "+
-                    "from app.app_org_info where orgId > ? and orgId <= ?";
-            excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
+        deleteIndexData("ctdn_investfirms","investfirms");
+        String sql = "select orgId,code,focusDomain,investStage,orgType,districtId,districtSubId,capitalType,currencyType,logo,orgName,"+
+                "investTotal,totalRatio,investAmountNum,investAmountStr,amountRatio,investProj,newestInvestDate "+
+                "from app.app_org_info where orgId > ? and orgId <= ?";
+        excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
     }
 
     /**
