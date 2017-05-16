@@ -14,17 +14,7 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private Long sourceId;
 
-    private String focusDomain;
-
-    private String investStage;
-
-    private String orgType;
-
-    private String capitalType;
-
-    private String currencyTitle;
-
-    private String logo;
+    private String logoSmall;
 
     private String orgName;
 
@@ -38,21 +28,15 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private Integer amountRatio;
 
-    private String investProj;
+    private String investProjJson;
 
     private List<String> industryIds;
-
-    private List<String> investStages;
-
-    private List<String> orgTypes;
 
     private List<Long> districtIds;
 
     private List<Long> districtSubIds;
 
-    private List<String> capitalTypes;
-
-    private List<String> currencys;
+    private List<String> investRounds;
 
     private String order;
 
@@ -74,52 +58,20 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
         this.sourceId = sourceId;
     }
 
-    public String getFocusDomain() {
-        return focusDomain;
+    public String getLogoSmall() {
+        return logoSmall;
     }
 
-    public void setFocusDomain(String focusDomain) {
-        this.focusDomain = focusDomain;
+    public void setLogoSmall(String logoSmall) {
+        this.logoSmall = logoSmall;
     }
 
-    public String getInvestStage() {
-        return investStage;
+    public String getInvestProjJson() {
+        return investProjJson;
     }
 
-    public void setInvestStage(String investStage) {
-        this.investStage = investStage;
-    }
-
-    public String getOrgType() {
-        return orgType;
-    }
-
-    public void setOrgType(String orgType) {
-        this.orgType = orgType;
-    }
-
-    public String getCapitalType() {
-        return capitalType;
-    }
-
-    public void setCapitalType(String capitalType) {
-        this.capitalType = capitalType;
-    }
-
-    public String getCurrencyTitle() {
-        return currencyTitle;
-    }
-
-    public void setCurrencyTitle(String currencyTitle) {
-        this.currencyTitle = currencyTitle;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setInvestProjJson(String investProjJson) {
+        this.investProjJson = investProjJson;
     }
 
     public String getOrgName() {
@@ -170,54 +122,6 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
         this.amountRatio = amountRatio;
     }
 
-    public String getInvestProj() {
-        return investProj;
-    }
-
-    public void setInvestProj(String investProj) {
-        this.investProj = investProj;
-    }
-
-    public List<String> getIndustryIds() {
-        return industryIds;
-    }
-
-    public void setIndustryIds(List<String> industryIds) {
-        this.industryIds = industryIds;
-    }
-
-    public List<String> getInvestStages() {
-        return investStages;
-    }
-
-    public void setInvestStages(List<String> investStages) {
-        this.investStages = investStages;
-    }
-
-    public List<String> getOrgTypes() {
-        return orgTypes;
-    }
-
-    public void setOrgTypes(List<String> orgTypes) {
-        this.orgTypes = orgTypes;
-    }
-
-    public List<String> getCapitalTypes() {
-        return capitalTypes;
-    }
-
-    public void setCapitalTypes(List<String> capitalTypes) {
-        this.capitalTypes = capitalTypes;
-    }
-
-    public List<String> getCurrencys() {
-        return currencys;
-    }
-
-    public void setCurrencys(List<String> currencys) {
-        this.currencys = currencys;
-    }
-
     public List<Long> getDistrictIds() {
         return districtIds;
     }
@@ -248,5 +152,21 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public List<String> getIndustryIds() {
+        return industryIds;
+    }
+
+    public void setIndustryIds(List<String> industryIds) {
+        this.industryIds = industryIds;
+    }
+
+    public List<String> getInvestRounds() {
+        return investRounds;
+    }
+
+    public void setInvestRounds(List<String> investRounds) {
+        this.investRounds = investRounds;
     }
 }

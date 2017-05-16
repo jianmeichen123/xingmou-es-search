@@ -56,13 +56,13 @@ public class InvestFirmsController {
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",investFirmsQuery.getIndustryIds()));
         }
         //按投资阶段
-        if(ListUtil.isNotEmpty(investFirmsQuery.getInvestStages())){
-            queryBuilder.must(QueryBuilders.termsQuery("investStage",investFirmsQuery.getInvestStages()));
-        }
+//        if(ListUtil.isNotEmpty(investFirmsQuery.getInvestStages())){
+//            queryBuilder.must(QueryBuilders.termsQuery("investStage",investFirmsQuery.getInvestStages()));
+//        }
         //按机构类型
-        if(ListUtil.isNotEmpty(investFirmsQuery.getOrgTypes())){
-            queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypes()));
-        }
+//        if(ListUtil.isNotEmpty(investFirmsQuery.getOrgTypes())){
+//            queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypes()));
+//        }
         //按地区
         if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())){
             queryBuilder.should(QueryBuilders.termsQuery("districtId",investFirmsQuery.getDistrictIds()));
