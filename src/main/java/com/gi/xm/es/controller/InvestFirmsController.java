@@ -64,6 +64,10 @@ public class InvestFirmsController {
 //            queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypes()));
 //        }
         //按地区
+        if(ListUtil.isNotEmpty(investFirmsQuery.getInvestRounds())){
+            queryBuilder.should(QueryBuilders.termsQuery("investRounds",investFirmsQuery.getInvestRounds()));
+        }
+        //按地区
         if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())){
             queryBuilder.should(QueryBuilders.termsQuery("districtId",investFirmsQuery.getDistrictIds()));
         }

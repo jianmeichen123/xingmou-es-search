@@ -218,6 +218,16 @@ public class Mysql2ES {
                         }
                         map.put("industryIds", industryIds);
                     }
+                    if(tabelName.equals("app_org_info")){
+                        List<String> investRounds = new ArrayList<String>();
+                        if(map.get("investStage") != null){
+                            String[] ls = map.get("investStage").toString().split(",");
+                            for (String id : ls) {
+                                investRounds.add(id);
+                            }
+                            map.put("investRounds", investRounds);
+                        }
+                    }
                     if (map.size() > 0) {
                         queues.add(JSON.toJSONString(map));
                     }
