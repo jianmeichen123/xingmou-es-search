@@ -60,12 +60,16 @@ public class InvestEventController {
         }
         //按title
         if(!StringUtils.isEmpty(investEvent.getCompany())){
-            queryBuilder.should(QueryBuilders.wildcardQuery("company","*"+investEvent.getCompany()+"*"));
-            queryBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
+
+            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
+            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+investEvent.getCompany()+"*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
             //设置高亮
             HighlightBuilder ch = new HighlightBuilder().field("company").field("investSideJson");
             sb.highlighter(ch);
-            queryBuilder.minimumNumberShouldMatch(1);
+            shoudBuilder.minimumNumberShouldMatch(1);
+
+            queryBuilder.must(shoudBuilder);
         }
         //按round
         if(ListUtil.isNotEmpty(investEvent.getInvestRounds())){
@@ -84,13 +88,16 @@ public class InvestEventController {
         }
 
         //按地区
-        if (ListUtil.isNotEmpty(investEvent.getDistrictIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtId", investEvent.getDistrictIds()));
-            queryBuilder.minimumNumberShouldMatch(1);
-        }
-        if (ListUtil.isNotEmpty(investEvent.getDistrictSubIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", investEvent.getDistrictSubIds()));
-            queryBuilder.minimumNumberShouldMatch(1);
+        if (ListUtil.isNotEmpty(investEvent.getDistrictIds())&&ListUtil.isNotEmpty(investEvent.getDistrictSubIds())) {
+            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
+            shoudBuilder.should(QueryBuilders.termsQuery("districtId", investEvent.getDistrictIds()));
+            shoudBuilder.should(QueryBuilders.termsQuery("districtSubId", investEvent.getDistrictSubIds()));
+            shoudBuilder.minimumNumberShouldMatch(1);
+            queryBuilder.must(shoudBuilder);
+        }else if (ListUtil.isNotEmpty(investEvent.getDistrictIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtId", investEvent.getDistrictIds()));
+        }else if (ListUtil.isNotEmpty(investEvent.getDistrictSubIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", investEvent.getDistrictSubIds()));
         }
 
         if(ListUtil.isNotEmpty(investEvent.getCurrencyTypes())){
@@ -107,8 +114,7 @@ public class InvestEventController {
         //求总数
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
-        sb.setFrom(pageNum);
-        sb.setSize(pageSize);
+        sb.setFrom(pageNum*pageSize).setSize(pageSize);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

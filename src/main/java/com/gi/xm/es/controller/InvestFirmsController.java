@@ -70,15 +70,17 @@ public class InvestFirmsController {
             queryBuilder.must(QueryBuilders.termsQuery("investRounds",investFirmsQuery.getInvestRounds()));
         }
         //按地区
-        if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtId", investFirmsQuery.getDistrictIds()));
-            queryBuilder.minimumNumberShouldMatch(1);
+        if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())&&ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())) {
+            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
+            shoudBuilder.should(QueryBuilders.termsQuery("districtId", investFirmsQuery.getDistrictIds()));
+            shoudBuilder.should(QueryBuilders.termsQuery("districtSubId", investFirmsQuery.getDistrictSubIds()));
+            shoudBuilder.minimumNumberShouldMatch(1);
+            queryBuilder.must(shoudBuilder);
+        }else if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtId", investFirmsQuery.getDistrictIds()));
+        }else if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", investFirmsQuery.getDistrictSubIds()));
         }
-        if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", investFirmsQuery.getDistrictSubIds()));
-            queryBuilder.minimumNumberShouldMatch(1);
-        }
-
         //按资本类型
 //        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypes())){
 //            queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypes()));
@@ -105,8 +107,7 @@ public class InvestFirmsController {
         }else {
             sb.addSort("newestInvestDate", SortOrder.DESC);
         }
-        sb.setFrom(pageNum);
-        sb.setSize(pageSize);
+        sb.setFrom(pageNum*pageSize).setSize(pageSize);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

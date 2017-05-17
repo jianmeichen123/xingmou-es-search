@@ -73,7 +73,7 @@ public class MergeEventController {
 
             HighlightBuilder ch = new HighlightBuilder().field("projTitle").field("mergeSideJson");
             sb.highlighter(ch);
-            queryBuilder.minimumNumberShouldMatch(1);
+            shoudBuilder.minimumNumberShouldMatch(1);
         }
         //股权占比
         if (ListUtil.isNotEmpty(mergeEvent.getEquityRates())) {
@@ -117,8 +117,7 @@ public class MergeEventController {
         } else {
             sb.addSort("mergeDate", SortOrder.DESC);
         }
-        sb.setFrom(pageNum);
-        sb.setSize(pageSize);
+        sb.setFrom(pageNum*pageSize).setSize(pageSize);
         //返回响应
         SearchResponse response = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

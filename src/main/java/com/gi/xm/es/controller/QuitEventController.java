@@ -99,8 +99,7 @@ public class QuitEventController {
         }else {
             sb.addSort("quitDate", SortOrder.DESC);
         }
-        sb.setFrom(pageNum);
-        sb.setSize(pageSize);
+        sb.setFrom(pageNum*pageSize).setSize(pageSize);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

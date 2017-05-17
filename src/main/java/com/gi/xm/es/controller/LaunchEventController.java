@@ -99,8 +99,7 @@ public class LaunchEventController {
         //求总数
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
-        sb.setFrom(pageNum);
-        sb.setSize(pageSize);
+        sb.setFrom(pageNum*pageSize).setSize(pageSize);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

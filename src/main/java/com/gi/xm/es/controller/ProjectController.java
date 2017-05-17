@@ -82,15 +82,17 @@ public class ProjectController {
             queryBuilder.must(QueryBuilders.termsQuery("latestFinanceRound", project.getRounds()));
         }
         //按地区
-        if (ListUtil.isNotEmpty(project.getDistrictIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
-            queryBuilder.minimumNumberShouldMatch(1);
+        if (ListUtil.isNotEmpty(project.getDistrictIds())&&ListUtil.isNotEmpty(project.getDistrictSubIds())) {
+            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
+            shoudBuilder.should(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
+            shoudBuilder.should(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+            shoudBuilder.minimumNumberShouldMatch(1);
+            queryBuilder.must(shoudBuilder);
+        }else if (ListUtil.isNotEmpty(project.getDistrictIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
+        }else if (ListUtil.isNotEmpty(project.getDistrictSubIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
         }
-        if (ListUtil.isNotEmpty(project.getDistrictSubIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
-            queryBuilder.minimumNumberShouldMatch(1);
-        }
-
         sb.setQuery(queryBuilder);
         //求总数
         SearchResponse res = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
@@ -102,8 +104,7 @@ public class ProjectController {
             sb.addSort("loadDate", SortOrder.DESC);
         }
         //设置分页参数和请求参数
-        sb.setFrom(pageNum);
-        sb.setSize(pageSize);
+        sb.setFrom(pageNum*pageSize).setSize(pageSize);
         //返回响应
         SearchResponse response = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();
