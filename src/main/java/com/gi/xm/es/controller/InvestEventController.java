@@ -62,8 +62,8 @@ public class InvestEventController {
         if(!StringUtils.isEmpty(investEvent.getCompany())){
 
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+investEvent.getCompany()+"*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+investEvent.getCompany().trim()+"*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany().trim()+"*"));
             //设置高亮
             HighlightBuilder ch = new HighlightBuilder().field("company").field("investSideJson");
             sb.highlighter(ch);

@@ -64,8 +64,8 @@ public class MergeEventController {
 
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
 
-            shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle() + "*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle().trim() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle().trim() + "*"));
 
             queryBuilder.must(shoudBuilder);
 
