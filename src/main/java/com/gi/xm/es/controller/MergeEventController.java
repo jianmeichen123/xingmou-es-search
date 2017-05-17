@@ -15,6 +15,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class MergeEventController {
         Result ret = new Result();
         Integer pageSize = mergeEvent.getPageSize();
         Integer pageNum = mergeEvent.getPageNo();
+        SearchRequestBuilder sb = client.prepareSearch(INDEX);
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按行业
         if (ListUtil.isNotEmpty(mergeEvent.getIndustryIds())) {
@@ -60,6 +62,10 @@ public class MergeEventController {
         if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
             queryBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle() + "*"));
             queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
+            //设置高亮
+            HighlightBuilder ch = new HighlightBuilder().field("*");
+            sb.highlighter(ch);
+            queryBuilder.minimumNumberShouldMatch(1);
         }
         //股权占比
         if (ListUtil.isNotEmpty(mergeEvent.getEquityRates())) {
@@ -93,7 +99,6 @@ public class MergeEventController {
             queryBuilder.must(QueryBuilders.termsQuery("currencyType", mergeEvent.getCurrencyTypes()));
         }
         //设置分页参数和请求参数
-        SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
         //求总数
         SearchResponse res = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
@@ -123,10 +128,12 @@ public class MergeEventController {
                     Field field = entity.getClass().getDeclaredField(key);
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
-                    //获得搜索关键字
-                    String rep = "<comp>" + entity.getProjTitle() + "</comp>";
-                    //替换
-                    field.set(entity, value.replaceAll(entity.getProjTitle(), rep));
+                    //获得搜索关键字  加高亮标签
+                    if(key.equals("company")){
+                        field.set(entity, value.replaceAll(mergeEvent.getProjTitle(), "<comp>"+mergeEvent.getProjTitle()+"</comp>"));;
+                    }else{
+                        field.set(entity, value.replaceAll(mergeEvent.getProjTitle(), "<firm>"+mergeEvent.getProjTitle()+"</firm>"));
+                    }
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     return errorRet;

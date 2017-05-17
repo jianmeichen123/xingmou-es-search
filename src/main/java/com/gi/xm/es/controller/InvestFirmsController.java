@@ -14,6 +14,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class InvestFirmsController {
         Integer pageSize = investFirmsQuery.getPageSize();
         Integer pageNum = investFirmsQuery.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        SearchRequestBuilder sb = client.prepareSearch(INDEX);
         //按行业
         if(ListUtil.isNotEmpty(investFirmsQuery.getIndustryIds())){
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",investFirmsQuery.getIndustryIds()));
@@ -86,10 +88,13 @@ public class InvestFirmsController {
 //        }
         if(!StringUtils.isEmpty(investFirmsQuery.getOrgName())){
             queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
+            //设置高亮
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            highlightBuilder.field("orgName");
+            sb.highlighter(highlightBuilder);
         }
 
         //设置分页参数和请求参数
-        SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
         //求总数
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
@@ -120,9 +125,9 @@ public class InvestFirmsController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<firm>"+entity.getOrgName()+"</firm>";
+                    String rep = "<firm>"+investFirmsQuery.getOrgName()+"</firm>";
                     //替换
-                    field.set(entity, value.replaceAll(entity.getOrgName(),rep));
+                    field.set(entity, value.replaceAll(investFirmsQuery.getOrgName(),rep));
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     return errorRet;
