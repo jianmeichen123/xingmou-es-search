@@ -86,7 +86,7 @@ public class Mysql2ES {
     public static void importInvestfirms(){
         deleteIndexData("ctdn_investfirms","investfirms");
         String sql = "select orgId,code,orgType,districtId,districtSubId,capitalType,currencyType,logoSmall,orgName,"+
-                "investTotal,totalRatio,investStage,investAmountNum,investAmountStr,amountRatio,investProjJson,newestInvestDate "+
+                "investTotal,totalRatio,industryIds,investStage,investAmountNum,investAmountStr,amountRatio,investProjJson,newestInvestDate "+
                 "from app.app_org_info where orgId > ? and orgId <= ?";
         excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
     }

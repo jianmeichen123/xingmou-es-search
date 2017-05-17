@@ -63,7 +63,7 @@ public class MergeEventController {
             queryBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle() + "*"));
             queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
             //设置高亮
-            HighlightBuilder ch = new HighlightBuilder().field("*");
+            HighlightBuilder ch = new HighlightBuilder().field("projTitle").field("mergeSideJson");
             sb.highlighter(ch);
             queryBuilder.minimumNumberShouldMatch(1);
         }
@@ -129,7 +129,7 @@ public class MergeEventController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字  加高亮标签
-                    if(key.equals("company")){
+                    if(key.equals("projTitle")){
                         field.set(entity, value.replaceAll(mergeEvent.getProjTitle(), "<comp>"+mergeEvent.getProjTitle()+"</comp>"));;
                     }else{
                         field.set(entity, value.replaceAll(mergeEvent.getProjTitle(), "<firm>"+mergeEvent.getProjTitle()+"</firm>"));

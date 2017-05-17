@@ -63,7 +63,7 @@ public class InvestEventController {
             queryBuilder.should(QueryBuilders.wildcardQuery("company","*"+investEvent.getCompany()+"*"));
             queryBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
             //设置高亮
-            HighlightBuilder ch = new HighlightBuilder().field("*");
+            HighlightBuilder ch = new HighlightBuilder().field("company").field("investSideJson");
             sb.highlighter(ch);
             queryBuilder.minimumNumberShouldMatch(1);
         }
