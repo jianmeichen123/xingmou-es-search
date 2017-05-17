@@ -63,7 +63,7 @@ public class InvestFirmsController {
 //        if(ListUtil.isNotEmpty(investFirmsQuery.getOrgTypes())){
 //            queryBuilder.must(QueryBuilders.termsQuery("orgType",investFirmsQuery.getOrgTypes()));
 //        }
-        //按轮次z
+        //按轮次
         if(ListUtil.isNotEmpty(investFirmsQuery.getInvestRounds())){
             queryBuilder.must(QueryBuilders.termsQuery("investRounds",investFirmsQuery.getInvestRounds()));
         }
@@ -81,7 +81,7 @@ public class InvestFirmsController {
 //        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencys())){
 //            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
 //        }
-        if(StringUtils.isEmpty(investFirmsQuery.getOrgName())){
+        if(!StringUtils.isEmpty(investFirmsQuery.getOrgName())){
             queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
         }
 
