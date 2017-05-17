@@ -78,12 +78,15 @@ public class InvestEventController {
         }
 
         //按地区
-        if(ListUtil.isNotEmpty(investEvent.getDistrictIds())){
-            queryBuilder.should(QueryBuilders.termsQuery("districtId",investEvent.getDistrictIds()));
+        if (ListUtil.isNotEmpty(investEvent.getDistrictIds())) {
+            queryBuilder.should(QueryBuilders.termsQuery("districtId", investEvent.getDistrictIds()));
+            queryBuilder.minimumNumberShouldMatch(1);
         }
-        if(ListUtil.isNotEmpty(investEvent.getDistrictSubIds())){
-            queryBuilder.should(QueryBuilders.termsQuery("districtSubId",investEvent.getDistrictSubIds()));
+        if (ListUtil.isNotEmpty(investEvent.getDistrictSubIds())) {
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", investEvent.getDistrictSubIds()));
+            queryBuilder.minimumNumberShouldMatch(1);
         }
+
         if(ListUtil.isNotEmpty(investEvent.getCurrencyTypes())){
             queryBuilder.must(QueryBuilders.termsQuery("currencyType",investEvent.getCurrencyTypes()));
         }

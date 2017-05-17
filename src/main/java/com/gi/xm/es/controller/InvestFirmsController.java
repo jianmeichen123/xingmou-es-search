@@ -68,12 +68,15 @@ public class InvestFirmsController {
             queryBuilder.must(QueryBuilders.termsQuery("investRounds",investFirmsQuery.getInvestRounds()));
         }
         //按地区
-        if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())){
-            queryBuilder.should(QueryBuilders.termsQuery("districtId",investFirmsQuery.getDistrictIds()));
+        if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())) {
+            queryBuilder.should(QueryBuilders.termsQuery("districtId", investFirmsQuery.getDistrictIds()));
+            queryBuilder.minimumNumberShouldMatch(1);
         }
-        if(ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())){
-            queryBuilder.should(QueryBuilders.termsQuery("districtSubId",investFirmsQuery.getDistrictSubIds()));
+        if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())) {
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", investFirmsQuery.getDistrictSubIds()));
+            queryBuilder.minimumNumberShouldMatch(1);
         }
+
         //按资本类型
 //        if(ListUtil.isNotEmpty(investFirmsQuery.getCapitalTypes())){
 //            queryBuilder.must(QueryBuilders.termsQuery("capitalType",investFirmsQuery.getCapitalTypes()));

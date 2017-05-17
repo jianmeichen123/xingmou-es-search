@@ -83,12 +83,14 @@ public class ProjectController {
         }
         //按地区
         if (ListUtil.isNotEmpty(project.getDistrictIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
-
+            queryBuilder.should(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
+            queryBuilder.minimumNumberShouldMatch(1);
         }
         if (ListUtil.isNotEmpty(project.getDistrictSubIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+            queryBuilder.minimumNumberShouldMatch(1);
         }
+
         sb.setQuery(queryBuilder);
         //求总数
         SearchResponse res = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
