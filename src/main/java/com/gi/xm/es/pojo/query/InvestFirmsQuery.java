@@ -30,6 +30,12 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private String investProjJson;
 
+    private String investStage;
+
+    private Long districtId;
+
+    private Long districtSubId;
+
     private List<String> industryIds;
 
     private List<Long> districtIds;
@@ -168,5 +174,29 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     public void setInvestRounds(List<String> investRounds) {
         this.investRounds = investRounds;
+    }
+
+    public String getInvestStage() {
+        return investStage;
+    }
+
+    public void setInvestStage(String investStage) {
+        this.investStage = investStage;
+    }
+
+    public Long getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
+    }
+
+    public Long getDistrictSubId() {
+        return districtSubId;
+    }
+
+    public void setDistrictSubId(Long districtSubId) {
+        this.districtSubId = districtSubId;
     }
 }
