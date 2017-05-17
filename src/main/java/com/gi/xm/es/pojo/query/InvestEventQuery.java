@@ -40,7 +40,7 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private String investSideJson;
 
-    private List<String> industrys;
+    private List<Long> industryIds;
 
     private List<String> investRounds;
 
@@ -58,12 +58,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private String orderBy;
 
-    private String bodyRole;
-
-    private String sourceType;
-
-    private String isClick;
-
     public void setCode(String code) {
         this.code = code;
     }
@@ -79,15 +73,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
     public Long getSourceId() {
         return sourceId;
     }
-
-    public List<String> getIndustrys() {
-        return industrys;
-    }
-
-    public void setIndustrys(List<String> industrys) {
-        this.industrys = industrys;
-    }
-
     public List<String> getInvestRounds() {
         return investRounds;
     }
@@ -224,30 +209,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
         this.investSideJson = investSideJson;
     }
 
-    public String getBodyRole() {
-        return bodyRole;
-    }
-
-    public void setBodyRole(String bodyRole) {
-        this.bodyRole = bodyRole;
-    }
-
-    public String getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
-    }
-
-    public String getIsClick() {
-        return isClick;
-    }
-
-    public void setIsClick(String isClick) {
-        this.isClick = isClick;
-    }
-
     public Long getId() {
         return id;
     }
@@ -278,5 +239,13 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     public void setIndustrySubName(String industrySubName) {
         this.industrySubName = industrySubName;
+    }
+
+    public List<Long> getIndustryIds() {
+        return industryIds;
+    }
+
+    public void setIndustryIds(List<Long> industryIds) {
+        this.industryIds = industryIds;
     }
 }

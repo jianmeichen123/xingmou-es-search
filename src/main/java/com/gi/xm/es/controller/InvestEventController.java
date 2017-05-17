@@ -53,8 +53,8 @@ public class InvestEventController {
         Integer pageNum = investEvent.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按行业
-        if(ListUtil.isNotEmpty(investEvent.getIndustrys())){
-            queryBuilder.must(QueryBuilders.termsQuery("industryIds",investEvent.getIndustrys()));
+        if(ListUtil.isNotEmpty(investEvent.getIndustryIds())){
+            queryBuilder.must(QueryBuilders.termsQuery("industryIds",investEvent.getIndustryIds()));
         }
         //按title
         if(!StringUtils.isEmpty(investEvent.getCompany())){
