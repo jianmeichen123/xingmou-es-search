@@ -11,6 +11,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -60,9 +61,16 @@ public class MergeEventController {
         }
         //按title
         if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
-            queryBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle() + "*"));
-            queryBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
+
+            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
+
+            shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
+
+            queryBuilder.must(shoudBuilder);
+
             //设置高亮
+
             HighlightBuilder ch = new HighlightBuilder().field("projTitle").field("mergeSideJson");
             sb.highlighter(ch);
             queryBuilder.minimumNumberShouldMatch(1);
