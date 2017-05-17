@@ -83,10 +83,11 @@ public class ProjectController {
         }
         //按地区
         if (ListUtil.isNotEmpty(project.getDistrictIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
+            queryBuilder.must(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
+
         }
         if (ListUtil.isNotEmpty(project.getDistrictSubIds())) {
-            queryBuilder.should(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
         }
         sb.setQuery(queryBuilder);
         //求总数
