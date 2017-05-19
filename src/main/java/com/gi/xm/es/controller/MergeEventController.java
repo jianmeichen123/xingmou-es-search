@@ -61,11 +61,11 @@ public class MergeEventController {
         }
         //按title
         if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
-
+            mergeEvent.setProjTitle(mergeEvent.getProjTitle().trim());
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
 
-            shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" + mergeEvent.getProjTitle().trim() + "*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle().trim() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" +  mergeEvent.getProjTitle() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
 
             queryBuilder.must(shoudBuilder);
 

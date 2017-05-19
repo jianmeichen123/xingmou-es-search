@@ -89,7 +89,8 @@ public class InvestFirmsController {
 //            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
 //        }
         if(!StringUtils.isEmpty(investFirmsQuery.getOrgName())){
-            queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName().trim()+"*"));
+            investFirmsQuery.setOrgName(investFirmsQuery.getOrgName().trim());
+            queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
             highlightBuilder.field("orgName");

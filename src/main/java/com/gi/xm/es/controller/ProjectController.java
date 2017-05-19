@@ -60,7 +60,8 @@ public class ProjectController {
         }
         //按title
         if (!StringUtils.isEmpty(project.getProjTitle())) {
-            queryBuilder.must(QueryBuilders.wildcardQuery("projTitle", "*" + project.getProjTitle().trim() + "*"));
+            project.setProjTitle(project.getProjTitle().trim());
+            queryBuilder.must(QueryBuilders.wildcardQuery("projTitle", "*" + project.getProjTitle() + "*"));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
             highlightBuilder.field("projTitle");
