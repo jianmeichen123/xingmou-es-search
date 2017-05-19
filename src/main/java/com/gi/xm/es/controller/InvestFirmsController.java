@@ -67,7 +67,7 @@ public class InvestFirmsController {
 //        }
         //按轮次
         if(ListUtil.isNotEmpty(investFirmsQuery.getInvestRounds())){
-            queryBuilder.must(QueryBuilders.termsQuery("investRounds",investFirmsQuery.getInvestRounds()));
+            queryBuilder.must(QueryBuilders.termsQuery("orgRounds",investFirmsQuery.getInvestRounds()));
         }
         //按地区
         if (ListUtil.isNotEmpty(investFirmsQuery.getDistrictIds())&&ListUtil.isNotEmpty(investFirmsQuery.getDistrictSubIds())) {
