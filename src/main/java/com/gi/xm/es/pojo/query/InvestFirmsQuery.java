@@ -42,7 +42,7 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private List<Long> districtSubIds;
 
-    private List<String> investRounds;
+    private List<String> orgRounds;
 
     private String order;
 
@@ -168,14 +168,6 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
         this.industryIds = industryIds;
     }
 
-    public List<String> getInvestRounds() {
-        return investRounds;
-    }
-
-    public void setInvestRounds(List<String> investRounds) {
-        this.investRounds = investRounds;
-    }
-
     public String getInvestStage() {
         return investStage;
     }
@@ -198,5 +190,13 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     public void setDistrictSubId(Long districtSubId) {
         this.districtSubId = districtSubId;
+    }
+
+    public List<String> getOrgRounds() {
+        return orgRounds;
+    }
+
+    public void setOrgRounds(List<String> orgRounds) {
+        this.orgRounds = orgRounds;
     }
 }
