@@ -1,5 +1,6 @@
 //package com.gi.xm.es.index;
 //
+//import com.gi.xm.es.util.Mysql2ES;
 //import org.springframework.scheduling.annotation.Scheduled;
 //import org.springframework.stereotype.Component;
 //
@@ -13,36 +14,34 @@
 //@Component
 //public class Monitor {
 //    private static ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
-//    private static final String HOST = "10.9.130.135";
-//    private static final String CLUSTERNAME = "elasticsearch";
 //    @Scheduled(cron="0 0 23  * * ?")
 //    public static void createprojectIndex(){
-//        ProjectIndex projectIndex = new ProjectIndex(HOST,CLUSTERNAME);
-//        projectIndex.importProjects();
+//        //ProjectIndex projectIndex = new ProjectIndex(HOST,CLUSTERNAME);
+//        Mysql2ES.importProjects();
 //    }
 //    @Scheduled(cron="0 0 23 * * ?")
 //    public static void createInvestfirmIndex(){
-//        InvestfirmsIndex investfirmIndex = new InvestfirmsIndex(HOST,CLUSTERNAME);
-//        investfirmIndex.importInvestfirms();
+//       // InvestfirmsIndex investfirmIndex = new InvestfirmsIndex(HOST,CLUSTERNAME);
+//        Mysql2ES.importInvestfirms();
 //    }
 //    @Scheduled(cron="0 0 23  * * ?")
 //    public static void createInvestEventIndex(){
-//        InvestEventIndex investorIndex = new InvestEventIndex(HOST,CLUSTERNAME);
-//        investorIndex.importInvestEvent();
+//        //InvestEventIndex investorIndex = new InvestEventIndex(HOST,CLUSTERNAME);
+//        Mysql2ES.importInvestEvent();
 //    }
 //    @Scheduled(cron="0 0 23 * * ?")
 //    public static void createMergeEventIndex(){
-//        MergeEventIndex mergeEventIndex = new MergeEventIndex(HOST,CLUSTERNAME);
-//        mergeEventIndex.importMergeEvent();
+//        //MergeEventIndex mergeEventIndex = new MergeEventIndex(HOST,CLUSTERNAME);
+//        Mysql2ES.importMergeEvent();
 //    }
 //    @Scheduled(cron="0 0 23 * * ?")
 //    public static void createQuitEventIndex(){
-//        QuitEventIndex quitEventIndex = new QuitEventIndex(HOST,CLUSTERNAME);
-//        quitEventIndex.importQuitEvent();
+//        //QuitEventIndex quitEventIndex = new QuitEventIndex(HOST,CLUSTERNAME);
+//        //Mysql2ES.importQuitEvent();
 //    }
 //    @Scheduled(cron="0 0 23 * * ?")
 //    public static void createLanuchEventIndex(){
-//        LaunchEventIndex quitEventIndex = new LaunchEventIndex(HOST,CLUSTERNAME);
-//        quitEventIndex.importLaunchIndex();
+//        //LaunchEventIndex quitEventIndex = new LaunchEventIndex(HOST,CLUSTERNAME);
+//        //Mysql2ES.importLaunchIndex();
 //    }
 //}
