@@ -88,12 +88,12 @@ public class InvestFirmsController {
 //        if(ListUtil.isNotEmpty(investFirmsQuery.getCurrencys())){
 //            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
 //        }
-        if(!StringUtils.isEmpty(investFirmsQuery.getOrgName())){
-            investFirmsQuery.setOrgName(investFirmsQuery.getOrgName().trim());
-            queryBuilder.must(QueryBuilders.wildcardQuery("orgName","*"+investFirmsQuery.getOrgName()+"*"));
+        if(!StringUtils.isEmpty(investFirmsQuery.getInvestOrg())){
+            investFirmsQuery.setInvestOrg(investFirmsQuery.getInvestOrg().trim());
+            queryBuilder.must(QueryBuilders.wildcardQuery("investOrg","*"+investFirmsQuery.getInvestOrg()+"*"));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.field("orgName");
+            highlightBuilder.field("investOrg");
             sb.highlighter(highlightBuilder);
         }
 
@@ -127,9 +127,9 @@ public class InvestFirmsController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<firm>"+investFirmsQuery.getOrgName()+"</firm>";
+                    String rep = "<firm>"+investFirmsQuery.getInvestOrg()+"</firm>";
                     //替换
-                    field.set(entity, value.replaceAll(investFirmsQuery.getOrgName(),rep));
+                    field.set(entity, value.replaceAll(investFirmsQuery.getInvestOrg(),rep));
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     return errorRet;
