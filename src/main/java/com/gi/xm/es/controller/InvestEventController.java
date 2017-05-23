@@ -114,7 +114,11 @@ public class InvestEventController {
         //求总数
         SearchResponse res =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long  totalHit = res.getHits().totalHits();
-        sb.setFrom(pageNum*pageSize).setSize(pageSize);
+        Integer tmp = pageSize;
+        if (pageSize*pageNum+pageSize > SEARCHLIMIT){
+            tmp =  SEARCHLIMIT - pageSize*pageNum;
+        }
+        sb.setFrom(pageNum*pageSize).setSize(tmp);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

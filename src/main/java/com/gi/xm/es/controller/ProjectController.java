@@ -105,7 +105,11 @@ public class ProjectController {
             sb.addSort("loadDate", SortOrder.DESC);
         }
         //设置分页参数和请求参数
-        sb.setFrom(pageNum*pageSize).setSize(pageSize);
+        Integer tmp = pageSize;
+        if (pageSize*pageNum+pageSize > SEARCHLIMIT){
+            tmp =  SEARCHLIMIT - pageSize*pageNum;
+        }
+        sb.setFrom(pageNum*pageSize).setSize(tmp);
         //返回响应
         SearchResponse response = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();

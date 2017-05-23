@@ -31,7 +31,6 @@ public class Pagination implements Serializable {
 
     private Map<String, Long> map;
 
-    private int maxTotal  = 2000;
     public Map<String, Long> getMap() {
         return map;
     }
@@ -41,9 +40,9 @@ public class Pagination implements Serializable {
     }
 
     public Integer getPageSize() {
-        if (pageSize*pageNo+pageSize > maxTotal){
-            return maxTotal - pageSize*pageNo;
-        }
+//        if (pageSize*pageNo+pageSize > maxTotal){
+//            return maxTotal - pageSize*pageNo;
+//        }
         return pageSize;
     }
 

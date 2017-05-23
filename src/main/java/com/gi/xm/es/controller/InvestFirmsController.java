@@ -108,7 +108,11 @@ public class InvestFirmsController {
         }else {
             sb.addSort("newestInvestDate", SortOrder.DESC);
         }
-        sb.setFrom(pageNum*pageSize).setSize(pageSize);
+        Integer tmp = pageSize;
+        if (pageSize*pageNum+pageSize > SEARCHLIMIT){
+            tmp =  SEARCHLIMIT - pageSize*pageNum;
+        }
+        sb.setFrom(pageNum*pageSize).setSize(tmp);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();
