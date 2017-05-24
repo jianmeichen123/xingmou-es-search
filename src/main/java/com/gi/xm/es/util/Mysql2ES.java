@@ -47,8 +47,8 @@ public class Mysql2ES {
     public static void main(String args[]) {
        //importProjects();
         //importInvestEvent();
-       // importMergeEvent();
-        importInvestfirms();
+        importMergeEvent();
+       // importInvestfirms();
     }
     /**
      *  项目
