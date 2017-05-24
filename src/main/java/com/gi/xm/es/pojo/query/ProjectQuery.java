@@ -20,8 +20,6 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     private String industrySubName;
 
-    private String industryGrandSonName;
-
     private String latestFinanceRound;
 
     private String districtSubName;
@@ -194,15 +192,6 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
-    }
-
-
-    public void setIndustryGrandSonName(String industryGrandSonName) {
-        this.industryGrandSonName = industryGrandSonName;
-    }
-
-    public String getIndustryGrandSonName() {
-        return industryGrandSonName;
     }
 
     public void setIndustryIds(List<String> industryIds) {
