@@ -29,16 +29,6 @@ public class Pagination implements Serializable {
 
     private List<Object> records;
 
-    private Map<String, Long> map;
-
-    public Map<String, Long> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String, Long> map) {
-        this.map = map;
-    }
-
     public Integer getPageSize() {
         return pageSize;
     }
