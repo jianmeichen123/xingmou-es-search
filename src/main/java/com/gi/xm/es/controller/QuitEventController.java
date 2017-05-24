@@ -1,10 +1,10 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.query.QuitEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -99,7 +99,11 @@ public class QuitEventController {
         }else {
             sb.addSort("quitDate", SortOrder.DESC);
         }
-        sb.setFrom(pageNum*pageSize).setSize(pageSize);
+        Integer tmp = pageSize;
+        if (pageSize*pageNum+pageSize > SEARCHLIMIT){
+            tmp =  SEARCHLIMIT - pageSize*pageNum;
+        }
+        sb.setFrom(pageNum*pageSize).setSize(tmp);
         //返回响应
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();
