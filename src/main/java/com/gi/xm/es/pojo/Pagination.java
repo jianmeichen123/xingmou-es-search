@@ -40,9 +40,6 @@ public class Pagination implements Serializable {
     }
 
     public Integer getPageSize() {
-//        if (pageSize*pageNo+pageSize > maxTotal){
-//            return maxTotal - pageSize*pageNo;
-//        }
         return pageSize;
     }
 

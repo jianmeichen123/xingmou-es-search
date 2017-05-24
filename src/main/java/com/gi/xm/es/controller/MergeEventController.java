@@ -1,17 +1,16 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.query.MergeEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;

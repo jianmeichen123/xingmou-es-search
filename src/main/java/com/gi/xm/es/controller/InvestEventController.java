@@ -1,10 +1,10 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.query.InvestEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.view.Result;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;

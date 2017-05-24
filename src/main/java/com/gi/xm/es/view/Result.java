@@ -1,6 +1,9 @@
 package com.gi.xm.es.view;
 
+import com.gi.xm.es.pojo.Pagination;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by zcy on 16-11-24.
