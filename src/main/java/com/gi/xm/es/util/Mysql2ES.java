@@ -45,10 +45,10 @@ public class Mysql2ES {
         }
     }
     public static void main(String args[]) {
-       //importProjects();
+      // importProjects();
         //importInvestEvent();
-        importMergeEvent();
-       // importInvestfirms();
+       //importMergeEvent();
+       importInvestfirms();
     }
     /**
      *  项目
@@ -217,6 +217,9 @@ public class Mysql2ES {
                             industryIds.add(id);
                         }
                         map.put("industryIds", industryIds);
+                    }
+                    if(map.containsKey("latestFinanceRound")&&map.get("latestFinanceRound")==null){
+                        map.put("latestFinanceRound","尚未获投");
                     }
                     if(tabelName.equals("app_org_info")){
                         List<String> investRounds = new ArrayList<String>();
