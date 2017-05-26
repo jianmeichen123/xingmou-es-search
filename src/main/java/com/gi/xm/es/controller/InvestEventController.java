@@ -61,10 +61,10 @@ public class InvestEventController {
         }
         //按title
         if(!StringUtils.isEmpty(investEvent.getCompany())){
-            investEvent.setCompany(investEvent.getCompany().trim());
+            investEvent.setCompany(QueryParserBase.escape(investEvent.getCompany().trim()));
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+ QueryParserBase.escape(investEvent.getCompany())+"*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+QueryParserBase.escape(investEvent.getCompany())+"*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+ investEvent.getCompany()+"*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
             //设置高亮
             HighlightBuilder ch = new HighlightBuilder().field("company").field("investSideJson");
             sb.highlighter(ch);
