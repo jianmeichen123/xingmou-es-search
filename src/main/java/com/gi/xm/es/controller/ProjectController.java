@@ -6,6 +6,7 @@ import com.gi.xm.es.pojo.query.ProjectQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Result;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -60,7 +61,7 @@ public class ProjectController {
         }
         //按title
         if (!StringUtils.isEmpty(project.getProjTitle())) {
-            project.setProjTitle(project.getProjTitle().trim());
+            project.setProjTitle(QueryParserBase.escape(project.getProjTitle().trim()));
             queryBuilder.must(QueryBuilders.wildcardQuery("projTitle", "*" + project.getProjTitle() + "*"));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
