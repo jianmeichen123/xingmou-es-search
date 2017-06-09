@@ -58,25 +58,25 @@ public class LaunchEventController {
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",launchEventQuery.getIndustryIds()));
         }
         //按title
-        if(!StringUtils.isEmpty(launchEventQuery.getCompany())){
-            queryBuilder.should(QueryBuilders.wildcardQuery("company","*"+launchEventQuery.getCompany()+"*"));
+        if(!StringUtils.isEmpty(launchEventQuery.getProjTitle())){
+            queryBuilder.should(QueryBuilders.wildcardQuery("projTitle","*"+launchEventQuery.getProjTitle()+"*"));
         }
-        //按type
-        if(!StringUtils.isEmpty(launchEventQuery.getType())){
-            queryBuilder.must(QueryBuilders.termQuery("type",launchEventQuery.getType()));
-        }
-        //按交易所
-        if(ListUtil.isNotEmpty(launchEventQuery.getStockExchanges())){
-            queryBuilder.must(QueryBuilders.termsQuery("stockExchange",launchEventQuery.getStockExchanges()));
-        }
-        //按转让方式
-        if(ListUtil.isNotEmpty(launchEventQuery.getTransferTypes())){
-            queryBuilder.must(QueryBuilders.termsQuery("transferType",launchEventQuery.getTransferTypes()));
-        }
-        //市场封层
-        if(ListUtil.isNotEmpty(launchEventQuery.getMarketLayers())){
-            queryBuilder.must(QueryBuilders.termsQuery("marketLayer",launchEventQuery.getMarketLayers()));
-        }
+//        //按type
+//        if(!StringUtils.isEmpty(launchEventQuery.getType())){
+//            queryBuilder.must(QueryBuilders.termQuery("type",launchEventQuery.getType()));
+//        }
+//        //按交易所
+//        if(ListUtil.isNotEmpty(launchEventQuery.getStockExchanges())){
+//            queryBuilder.must(QueryBuilders.termsQuery("stockExchange",launchEventQuery.getStockExchanges()));
+//        }
+//        //按转让方式
+//        if(ListUtil.isNotEmpty(launchEventQuery.getTransferTypes())){
+//            queryBuilder.must(QueryBuilders.termsQuery("transferType",launchEventQuery.getTransferTypes()));
+//        }
+//        //市场封层
+//        if(ListUtil.isNotEmpty(launchEventQuery.getMarketLayers())){
+//            queryBuilder.must(QueryBuilders.termsQuery("marketLayer",launchEventQuery.getMarketLayers()));
+//        }
         //按createDate
         if(!StringUtils.isEmpty(launchEventQuery.getStartDate()) || !StringUtils.isEmpty(launchEventQuery.getEndDate())){
             RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("listedDate");
@@ -110,7 +110,7 @@ public class LaunchEventController {
         List<Object> entityList = new ArrayList<>();
         for (SearchHit it : shs) {
             Map source = it.getSource();
-            InvestEventQuery entity =  JSON.parseObject(JSON.toJSONString(source),InvestEventQuery.class);
+            LaunchEventQuery entity =  JSON.parseObject(JSON.toJSONString(source),LaunchEventQuery.class);
             //获取对应的高亮域
             Map<String, HighlightField> result = it.highlightFields();
             //从设定的高亮域中取得指定域
@@ -122,9 +122,9 @@ public class LaunchEventController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<comp'>"+entity.getCompany()+"</comp>";
+                    String rep = "<comp'>"+entity.getProjTitle()+"</comp>";
                     //替换
-                    field.set(entity, value.replaceAll(entity.getCompany(),rep));
+                    field.set(entity, value.replaceAll(entity.getProjTitle(),rep));
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     return errorRet;

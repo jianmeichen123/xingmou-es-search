@@ -45,10 +45,28 @@ public class Mysql2ES {
         }
     }
     public static void main(String args[]) {
-      // importProjects();
-        //importInvestEvent();
-       //importMergeEvent();
-       importInvestfirms();
+        importLaunchEvent();
+//        if(args[0] != null){
+//           String tem = args[0];
+//           switch(tem){
+//               case "0" :{
+//                   importProjects();
+//                   break;
+//               }
+//               case "1" :{
+//                   importInvestEvent();
+//                   break;
+//               }
+//               case "2":{
+//                   importMergeEvent();
+//                   break;
+//               }
+//               case "3":{
+//                   importInvestfirms();
+//                   break;
+//               }
+//           }
+//        }
     }
     /**
      *  项目
@@ -65,7 +83,7 @@ public class Mysql2ES {
      */
     public static void importInvestEvent(){
         deleteIndexData("ctdn_invest_event","invest_event");
-        String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
+        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
                     "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson "+
                     "from app.app_event_info where eventId > ? and eventId <= ?";
         excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
@@ -75,21 +93,32 @@ public class Mysql2ES {
      */
     public static void importMergeEvent(){
         deleteIndexData("ctdn_merge_event","merge_event");
-        String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
+        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
                 "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
                 "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
         excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
+    }
+    /**
+     * 上市挂牌
+     */
+    public static void importLaunchEvent(){
+        deleteIndexData("ctdn_launch_event","launch_event");
+        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,type,stockExchange,"+
+                "transferType,marketLayer,listedDate,district,logo,company as projTitle,stockCode "+
+                "from app.app_event_listed_info where eventId > ? and eventId <= ?";
+        excuteThread("ctdn_launch_event", "launch_event", sql,"app_event_listed_info");
     }
     /**
      *  投资机构
      */
     public static void importInvestfirms(){
         deleteIndexData("ctdn_investfirms","investfirms");
-        String sql = "select orgId,code,orgType,districtId,districtSubId,capitalType,currencyType,logoSmall,investOrg,"+
+        String sql = "select orgId,orgType,districtId,districtSubId,capitalType,currencyType,logoSmall,investOrg,"+
                 "investTotal,totalRatio,industryIds,investStage,investAmountNum,investAmountStr,amountRatio,investProjJson,newestInvestDate "+
                 "from app.app_org_info where orgId > ? and orgId <= ?";
         excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
     }
+
 
     /**
      *   删除重建索引
@@ -231,6 +260,32 @@ public class Mysql2ES {
                             map.put("investRounds", investRounds);
                         }
                     }
+//                    if(tabelName.equals("app_event_listed_info")){
+//                        if(map.get("type")!=null){
+//                            List<String> typeSubs = new ArrayList<String>();
+//                            if(map.get("type").equals("IPO上市")){
+//                                if(map.get("stockExchange")!=null){
+//                                    typeSubs.add(map.get("stockExchange").toString());
+//                                    map.remove("stockExchange");
+//                                }
+//                            }else if(map.get("type").equals("新三板挂牌")){
+//                                if(map.get("transferType")!=null){
+//                                    typeSubs.add(map.get("transferType").toString());
+//                                    map.remove("transferType");
+//                                }
+//                                if(map.get("marketLayer")!=null){
+//                                    typeSubs.add(map.get("marketLayer").toString());
+//                                    map.remove("marketLayer");
+//                                }
+//                            }else if(map.get("type").equals("四板挂牌")){
+//                                if(map.get("stockExchange")!=null){
+//                                    typeSubs.add(map.get("stockExchange").toString());
+//                                    map.remove("stockExchange");
+//                                }
+//                            }
+//                            map.put("typeSub",typeSubs);
+//                        }
+//                    }
                     if (map.size() > 0) {
                         queues.add(JSON.toJSONString(map));
                     }

@@ -12,11 +12,9 @@ public class InvestEventQuery extends Pagination implements Serializable {
 
     private Long id;
 
-    private String code;
-
     private Long sourceId;
 
-    private Long sourceCode;
+    private String sourceCode;
 
     private String  industryName;
 
@@ -57,14 +55,6 @@ public class InvestEventQuery extends Pagination implements Serializable {
     private String order;
 
     private String orderBy;
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
 
     public void setSourceId(Long sourceId) {
         this.sourceId = sourceId;
@@ -217,11 +207,11 @@ public class InvestEventQuery extends Pagination implements Serializable {
         this.id = id;
     }
 
-    public Long getSourceCode() {
+    public String getSourceCode() {
         return sourceCode;
     }
 
-    public void setSourceCode(Long sourceCode) {
+    public void setSourceCode(String sourceCode) {
         this.sourceCode = sourceCode;
     }
 

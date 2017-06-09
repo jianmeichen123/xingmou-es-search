@@ -2,11 +2,8 @@ curl -XPUT 10.9.130.135:9200/ctdn_launch_event -d '{
   "mappings" : {
     "launch_event": {
       "properties": {
-        "id":{
+        "eventId":{
            "type": "long"
-        },
-        "code":{
-           "type": "keyword"
         },
         "sourceId":{
            "type": "long"
@@ -26,15 +23,9 @@ curl -XPUT 10.9.130.135:9200/ctdn_launch_event -d '{
         "type":{
             "type": "keyword"
         },
-        "stockExchange":{
+        "typeSub":{
             "type": "keyword"
-        },
-        "transferType":{
-            "type": "keyword"
-        },
-        "marketLayer":{
-            "type": "keyword"
-        },
+        }
         "listedDate":{
              "type": "date"
         },
@@ -49,15 +40,6 @@ curl -XPUT 10.9.130.135:9200/ctdn_launch_event -d '{
         },
         "stockCode": {
             "type": "keyword"
-        },
-        "bodyRole":{
-            "type":"keyword"
-        },
-        "sourceType":{
-            "type":"keyword"
-        },
-        "isClick":{
-            "type":"keyword"
         }
       }
     }

@@ -10,13 +10,13 @@ import java.util.List;
  */
 public class LaunchEventQuery extends Pagination implements Serializable {
 
-    private Long id;
+    private Long eventId;
 
     private String code;
 
     private Long sourceId;
 
-    private Long sourceCode;
+    private String sourceCode;
 
     private String  industryName;
 
@@ -36,7 +36,7 @@ public class LaunchEventQuery extends Pagination implements Serializable {
 
     private String logo;
 
-    private String company;
+    private String projTitle;
 
     private String stockCode;
 
@@ -206,12 +206,12 @@ public class LaunchEventQuery extends Pagination implements Serializable {
         this.logo = logo;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public String getProjTitle() {
+        return projTitle;
     }
 
-    public String getCompany() {
-        return company;
+    public void setProjTitle(String projTitle) {
+        this.projTitle = projTitle;
     }
 
     public String getBodyRole() {
@@ -238,19 +238,19 @@ public class LaunchEventQuery extends Pagination implements Serializable {
         this.isClick = isClick;
     }
 
-    public Long getId() {
-        return id;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
-    public Long getSourceCode() {
+    public String getSourceCode() {
         return sourceCode;
     }
 
-    public void setSourceCode(Long sourceCode) {
+    public void setSourceCode(String sourceCode) {
         this.sourceCode = sourceCode;
     }
 

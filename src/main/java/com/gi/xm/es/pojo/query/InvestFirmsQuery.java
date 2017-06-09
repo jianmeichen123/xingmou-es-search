@@ -10,9 +10,7 @@ import java.util.List;
  */
 public class InvestFirmsQuery extends Pagination implements Serializable {
 
-    private String code;
-
-    private Long sourceId;
+    private Long orgId;
 
     private String logoSmall;
 
@@ -48,20 +46,12 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private String orderBy;
 
-    public String getCode() {
-        return code;
+    public Long getOrgId() {
+        return orgId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
+    public void setOrgId(Long orgId) {
+        this.orgId = orgId;
     }
 
     public String getLogoSmall() {

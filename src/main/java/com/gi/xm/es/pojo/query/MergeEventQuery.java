@@ -12,8 +12,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private Long id;
 
-    private String code;
-
     private Long sourceId;
 
     private Long sourceCode;
@@ -122,14 +120,6 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public String getStartDate() {
         return startDate;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public Long getSourceId() {
