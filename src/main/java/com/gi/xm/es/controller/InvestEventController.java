@@ -6,6 +6,7 @@ import com.gi.xm.es.pojo.query.InvestEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Result;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -60,9 +61,9 @@ public class InvestEventController {
         }
         //按title
         if(!StringUtils.isEmpty(investEvent.getCompany())){
-            investEvent.setCompany(investEvent.getCompany().trim());
+            investEvent.setCompany(QueryParserBase.escape(investEvent.getCompany().trim()));
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+investEvent.getCompany()+"*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+ investEvent.getCompany()+"*"));
             shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
             //设置高亮
             HighlightBuilder ch = new HighlightBuilder().field("company").field("investSideJson");

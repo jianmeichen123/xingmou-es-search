@@ -6,6 +6,7 @@ import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.view.Result;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -89,7 +90,7 @@ public class InvestFirmsController {
 //            queryBuilder.must(QueryBuilders.termsQuery("currencyType",investFirmsQuery.getCurrencys()));
 //        }
         if(!StringUtils.isEmpty(investFirmsQuery.getInvestOrg())){
-            investFirmsQuery.setInvestOrg(investFirmsQuery.getInvestOrg().trim());
+            investFirmsQuery.setInvestOrg(QueryParserBase.escape((investFirmsQuery.getInvestOrg().trim())));
             queryBuilder.must(QueryBuilders.wildcardQuery("investOrg","*"+investFirmsQuery.getInvestOrg()+"*"));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();

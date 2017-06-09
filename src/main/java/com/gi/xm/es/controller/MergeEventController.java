@@ -6,6 +6,7 @@ import com.gi.xm.es.pojo.query.MergeEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Result;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -60,7 +61,8 @@ public class MergeEventController {
         }
         //按title
         if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
-            mergeEvent.setProjTitle(mergeEvent.getProjTitle().trim());
+            mergeEvent.setProjTitle(QueryParserBase.escape(mergeEvent.getProjTitle().trim()));
+
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
 
             shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" +  mergeEvent.getProjTitle() + "*"));
