@@ -48,7 +48,8 @@ public class Mysql2ES {
       // importProjects();
         //importInvestEvent();
        //importMergeEvent();
-       importInvestfirms();
+       //importInvestfirms();
+        importLaunchEvent();
     }
     /**
      *  项目
@@ -79,6 +80,16 @@ public class Mysql2ES {
                 "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
                 "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
         excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
+    }
+    /**
+     * 上市挂牌
+     */
+    public static void importLaunchEvent(){
+        deleteIndexData("ctdn_launch_event","launch_event");
+        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,type,stockExchange,"+
+                "transferType,marketLayer,listedDate,districtSubName,logo as logoSmall,company as projTitle,stockCode "+
+                "from app.app_event_listed_info where eventId > ? and eventId <= ?";
+        excuteThread("ctdn_launch_event", "launch_event", sql,"app_event_listed_info");
     }
     /**
      *  投资机构

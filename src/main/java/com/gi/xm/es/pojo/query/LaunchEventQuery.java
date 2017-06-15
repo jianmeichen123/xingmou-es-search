@@ -34,7 +34,7 @@ public class LaunchEventQuery extends Pagination implements Serializable {
 
     private String district;
 
-    private String logo;
+    private String logoSmall;
 
     private String projTitle;
 
@@ -198,12 +198,12 @@ public class LaunchEventQuery extends Pagination implements Serializable {
         this.district = district;
     }
 
-    public String getLogo() {
-        return logo;
+    public String getLogoSmall() {
+        return logoSmall;
     }
 
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setLogoSmall(String logoSmall) {
+        this.logoSmall = logoSmall;
     }
 
     public String getProjTitle() {
