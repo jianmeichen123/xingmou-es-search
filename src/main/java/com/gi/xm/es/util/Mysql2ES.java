@@ -45,21 +45,21 @@ public class Mysql2ES {
         }
     }
     public static void main(String args[]) {
-      // importProjects();
+        importProjects();
         //importInvestEvent();
        //importMergeEvent();
        //importInvestfirms();
-        importLaunchEvent();
+        //importLaunchEvent();
     }
     /**
      *  项目
      */
     public static void importProjects(){
         deleteIndexData("ctdn_project","project");
-        String sql = "select projectId,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
+        String sql = "select id,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
                 "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
-                "from app.app_project_info where projectId > ? and projectId <= ?";
-        excuteThread("ctdn_project","project",sql,"app_project_info");
+                "from app.app_project_list where id > ? and id <= ?";
+        excuteThread("ctdn_project","project",sql,"app_project_list");
     }
     /**
      * 投资事件

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class MergeEventQuery extends Pagination implements Serializable {
 
-    private Long id;
+    private Long eventId;
 
     private Long sourceId;
 
@@ -218,12 +218,12 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.isClick = isClick;
     }
 
-    public Long getId() {
-        return id;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
     public Long getSourceCode() {

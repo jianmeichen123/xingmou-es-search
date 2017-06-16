@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class QuitEventQuery extends Pagination implements Serializable {
 
-    private Long id;
+    private Long eventId;
 
     private String code;
 
@@ -248,12 +248,12 @@ public class QuitEventQuery extends Pagination implements Serializable {
         this.quitTypes = quitTypes;
     }
 
-    public Long getId() {
-        return id;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
     public Long getSourceCode() {
