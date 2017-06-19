@@ -14,7 +14,7 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private Long sourceId;
 
-    private Long sourceCode;
+    private String sourceCode;
 
     private String  industryName;
 
@@ -226,11 +226,11 @@ public class MergeEventQuery extends Pagination implements Serializable {
         this.eventId = eventId;
     }
 
-    public Long getSourceCode() {
+    public String getSourceCode() {
         return sourceCode;
     }
 
-    public void setSourceCode(Long sourceCode) {
+    public void setSourceCode(String sourceCode) {
         this.sourceCode = sourceCode;
     }
 

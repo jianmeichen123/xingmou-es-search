@@ -45,10 +45,10 @@ public class Mysql2ES {
         }
     }
     public static void main(String args[]) {
-        importProjects();
+        //importProjects();
         //importInvestEvent();
-       //importMergeEvent();
-       //importInvestfirms();
+         importMergeEvent();
+        //importInvestfirms();
         //importLaunchEvent();
     }
     /**
@@ -66,7 +66,7 @@ public class Mysql2ES {
      */
     public static void importInvestEvent(){
         deleteIndexData("ctdn_invest_event","invest_event");
-        String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
+        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
                     "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson "+
                     "from app.app_event_info where eventId > ? and eventId <= ?";
         excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
