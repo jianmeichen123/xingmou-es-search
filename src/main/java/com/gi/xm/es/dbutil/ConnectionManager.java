@@ -19,8 +19,8 @@ public final class ConnectionManager {
         ds = new ComboPooledDataSource();
         ds.setDriverClass("com.mysql.cj.jdbc.Driver");
         ds.setJdbcUrl("jdbc:mysql://10.9.130.142/app?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true");
-        ds.setUser("root");
-        ds.setPassword("IhNtPz6E2V34");
+        ds.setUser("app");
+        ds.setPassword("QADZg(3I2rL-HLr7");
   
         //初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 initialPoolSize  
         ds.setInitialPoolSize(10);

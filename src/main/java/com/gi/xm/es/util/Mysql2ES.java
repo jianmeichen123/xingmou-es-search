@@ -45,9 +45,34 @@ public class Mysql2ES {
         }
     }
     public static void main(String args[]) {
+        if(args[0] != null){
+            String tem = args[0];
+            switch(tem){
+                case "0" :{
+                    importProjects();
+                    break;
+                }
+                case "1" :{
+                    importInvestEvent();
+                    break;
+                }
+                case "2":{
+                    importMergeEvent();
+                    break;
+                }
+                case "3":{
+                    importInvestfirms();
+                    break;
+                }
+                case "4":{
+                    importLaunchEvent();
+                    break;
+                }
+            }
+        }
         //importProjects();
         //importInvestEvent();
-         importMergeEvent();
+        // importMergeEvent();
         //importInvestfirms();
         //importLaunchEvent();
     }
