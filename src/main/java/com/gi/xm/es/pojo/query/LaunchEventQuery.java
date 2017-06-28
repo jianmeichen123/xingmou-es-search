@@ -32,7 +32,7 @@ public class LaunchEventQuery extends Pagination implements Serializable {
 
     private String listedDate;
 
-    private String district;
+    private String districtSubName;
 
     private String logoSmall;
 
@@ -190,12 +190,12 @@ public class LaunchEventQuery extends Pagination implements Serializable {
         return orderBy;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getDistrictSubName() {
+        return districtSubName;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setDistrictSubName(String districtSubName) {
+        this.districtSubName = districtSubName;
     }
 
     public String getLogoSmall() {
