@@ -61,7 +61,7 @@ public class LaunchEventController {
         if(!StringUtils.isEmpty(launchEventQuery.getProjTitle())){
             queryBuilder.should(QueryBuilders.wildcardQuery("projTitle","*"+launchEventQuery.getProjTitle()+"*"));
         }
-        if(!StringUtils.isEmpty(launchEventQuery.getTypes())){
+        if(ListUtil.isNotEmpty(launchEventQuery.getTypes())){
             queryBuilder.must(QueryBuilders.termsQuery("type",launchEventQuery.getTypes()));
         }
 //        //按type
