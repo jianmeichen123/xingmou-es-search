@@ -44,7 +44,7 @@ public class LaunchEventQuery extends Pagination implements Serializable {
 
     private List<String> stockExchanges;
 
-    private List<String> transferTypes;
+    private List<String> types;
 
     private List<String> marketLayers;
 
@@ -142,12 +142,12 @@ public class LaunchEventQuery extends Pagination implements Serializable {
         this.stockExchanges = stockExchanges;
     }
 
-    public List<String> getTransferTypes() {
-        return transferTypes;
+    public List<String> getTypes() {
+        return types;
     }
 
-    public void setTransferTypes(List<String> transferTypes) {
-        this.transferTypes = transferTypes;
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
     public List<String> getMarketLayers() {

@@ -80,64 +80,73 @@ public class Mysql2ES {
      *  项目
      */
     public static void importProjects(){
-        deleteIndexData("ctdn_project","project");
-        String sql = "select id,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
-                "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
-                "from app.app_project_list where id > ? and id <= ?";
-        excuteThread("ctdn_project","project",sql,"app_project_list");
+        if(deleteIndexData("ctdn_project","project")){
+            String sql = "select id,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
+                    "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
+                    "from app.app_project_list where id > ? and id <= ?";
+            excuteThread("ctdn_project","project",sql,"app_project_list");
+        }
     }
     /**
      * 投资事件
      */
     public static void importInvestEvent(){
-        deleteIndexData("ctdn_invest_event","invest_event");
-        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
+        if(deleteIndexData("ctdn_invest_event","invest_event")){
+            String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
                     "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson "+
                     "from app.app_event_info where eventId > ? and eventId <= ?";
-        excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
+            excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
+        }
     }
     /**
      *  并购事件
      */
     public static void importMergeEvent(){
-        deleteIndexData("ctdn_merge_event","merge_event");
-        String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
-                "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
-                "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
-        excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
+
+        if(deleteIndexData("ctdn_merge_event","merge_event")){
+            String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
+                    "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
+                    "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
+            excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
+        }
     }
     /**
      * 上市挂牌
      */
     public static void importLaunchEvent(){
-        deleteIndexData("ctdn_launch_event","launch_event");
-        String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,type,stockExchange,"+
-                "transferType,marketLayer,listedDate,districtSubName,logo as logoSmall,company as projTitle,stockCode "+
-                "from app.app_event_listed_info where eventId > ? and eventId <= ?";
-        excuteThread("ctdn_launch_event", "launch_event", sql,"app_event_listed_info");
+        if(deleteIndexData("ctdn_launch_event","launch_event")){
+            String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,type,stockExchange,"+
+                    "transferType,marketLayer,listedDate,districtSubName,logo as logoSmall,company as projTitle,stockCode "+
+                    "from app.app_event_listed_info where eventId > ? and eventId <= ?";
+            excuteThread("ctdn_launch_event", "launch_event", sql,"app_event_listed_info");
+        }
     }
     /**
      *  投资机构
      */
     public static void importInvestfirms(){
-        deleteIndexData("ctdn_investfirms","investfirms");
-        String sql = "select orgId,code,orgType,districtId,districtSubId,capitalType,currencyType,logoSmall,investOrg,"+
-                "investTotal,totalRatio,industryIds,investStage,investAmountNum,investAmountStr,amountRatio,investProjJson,newestInvestDate "+
-                "from app.app_org_info where orgId > ? and orgId <= ?";
-        excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
+        if(deleteIndexData("ctdn_investfirms","investfirms")){
+            String sql = "select orgId,code,orgType,districtId,districtSubId,capitalType,currencyType,logoSmall,investOrg,"+
+                    "investTotal,totalRatio,industryIds,investStage,investAmountNum,investAmountStr,amountRatio,investProjJson,newestInvestDate "+
+                    "from app.app_org_info where orgId > ? and orgId <= ?";
+            excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
+        }
     }
 
     /**
      *   删除重建索引
      */
-    private static void deleteIndexData(String index,String type) {
+    private static boolean deleteIndexData(String index,String type) {
+        boolean flag = false;
         try {
             Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
             String command = "curl -XPUT "+HOST+":9200/"+index +" -d "+ESEXEC.ADDINDEX.get(index).toJSONString();
             Runtime.getRuntime().exec(command);
+            flag = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return flag;
     }
     public static void excuteThread(String index,String type,String sql,String tableName){
         createIndex(index,type);
