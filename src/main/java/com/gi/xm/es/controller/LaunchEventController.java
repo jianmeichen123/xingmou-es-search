@@ -16,6 +16,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
@@ -53,6 +54,7 @@ public class LaunchEventController {
         Integer pageSize = launchEventQuery.getPageSize();
         Integer pageNum = launchEventQuery.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        SearchRequestBuilder sb = client.prepareSearch(INDEX);
         //按行业
         if(ListUtil.isNotEmpty(launchEventQuery.getIndustryIds())){
             queryBuilder.must(QueryBuilders.termsQuery("industryIds",launchEventQuery.getIndustryIds()));
@@ -60,6 +62,10 @@ public class LaunchEventController {
         //按title
         if(!StringUtils.isEmpty(launchEventQuery.getProjTitle())){
             queryBuilder.should(QueryBuilders.wildcardQuery("projTitle","*"+launchEventQuery.getProjTitle()+"*"));
+            //设置高亮
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            highlightBuilder.field("projTitle");
+            sb.highlighter(highlightBuilder);
         }
         if(ListUtil.isNotEmpty(launchEventQuery.getTypes())){
             queryBuilder.must(QueryBuilders.termsQuery("type",launchEventQuery.getTypes()));
@@ -92,7 +98,6 @@ public class LaunchEventController {
             queryBuilder.filter(rangeq);
         }
         //设置分页参数和请求参数
-        SearchRequestBuilder sb = client.prepareSearch(INDEX);
         sb.setQuery(queryBuilder);
         if(!StringUtils.isEmpty(launchEventQuery.getOrderBy())){
             sb.addSort(launchEventQuery.getOrderBy(), SortOrder.fromString(launchEventQuery.getOrder()));
@@ -125,9 +130,9 @@ public class LaunchEventController {
                     field.setAccessible(true);
                     String value = field.get(entity).toString();
                     //获得搜索关键字
-                    String rep = "<comp'>"+entity.getProjTitle()+"</comp>";
+                    String rep = "<comp>"+launchEventQuery.getProjTitle()+"</comp>";
                     //替换
-                    field.set(entity, value.replaceAll(entity.getProjTitle(),rep));
+                    field.set(entity, value.replaceAll(launchEventQuery.getProjTitle(),rep));
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     return errorRet;
