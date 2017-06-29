@@ -23,14 +23,14 @@ public final class ConnectionManager {
         ds.setPassword("QADZg(3I2rL-HLr7");
   
         //初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 initialPoolSize  
-        ds.setInitialPoolSize(10);
-        //连接池中保留的最大连接数。Default:  15 maxPoolSize  
-        ds.setMaxPoolSize(20);
-          
-        //// 连接池中保留的最小连接数。  
-        ds.setMinPoolSize(5);
-          
-        //当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 acquireIncrement    
+        //ds.setInitialPoolSize(10);
+        //连接池中保留的最大连接数。Default:  15 maxPoolSize
+        //ds.setMaxPoolSize(5);
+
+        //// 连接池中保留的最小连接数。
+        // ds.setMinPoolSize(5);
+
+        //当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 acquireIncrement
         //ds.setAcquireIncrement(1);
   
         //每60秒检查所有连接池中的空闲连接。Default: 0  idleConnectionTestPeriod  
@@ -58,7 +58,7 @@ public final class ConnectionManager {
         //获取连接失败将会引起所有等待连接池来获取连接的线程抛出异常。但是数据源仍有效  
         //保留，并在下次调用getConnection()的时候继续尝试获取连接。如果设为true，那么在尝试  
         //获取连接失败后该数据源将申明已断开并永久关闭。Default: false  breakAfterAcquireFailure  
-        ds.setBreakAfterAcquireFailure(true);  
+        ds.setBreakAfterAcquireFailure(true);
          //
         //
          

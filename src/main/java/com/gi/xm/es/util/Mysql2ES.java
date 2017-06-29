@@ -139,11 +139,19 @@ public class Mysql2ES {
     private static boolean deleteIndexData(String index,String type) {
         boolean flag = false;
         try {
-            Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
-            String command = "curl -XPUT "+HOST+":9200/"+index +" -d "+ESEXEC.ADDINDEX.get(index).toJSONString();
-            Runtime.getRuntime().exec(command);
-            flag = true;
+            Process p1 = Runtime.getRuntime().exec("curl -XDELETE "+HOST+":9200/"+index);
+            if(p1.waitFor() == 0){
+                LOG.info(index +":已删除");
+                String command = "curl -XPUT "+HOST+":9200/"+index +" -d "+ESEXEC.ADDINDEX.get(index).toJSONString();
+                Process p2 = Runtime.getRuntime().exec(command);
+                if(p2.waitFor() == 0){
+                    flag = true;
+                    LOG.info(index +":已重建");
+                }
+            }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return flag;
@@ -279,11 +287,11 @@ public class Mysql2ES {
                     if (map.size() > 0) {
                         queues.add(JSON.toJSONString(map));
                     }
-//                    if(perCount % 5000 == 0){
-//                       int number = queues.size();
-//                        int j = number/5000;
-//                        Thread.sleep(j*1000);
-//                    }
+                    if(perCount % 5000 == 0){
+                       int number = queues.size();
+                        int j = number/5000;
+                        Thread.sleep(j*1000);
+                    }
                 }
                 tmp += perCount;
                 from += limit;
