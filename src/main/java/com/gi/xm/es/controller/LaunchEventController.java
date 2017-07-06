@@ -7,6 +7,7 @@ import com.gi.xm.es.pojo.query.LaunchEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Result;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -61,7 +62,8 @@ public class LaunchEventController {
         }
         //按title
         if(!StringUtils.isEmpty(launchEventQuery.getProjTitle())){
-            queryBuilder.should(QueryBuilders.wildcardQuery("projTitle","*"+launchEventQuery.getProjTitle()+"*"));
+            launchEventQuery.setProjTitle(QueryParserBase.escape(launchEventQuery.getProjTitle().trim()));
+            queryBuilder.must(QueryBuilders.wildcardQuery("projTitle", "*" + launchEventQuery.getProjTitle() + "*"));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
             highlightBuilder.field("projTitle");
