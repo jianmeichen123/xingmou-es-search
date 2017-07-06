@@ -1,6 +1,7 @@
 package com.gi.xm.es.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.dbutil.ConnectionManager;
 import org.elasticsearch.action.bulk.*;
 import org.elasticsearch.action.index.IndexRequest;
@@ -44,37 +45,38 @@ public class Mysql2ES {
             e.printStackTrace();
         }
     }
+
     public static void main(String args[]) {
-        if(args[0] != null){
-            String tem = args[0];
-            switch(tem){
-                case "0" :{
-                    importProjects();
-                    break;
-                }
-                case "1" :{
-                    importInvestEvent();
-                    break;
-                }
-                case "2":{
-                    importMergeEvent();
-                    break;
-                }
-                case "3":{
-                    importInvestfirms();
-                    break;
-                }
-                case "4":{
-                    importLaunchEvent();
-                    break;
-                }
-            }
-        }
-        //importProjects();
+//        if(args[0] != null){
+//            String tem = args[0];
+//            switch(tem){
+//                case "0" :{
+//                    importProjects();
+//                    break;
+//                }
+//                case "1" :{
+//                    importInvestEvent();
+//                    break;
+//                }
+//                case "2":{
+//                    importMergeEvent();
+//                    break;
+//                }
+//                case "3":{
+//                    importInvestfirms();
+//                    break;
+//                }
+//                case "4":{
+//                    importLaunchEvent();
+//                    break;
+//                }
+//            }
+//        }
+       // importProjects();
         //importInvestEvent();
-        // importMergeEvent();
-        //importInvestfirms();
-        //importLaunchEvent();
+        importMergeEvent();
+       // importInvestfirms();
+       // importLaunchEvent();
     }
     /**
      *  项目
@@ -104,8 +106,8 @@ public class Mysql2ES {
     public static void importMergeEvent(){
 
         if(deleteIndexData("ctdn_merge_event","merge_event")){
-            String sql = "select eventId,code,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
-                    "mergeState,currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
+            String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
+                    "currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
                     "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
             excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
         }
@@ -126,8 +128,8 @@ public class Mysql2ES {
      */
     public static void importInvestfirms(){
         if(deleteIndexData("ctdn_investfirms","investfirms")){
-            String sql = "select orgId,code,orgType,districtId,districtSubId,capitalType,currencyType,logoSmall,investOrg,"+
-                    "investTotal,totalRatio,industryIds,investStage,investAmountNum,investAmountStr,amountRatio,investProjJson,newestInvestDate "+
+            String sql = "select orgId,districtId,districtSubId,currencyType,logoSmall,investOrg,"+
+                    "investTotal,totalRatio,industryIds,investStage,investAmountStr,amountRatio,orgProjJson,newestInvestDate "+
                     "from app.app_org_info where orgId > ? and orgId <= ?";
             excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
         }
@@ -164,7 +166,7 @@ public class Mysql2ES {
 
     public static long  createIndex( final String index,  final String type){
         final ConcurrentHashMap<String, Boolean> hashMap = new ConcurrentHashMap();
-        ExecutorService exe = Executors.newFixedThreadPool(5);
+        ExecutorService exe = Executors.newFixedThreadPool(3);
         //开多线程读队列的数据
         for(int t =0 ;t<3; t++){
             exe.execute(new Thread(new Runnable() {
@@ -271,8 +273,13 @@ public class Mysql2ES {
                         }
                         map.put("industryIds", industryIds);
                     }
-                    if(map.containsKey("latestFinanceRound")&&map.get("latestFinanceRound")==null){
-                        map.put("latestFinanceRound","尚未获投");
+                    if(map.get("investSideJson") !=null){
+                        String jsonStr = (String)map.get("investSideJson");
+                        map.put("investSideJson",JSONObject.parseObject(jsonStr).get("investSideJson"));
+                    }
+                    if(map.get("mergeSideJson") !=null){
+                        String jsonStr = (String) map.get("mergeSideJson");
+                        map.put("mergeSideJson",JSONObject.parseObject(jsonStr).get("mergeSideJson"));
                     }
                     if(tabelName.equals("app_org_info")){
                         List<String> investRounds = new ArrayList<String>();
