@@ -1,12 +1,14 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.query.MergeEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Result;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -62,19 +64,11 @@ public class MergeEventController {
         //按title
         if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
             mergeEvent.setProjTitle(QueryParserBase.escape(mergeEvent.getProjTitle().trim()));
-
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-
             shoudBuilder.should(QueryBuilders.wildcardQuery("projTitle", "*" +  mergeEvent.getProjTitle() + "*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("mergeSideJson", "*" + mergeEvent.getProjTitle() + "*"));
-
-            queryBuilder.must(shoudBuilder);
-
-            //设置高亮
-
-            HighlightBuilder ch = new HighlightBuilder().field("projTitle").field("mergeSideJson");
-            sb.highlighter(ch);
+            shoudBuilder.should(QueryBuilders.nestedQuery("mergeSideJson",QueryBuilders.wildcardQuery("mergeSideJson.title","*"+mergeEvent.getProjTitle()+"*"), ScoreMode.None));
             shoudBuilder.minimumNumberShouldMatch(1);
+            queryBuilder.must(shoudBuilder);
         }
         //股权占比
         if (ListUtil.isNotEmpty(mergeEvent.getEquityRates())) {
@@ -85,13 +79,13 @@ public class MergeEventController {
             queryBuilder.must(QueryBuilders.termsQuery("currencyType", mergeEvent.getCurrencyTypes()));
         }
         //按并购状态
-        if (ListUtil.isNotEmpty(mergeEvent.getMergeStates())) {
-            queryBuilder.must(QueryBuilders.termsQuery("mergeState", mergeEvent.getMergeStates()));
-        }
+//        if (ListUtil.isNotEmpty(mergeEvent.getMergeStates())) {
+//            queryBuilder.must(QueryBuilders.termsQuery("mergeState", mergeEvent.getMergeStates()));
+//        }
         //按并购类型
-        if (ListUtil.isNotEmpty(mergeEvent.getMergeTypes())) {
-            queryBuilder.must(QueryBuilders.termsQuery("mergeType", mergeEvent.getMergeTypes()));
-        }
+//        if (ListUtil.isNotEmpty(mergeEvent.getMergeTypes())) {
+//            queryBuilder.must(QueryBuilders.termsQuery("mergeType", mergeEvent.getMergeTypes()));
+//        }
         //按并购结束时间
         if (!StringUtils.isEmpty(mergeEvent.getStartDate()) || !StringUtils.isEmpty(mergeEvent.getEndDate())) {
             RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("mergeDate");
@@ -127,31 +121,53 @@ public class MergeEventController {
         SearchResponse response = sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();
         List<Object> entityList = new ArrayList<>();
+
         for (SearchHit it : shs) {
-            Map source = it.getSource();
-            MergeEventQuery entity = JSON.parseObject(JSON.toJSONString(source), MergeEventQuery.class);
-            //获取对应的高亮域
-            Map<String, HighlightField> result = it.highlightFields();
-            //从设定的高亮域中取得指定域
-            for (Map.Entry<String, HighlightField> entry : result.entrySet()) {
-                String key = entry.getKey();
-                try {
-                    //获得高亮字段的原值
-                    Field field = entity.getClass().getDeclaredField(key);
-                    field.setAccessible(true);
-                    String value = field.get(entity).toString();
-                    //获得搜索关键字  加高亮标签
-                    if(key.equals("projTitle")){
-                        field.set(entity, value.replaceAll(mergeEvent.getProjTitle(), "<comp>"+mergeEvent.getProjTitle()+"</comp>"));;
-                    }else{
-                        field.set(entity, value.replaceAll(mergeEvent.getProjTitle(), "<firm>"+mergeEvent.getProjTitle()+"</firm>"));
+            try {
+                Map source = it.getSource();
+                MergeEventQuery entity = JSON.parseObject(JSON.toJSONString(source), MergeEventQuery.class);
+                //获取对应的高亮域
+                Map<String, HighlightField> result = it.highlightFields();
+                //从设定的高亮域中取得指定域
+                //高亮company
+                if (!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
+                    Field field1 = entity.getClass().getDeclaredField("projTitle");
+                    field1.setAccessible(true);
+                    Object object1 = field1.get(entity);
+                    //判断是否有该属性
+                    if (object1 != null) {
+                        String value1 = object1.toString();
+                        if (value1 != null) {
+                            field1.set(entity, value1.replaceAll(mergeEvent.getProjTitle(), "<comp>" + mergeEvent.getProjTitle() + "</comp>"));
+                        }
                     }
-                } catch (Exception e) {
-                    LOG.error(e.getMessage());
-                    return errorRet;
                 }
+                //重新构造investSideJson,使之成为json,便于解析
+                Field field2 = entity.getClass().getDeclaredField("mergeSideJson");
+                field2.setAccessible(true);
+                Object object =  field2.get(entity);
+                //判断是否有该属性
+                if(object != null){
+                    String value2 = object.toString();
+                    String jsonStr = "{\"mergeSideJson\":"+value2+"}";
+                    JSONObject obj = JSONObject.parseObject(jsonStr);
+                    //高亮investSideJson
+                    if(!StringUtils.isEmpty(mergeEvent.getProjTitle())) {
+                        List<JSONObject> ls = (List<JSONObject>) obj.get("mergeSideJson");
+                        for (JSONObject json : ls) {
+                            if (json.get("title") != null) {
+                                String invstor = (String) json.get("title");
+                                json.put("title", invstor.replaceAll(mergeEvent.getProjTitle(), "<firm>" + mergeEvent.getProjTitle() + "</firm>"));
+                            }
+                        }
+                    }
+                    field2.set(entity,obj.toString());
+                }
+                entityList.add(entity);
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
+                return errorRet;
             }
-            entityList.add(entity);
         }
         Pagination page = new Pagination();
         page.setTotal(totalHit > SEARCHLIMIT ? SEARCHLIMIT : totalHit);

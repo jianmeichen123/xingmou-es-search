@@ -1,17 +1,20 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.query.InvestEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
 import com.gi.xm.es.view.Result;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -64,12 +67,8 @@ public class InvestEventController {
             investEvent.setCompany(QueryParserBase.escape(investEvent.getCompany().trim()));
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
             shoudBuilder.should(QueryBuilders.wildcardQuery("company","*"+ investEvent.getCompany()+"*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("investSideJson","*"+investEvent.getCompany()+"*"));
-            //设置高亮
-            HighlightBuilder ch = new HighlightBuilder().field("company").field("investSideJson");
-            sb.highlighter(ch);
+            shoudBuilder.should(QueryBuilders.nestedQuery("investSideJson",QueryBuilders.wildcardQuery("investSideJson.invstor","*"+investEvent.getCompany()+"*"), ScoreMode.None));
             shoudBuilder.minimumNumberShouldMatch(1);
-
             queryBuilder.must(shoudBuilder);
         }
         //按round
@@ -124,32 +123,53 @@ public class InvestEventController {
         SearchResponse response =sb.setTypes(TYPE).setSearchType(SearchType.DEFAULT).execute().actionGet();
         SearchHits shs = response.getHits();
         List<Object> entityList = new ArrayList<>();
-        for (SearchHit it : shs) {
-            Map source = it.getSource();
-            InvestEventQuery entity =  JSON.parseObject(JSON.toJSONString(source),InvestEventQuery.class);
-            //获取对应的高亮域
-            Map<String, HighlightField> result = it.highlightFields();
-            //从设定的高亮域中取得指定域
-            for (Map.Entry<String, HighlightField> entry : result.entrySet()) {
-                String key = entry.getKey();
+            for (SearchHit it : shs) {
                 try {
-                    //获得高亮字段的原值
-                    Field field = entity.getClass().getDeclaredField(key);
-                    field.setAccessible(true);
-                    String value = field.get(entity).toString();
-                    //获得搜索关键字  加高亮标签
-                    if(key.equals("company")){
-                        field.set(entity, value.replaceAll(investEvent.getCompany(), "<comp>"+investEvent.getCompany()+"</comp>"));;
-                    }else{
-                        field.set(entity, value.replaceAll(investEvent.getCompany(), "<firm>"+investEvent.getCompany()+"</firm>"));
+                    Map source = it.getSource();
+                    InvestEventQuery entity =  JSON.parseObject(JSON.toJSONString(source),InvestEventQuery.class);
+                    //高亮company
+                    if(!StringUtils.isEmpty(investEvent.getCompany())){
+                        Field field1 = entity.getClass().getDeclaredField("company");
+                        field1.setAccessible(true);
+                        Object object1 =  field1.get(entity);
+                        //判断是否有该属性
+                        if(object1!=null){
+                            String value1 = object1.toString();
+                            if(value1 !=null ){
+                                field1.set(entity, value1.replaceAll(investEvent.getCompany(), "<comp>" + investEvent.getCompany() + "</comp>"));
+                            }
+                        }
                     }
-                } catch (Exception e) {
+                    //重新构造investSideJson,使之成为json,便于解析
+                    Field field2 = entity.getClass().getDeclaredField("investSideJson");
+                    field2.setAccessible(true);
+                    Object object =  field2.get(entity);
+                    //判断是否有该属性
+                    if(object != null){
+                        String value2 = object.toString();
+                        String jsonStr = "{\"investSideJson\":"+value2+"}";
+                        JSONObject obj = JSONObject.parseObject(jsonStr);
+                        //高亮investSideJson
+                        if(!StringUtils.isEmpty(investEvent.getCompany())) {
+                            List<JSONObject> ls = (List<JSONObject>) obj.get("investSideJson");
+                            for (JSONObject json : ls) {
+                                if (json.get("invstor") != null) {
+                                    String invstor = (String) json.get("invstor");
+                                    json.put("invstor", invstor.replaceAll(investEvent.getCompany(), "<firm>" + investEvent.getCompany() + "</firm>"));
+                                }
+                            }
+                        }
+                        field2.set(entity,obj.toString());
+                    }
+                    entityList.add(entity);
+                }catch (Exception e) {
+                    e.printStackTrace();
                     LOG.error(e.getMessage());
                     return errorRet;
                 }
+
             }
-            entityList.add(entity);
-        }
+
         Pagination page = new Pagination();
         page.setTotal(totalHit>SEARCHLIMIT?SEARCHLIMIT:totalHit);
         page.setTotalhit(totalHit);
