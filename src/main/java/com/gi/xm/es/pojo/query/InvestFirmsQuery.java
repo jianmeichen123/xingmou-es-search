@@ -26,7 +26,7 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     private Integer amountRatio;
 
-    private String investProjJson;
+    private String orgProjJson;
 
     private String investStage;
 
@@ -62,12 +62,12 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
         this.logoSmall = logoSmall;
     }
 
-    public String getInvestProjJson() {
-        return investProjJson;
+    public String getOrgProjJson() {
+        return orgProjJson;
     }
 
-    public void setInvestProjJson(String investProjJson) {
-        this.investProjJson = investProjJson;
+    public void setOrgProjJson(String orgProjJson) {
+        this.orgProjJson = orgProjJson;
     }
 
     public String getInvestOrg() {

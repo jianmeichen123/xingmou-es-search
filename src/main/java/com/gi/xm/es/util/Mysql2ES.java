@@ -74,8 +74,8 @@ public class Mysql2ES {
 //        }
        // importProjects();
         //importInvestEvent();
-        importMergeEvent();
-       // importInvestfirms();
+        //importMergeEvent();
+        importInvestfirms();
        // importLaunchEvent();
     }
     /**
@@ -194,7 +194,7 @@ public class Mysql2ES {
                                     }
                                     try {
                                         //关闭,如有未提交完成的文档则等待完成，最多等待1秒钟
-                                        bulkProcessor.awaitClose(5, TimeUnit.SECONDS);
+                                        bulkProcessor.awaitClose(10, TimeUnit.SECONDS);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
