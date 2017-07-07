@@ -22,6 +22,8 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     private String districtSubName;
 
+    private String districtGrandsonName;
+
     private String mergeType;
 
     private String mergeState;
@@ -288,5 +290,13 @@ public class MergeEventQuery extends Pagination implements Serializable {
 
     public void setCurrencyTypes(List<String> currencyTypes) {
         this.currencyTypes = currencyTypes;
+    }
+
+    public String getDistrictGrandsonName() {
+        return districtGrandsonName;
+    }
+
+    public void setDistrictGrandsonName(String districtGrandsonName) {
+        this.districtGrandsonName = districtGrandsonName;
     }
 }

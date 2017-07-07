@@ -47,35 +47,35 @@ public class Mysql2ES {
     }
 
     public static void main(String args[]) {
-//        if(args[0] != null){
-//            String tem = args[0];
-//            switch(tem){
-//                case "0" :{
-//                    importProjects();
-//                    break;
-//                }
-//                case "1" :{
-//                    importInvestEvent();
-//                    break;
-//                }
-//                case "2":{
-//                    importMergeEvent();
-//                    break;
-//                }
-//                case "3":{
-//                    importInvestfirms();
-//                    break;
-//                }
-//                case "4":{
-//                    importLaunchEvent();
-//                    break;
-//                }
-//            }
-//        }
+        if(args[0] != null){
+            String tem = args[0];
+            switch(tem){
+                case "0" :{
+                    importProjects();
+                    break;
+                }
+                case "1" :{
+                    importInvestEvent();
+                    break;
+                }
+                case "2":{
+                    importMergeEvent();
+                    break;
+                }
+                case "3":{
+                    importInvestfirms();
+                    break;
+                }
+                case "4":{
+                    importLaunchEvent();
+                    break;
+                }
+            }
+        }
        // importProjects();
         //importInvestEvent();
         //importMergeEvent();
-        importInvestfirms();
+        //importInvestfirms();
        // importLaunchEvent();
     }
     /**
@@ -106,7 +106,7 @@ public class Mysql2ES {
     public static void importMergeEvent(){
 
         if(deleteIndexData("ctdn_merge_event","merge_event")){
-            String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,mergeType,"+
+            String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,districtGrandsonName,mergeType,"+
                     "currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
                     "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
             excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
