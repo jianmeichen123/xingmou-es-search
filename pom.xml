@@ -6,7 +6,7 @@
     <groupId>com.gi</groupId>  
     <artifactId>xingmou-es-search</artifactId>
     <version>1.0-SNAPSHOT</version>  
-    
+
     <parent>  
         <groupId>org.springframework.boot</groupId>  
         <artifactId>spring-boot-starter-parent</artifactId>  
