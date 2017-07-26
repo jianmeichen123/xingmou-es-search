@@ -72,7 +72,7 @@ public class Mysql2ES {
                 }
             }
         }
-       // importProjects();
+        //importProjects();
         //importInvestEvent();
         //importMergeEvent();
         //importInvestfirms();
@@ -85,7 +85,7 @@ public class Mysql2ES {
         if(deleteIndexData("ctdn_project","project")){
             String sql = "select id,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
                     "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
-                    "from app.app_project_list where id > ? and id <= ?";
+                    "from app_rc.app_project_list where id > ? and id <= ?";
             excuteThread("ctdn_project","project",sql,"app_project_list");
         }
     }
@@ -96,7 +96,7 @@ public class Mysql2ES {
         if(deleteIndexData("ctdn_invest_event","invest_event")){
             String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,round,districtId,districtSubId,"+
                     "districtSubName,logo,company,investDate,amountStr,amountNum,currencyType,investSideJson "+
-                    "from app.app_event_info where eventId > ? and eventId <= ?";
+                    "from app_rc.app_event_info where eventId > ? and eventId <= ?";
             excuteThread("ctdn_invest_event", "invest_event", sql,"app_event_info");
         }
     }
@@ -108,7 +108,7 @@ public class Mysql2ES {
         if(deleteIndexData("ctdn_merge_event","merge_event")){
             String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,districtSubName,districtGrandsonName,mergeType,"+
                     "currencyType,equityRate,equityrateRange,mergeDate,logo,projTitle,amountStr,mergeSideJson "+
-                    "from app.app_event_merger_info where eventId > ? and eventId <= ? ";
+                    "from app_rc.app_event_merger_info where eventId > ? and eventId <= ? ";
             excuteThread("ctdn_merge_event", "merge_event", sql,"app_event_merger_info");
         }
     }
@@ -119,7 +119,7 @@ public class Mysql2ES {
         if(deleteIndexData("ctdn_launch_event","launch_event")){
             String sql = "select eventId,sourceId,sourceCode,industryIds,industryName,industrySubName,type,stockExchange,"+
                     "transferType,marketLayer,listedDate,districtSubName,logo as logoSmall,company as projTitle,stockCode "+
-                    "from app.app_event_listed_info where eventId > ? and eventId <= ?";
+                    "from app_rc.app_event_listed_info where eventId > ? and eventId <= ?";
             excuteThread("ctdn_launch_event", "launch_event", sql,"app_event_listed_info");
         }
     }
@@ -130,7 +130,7 @@ public class Mysql2ES {
         if(deleteIndexData("ctdn_investfirms","investfirms")){
             String sql = "select orgId,districtId,districtSubId,currencyType,logoSmall,investOrg,"+
                     "investTotal,totalRatio,industryIds,investStage,investAmountStr,amountRatio,orgProjJson,newestInvestDate "+
-                    "from app.app_org_info where orgId > ? and orgId <= ?";
+                    "from app_rc.app_org_info where orgId > ? and orgId <= ?";
             excuteThread("ctdn_investfirms", "investfirms", sql,"app_org_info");
         }
     }
@@ -177,7 +177,7 @@ public class Mysql2ES {
                             //读取队列里的数据
                             while(true){
                                 if(!queues.isEmpty()){
-                                     String json = queues.poll();
+                                    String json = queues.poll();
                                     if(json == null) continue;
                                     bulkProcessor.add(new IndexRequest(index,type).source(json));
                                 }
@@ -188,6 +188,7 @@ public class Mysql2ES {
                                     while (hashMap.values().contains(Boolean.FALSE)) {
                                         try {
                                             Thread.currentThread().sleep(1 * 1000);
+
                                         } catch (Exception e) {
                                             e.printStackTrace(System.out);
                                         }
