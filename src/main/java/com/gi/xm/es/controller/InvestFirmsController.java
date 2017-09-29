@@ -107,7 +107,7 @@ public class InvestFirmsController {
         if(!StringUtils.isEmpty(investFirmsQuery.getOrderBy())){
             sb.addSort(investFirmsQuery.getOrderBy(), SortOrder.fromString(investFirmsQuery.getOrder()));
         }else {
-            sb.addSort("newestInvestDate", SortOrder.DESC);
+            sb.addSort("investTotal", SortOrder.DESC);
         }
         Integer tmp = pageSize;
         if (pageSize*pageNum+pageSize > SEARCHLIMIT){

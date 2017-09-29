@@ -103,7 +103,7 @@ public class ProjectController {
         if (project.getOrderBy() != null) {
             sb.addSort(project.getOrderBy(), SortOrder.fromString(project.getOrder()));
         } else {
-            sb.addSort("loadDate", SortOrder.DESC);
+            sb.addSort("showOrder", SortOrder.ASC);
         }
         //设置分页参数和请求参数
         Integer tmp = pageSize;

@@ -47,32 +47,32 @@ public class Mysql2ES {
     }
 
     public static void main(String args[]) {
-        if(args[0] != null){
-            String tem = args[0];
-            switch(tem){
-                case "0" :{
-                    importProjects();
-                    break;
-                }
-                case "1" :{
-                    importInvestEvent();
-                    break;
-                }
-                case "2":{
-                    importMergeEvent();
-                    break;
-                }
-                case "3":{
-                    importInvestfirms();
-                    break;
-                }
-                case "4":{
-                    importLaunchEvent();
-                    break;
-                }
-            }
-        }
-        //importProjects();
+//        if(args[0] != null){
+//            String tem = args[0];
+//            switch(tem){
+//                case "0" :{
+//                    importProjects();
+//                    break;
+//                }
+//                case "1" :{
+//                    importInvestEvent();
+//                    break;
+//                }
+//                case "2":{
+//                    importMergeEvent();
+//                    break;
+//                }
+//                case "3":{
+//                    importInvestfirms();
+//                    break;
+//                }
+//                case "4":{
+//                    importLaunchEvent();
+//                    break;
+//                }
+//            }
+//        }
+        importProjects();
         //importInvestEvent();
         //importMergeEvent();
         //importInvestfirms();
@@ -84,7 +84,7 @@ public class Mysql2ES {
     public static void importProjects(){
         if(deleteIndexData("ctdn_project","project")){
             String sql = "select id,code,industryIds,industryName,industrySubName,districtId,districtSubId,districtSubName,"+
-                    "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate "+
+                    "logoSmall,projTitle,setupDT,latestFinanceRound,latestFinanceDT,latestFinanceAmountStr,latestFinanceAmountNum,currencyType ,loadDate,showOrder "+
                     "from app_rc.app_project_list where id > ? and id <= ?";
             excuteThread("ctdn_project","project",sql,"app_project_list");
         }

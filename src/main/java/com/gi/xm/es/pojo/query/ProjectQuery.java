@@ -46,6 +46,8 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     private String endDate;
 
+    private Integer showOrder;
+
     private String order;
 
     private String orderBy;
@@ -176,6 +178,14 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public void setShowOrder(Integer showOrder) {
+        this.showOrder = showOrder;
+    }
+
+    public Integer getShowOrder() {
+        return showOrder;
     }
 
     public String getOrder() {
