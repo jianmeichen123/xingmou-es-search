@@ -3,6 +3,7 @@ package com.gi.xm.es.view;
 import com.gi.xm.es.pojo.Pagination;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class Result implements Serializable {
      */
     private Pagination data;
 
+    private LinkedHashMap numMap;
 
     public Result(String msg, int status) {
         this.msg = msg;
@@ -76,4 +78,11 @@ public class Result implements Serializable {
         this.data = data;
     }
 
+    public void setNumMap(LinkedHashMap numMap) {
+        this.numMap = numMap;
+    }
+
+    public LinkedHashMap getNumMap() {
+        return numMap;
+    }
 }

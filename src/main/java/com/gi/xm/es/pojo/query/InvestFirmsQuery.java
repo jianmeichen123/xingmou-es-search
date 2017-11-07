@@ -1,6 +1,7 @@
 package com.gi.xm.es.pojo.query;
 
 import com.gi.xm.es.pojo.Pagination;
+import com.gi.xm.es.pojo.Query;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by zcy on 17-4-24.
  */
-public class InvestFirmsQuery extends Pagination implements Serializable {
+public class InvestFirmsQuery extends Query implements Serializable {
 
     private Long orgId;
 
@@ -29,6 +30,10 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
     private String orgProjJson;
 
     private String investStage;
+
+    private String orgType;
+
+    private String orgDesc;
 
     private Long districtId;
 
@@ -188,5 +193,21 @@ public class InvestFirmsQuery extends Pagination implements Serializable {
 
     public void setOrgRounds(List<String> orgRounds) {
         this.orgRounds = orgRounds;
+    }
+
+    public String getOrgType() {
+        return orgType;
+    }
+
+    public void setOrgType(String orgType) {
+        this.orgType = orgType;
+    }
+
+    public String getOrgDesc() {
+        return orgDesc;
+    }
+
+    public void setOrgDesc(String orgDesc) {
+        this.orgDesc = orgDesc;
     }
 }

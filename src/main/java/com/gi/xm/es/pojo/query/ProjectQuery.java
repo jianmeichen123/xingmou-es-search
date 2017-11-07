@@ -1,6 +1,7 @@
 package com.gi.xm.es.pojo.query;
 
 import com.gi.xm.es.pojo.Pagination;
+import com.gi.xm.es.pojo.Query;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,13 +9,15 @@ import java.util.List;
 /**
  * Created by zcy on 17-1-17.
  */
-public class ProjectQuery extends Pagination implements Serializable{
+public class ProjectQuery extends Query implements Serializable{
 
     private String code;
 
     private Long sourceId;
 
     private String projTitle;
+
+    private String introduce;
 
     private String industryName;
 
@@ -218,5 +221,13 @@ public class ProjectQuery extends Pagination implements Serializable{
 
     public void setRounds(List<String> rounds) {
         this.rounds = rounds;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public String getIntroduce() {
+        return introduce;
     }
 }
