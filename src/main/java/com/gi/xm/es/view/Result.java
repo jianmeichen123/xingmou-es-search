@@ -27,7 +27,7 @@ public class Result implements Serializable {
      */
     private Pagination data;
 
-    private Map<String,Long> numMap;
+    private LinkedHashMap<String,Long> numMap;
 
     public Result(String msg, int status) {
         this.msg = msg;
@@ -79,11 +79,11 @@ public class Result implements Serializable {
         this.data = data;
     }
 
-    public Map<String, Long> getNumMap() {
+    public LinkedHashMap<String, Long> getNumMap() {
         return numMap;
     }
 
-    public void setNumMap(Map<String, Long> numMap) {
+    public void setNumMap(LinkedHashMap<String, Long> numMap) {
         this.numMap = numMap;
     }
 }

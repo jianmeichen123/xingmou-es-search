@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -45,7 +46,7 @@ public class GlobalSearchController {
     @ResponseBody
     public Result queryTotal(@RequestBody Query query) {
         Result ret = new Result();
-        Map<String,Long> totalNumMap = new HashMap<String,Long>();
+        LinkedHashMap<String,Long> totalNumMap = new LinkedHashMap<String,Long>();
         Long newsNum = newsService.queryNum(query);
         Long projectNum = projectService.queryNum(query);
         Long investfirmsNum = investfirmsService.queryNum(query);
