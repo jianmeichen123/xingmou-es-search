@@ -45,12 +45,6 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @Value("${ctdn.project.index}")
-    private  String index;
-
-    @Value("${ctdn.project.type}")
-    private  String type;
-
     @Value("${max.search.result}")
     private Integer max_search_result;
 
@@ -65,7 +59,7 @@ public class ProjectController {
         //构建请求体
         SearchRequestBuilder srb = projectService.queryList(project);
         //返回响应
-        SearchHits shs = projectService.getSearchHits(srb,type);
+        SearchHits shs = projectService.getSearchHits(srb);
         Pagination page = new Pagination();
         Long totalHit = shs.getTotalHits();
         try{

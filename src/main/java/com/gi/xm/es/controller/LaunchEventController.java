@@ -64,9 +64,9 @@ public class LaunchEventController {
         Integer pageSize = launchEventQuery.getPageSize();
         Integer pageNum = launchEventQuery.getPageNo();
         //构建请求体
-        SearchRequestBuilder srb = launchEventService.queryList(launchEventQuery,index,type);
+        SearchRequestBuilder srb = launchEventService.queryList(launchEventQuery);
         //返回响应
-        SearchHits shs = launchEventService.getSearchHits(srb,type);
+        SearchHits shs = launchEventService.getSearchHits(srb);
         Long totalHit = shs.getTotalHits();
         Pagination page = new Pagination();
         try{

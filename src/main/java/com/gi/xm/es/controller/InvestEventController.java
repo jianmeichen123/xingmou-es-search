@@ -28,12 +28,6 @@ public class InvestEventController {
     @Autowired
     private InvestEventService investEventService;
 
-    @Value("${ctdn.invest_event.index}")
-    private  String index;
-
-    @Value("${ctdn.invest_event.type}")
-    private  String type;
-
     @Value("${max.search.result}")
     private Integer max_search_result;
 
@@ -47,9 +41,9 @@ public class InvestEventController {
         Integer pageSize = investEvent.getPageSize();
         Integer pageNum = investEvent.getPageNo();
         //构建请求体
-        SearchRequestBuilder srb = investEventService.queryList(investEvent,index,type);
+        SearchRequestBuilder srb = investEventService.queryList(investEvent);
         //返回响应
-        SearchHits shs = investEventService.getSearchHits(srb,type);
+        SearchHits shs = investEventService.getSearchHits(srb);
         Pagination page = new Pagination();
         Long totalHit = shs.getTotalHits();
         try{

@@ -66,9 +66,9 @@ public class MergeEventController {
         Integer pageSize = mergeEventQuery.getPageSize();
         Integer pageNum = mergeEventQuery.getPageNo();
         //构建请求体
-        SearchRequestBuilder srb = mergeEventService.queryList(mergeEventQuery,index,type);
+        SearchRequestBuilder srb = mergeEventService.queryList(mergeEventQuery);
         //返回响应
-        SearchHits shs = mergeEventService.getSearchHits(srb,type);
+        SearchHits shs = mergeEventService.getSearchHits(srb);
         //返回响应
         Pagination page = new Pagination();
         Long totalHit = shs.getTotalHits();

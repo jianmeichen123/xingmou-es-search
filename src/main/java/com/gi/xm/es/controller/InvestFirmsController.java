@@ -43,12 +43,6 @@ public class InvestFirmsController {
     @Autowired
     InvestfirmsService investfirmsService;
 
-    @Value("${ctdn.investfirms.index}")
-    private  String index;
-
-    @Value("${ctdn.investfirms.type}")
-    private  String type;
-
     @Value("${max.search.result}")
     private Integer max_search_result;
 
@@ -61,9 +55,9 @@ public class InvestFirmsController {
         Result ret = new Result();
         Integer pageSize = investFirmsQuery.getPageSize();
         Integer pageNum = investFirmsQuery.getPageNo();
-        SearchRequestBuilder srb = investfirmsService.queryList(investFirmsQuery,index,type);
+        SearchRequestBuilder srb = investfirmsService.queryList(investFirmsQuery);
         //返回响应
-        SearchHits shs = investfirmsService.getSearchHits(srb,type);
+        SearchHits shs = investfirmsService.getSearchHits(srb);
         Pagination page = new Pagination();
         Long totalHit = shs.getTotalHits();
         try{

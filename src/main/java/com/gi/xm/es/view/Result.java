@@ -5,6 +5,7 @@ import com.gi.xm.es.pojo.Pagination;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zcy on 16-11-24.
@@ -26,7 +27,7 @@ public class Result implements Serializable {
      */
     private Pagination data;
 
-    private LinkedHashMap numMap;
+    private Map<String,Long> numMap;
 
     public Result(String msg, int status) {
         this.msg = msg;
@@ -78,11 +79,11 @@ public class Result implements Serializable {
         this.data = data;
     }
 
-    public void setNumMap(LinkedHashMap numMap) {
-        this.numMap = numMap;
+    public Map<String, Long> getNumMap() {
+        return numMap;
     }
 
-    public LinkedHashMap getNumMap() {
-        return numMap;
+    public void setNumMap(Map<String, Long> numMap) {
+        this.numMap = numMap;
     }
 }
