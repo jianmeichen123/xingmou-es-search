@@ -66,7 +66,7 @@ public class NewsService extends BaseService {
             newsQuery.setKeyword(QueryParserBase.escape(newsQuery.getKeyword().trim()));
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
             shoudBuilder.should(queryBuilder.must(QueryBuilders.wildcardQuery("newsTitle", "*" + newsQuery.getKeyword() + "*")));
-            shoudBuilder.should(queryBuilder.must(QueryBuilders.wildcardQuery("newsContent", "*" + newsQuery.getKeyword() + "*")));
+            shoudBuilder.should(queryBuilder.must(QueryBuilders.wildcardQuery("newsOverview", "*" + newsQuery.getKeyword() + "*")));
             shoudBuilder.minimumNumberShouldMatch(1);
             queryBuilder.must(shoudBuilder);
         }
