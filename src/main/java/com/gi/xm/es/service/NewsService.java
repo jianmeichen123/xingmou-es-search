@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.pojo.query.NewsQuery;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -63,8 +64,18 @@ public class NewsService extends BaseService {
         //按title
         if (!StringUtils.isEmpty(newsQuery.getKeyword())) {
             newsQuery.setKeyword(QueryParserBase.escape(newsQuery.getKeyword().trim()));
-            queryBuilder.must(QueryBuilders.wildcardQuery("newsTitle", "*" + newsQuery.getKeyword() + "*"));
+            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
+            shoudBuilder.should(queryBuilder.must(QueryBuilders.wildcardQuery("newsTitle", "*" + newsQuery.getKeyword() + "*")));
+            shoudBuilder.should(queryBuilder.must(QueryBuilders.wildcardQuery("newsContent", "*" + newsQuery.getKeyword() + "*")));
+            shoudBuilder.minimumNumberShouldMatch(1);
+            queryBuilder.must(shoudBuilder);
         }
+
+        //按新闻分类
+        if(!StringUtils.isEmpty(newsQuery.getNewsTypeName())){
+            queryBuilder.must(QueryBuilders.termQuery("newsTypeName", newsQuery.getNewsTypeName()));
+        }
+
         //设置分页参数和请求参数
         srb.setQuery(queryBuilder);
         //求总数
