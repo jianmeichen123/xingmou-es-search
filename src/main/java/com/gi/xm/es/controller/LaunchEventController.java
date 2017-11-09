@@ -72,7 +72,6 @@ public class LaunchEventController {
         try{
             List<Object> entityList =launchEventService.getResponseList (launchEventQuery,shs);
             page.setTotal(totalHit >max_search_result?max_search_result:totalHit);
-            page.setTotalhit(totalHit);
             page.setRecords(entityList);
             ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
             return ret;

@@ -49,7 +49,6 @@ public class InvestEventController {
         try{
             List<Object> entityList =investEventService.getResponseList (investEvent,shs);
             page.setTotal(totalHit >max_search_result?max_search_result:totalHit);
-            page.setTotalhit(totalHit);
             page.setRecords(entityList);
             ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
             return ret;

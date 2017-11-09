@@ -22,12 +22,21 @@ public class Result implements Serializable {
      */
     private int status;
 
+
+    /**
+     * 总命中条数
+     * @param totalhit
+     */
+    private Long totalhit;
+
     /**
      * 分页数据
      */
     private Pagination data;
 
     private LinkedHashMap<String,Long> numMap;
+
+
 
     public Result(String msg, int status) {
         this.msg = msg;
@@ -85,5 +94,13 @@ public class Result implements Serializable {
 
     public void setNumMap(LinkedHashMap<String, Long> numMap) {
         this.numMap = numMap;
+    }
+
+    public void setTotalhit(Long totalhit) {
+        this.totalhit = totalhit;
+    }
+
+    public Long getTotalhit() {
+        return totalhit;
     }
 }

@@ -21,12 +21,6 @@ public class Pagination implements Serializable {
      */
     private Long total;
 
-    /**
-     * 总命中条数
-     * @param totalhit
-     */
-    private Long totalhit;
-
     private List<Object> records;
 
     public Integer getPageSize() {
@@ -51,14 +45,6 @@ public class Pagination implements Serializable {
 
     public void setTotal(Long total) {
         this.total = total;
-    }
-
-    public Long getTotalhit() {
-        return totalhit;
-    }
-
-    public void setTotalhit(Long totalhit) {
-        this.totalhit = totalhit;
     }
 
     public List<Object> getRecords() {

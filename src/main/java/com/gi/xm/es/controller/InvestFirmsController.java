@@ -63,7 +63,6 @@ public class InvestFirmsController {
         try{
             List<Object> entityList =investfirmsService.getResponseList (investFirmsQuery,shs);
             page.setTotal(totalHit >max_search_result?max_search_result:totalHit);
-            page.setTotalhit(totalHit);
             page.setRecords(entityList);
             ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
             return ret;

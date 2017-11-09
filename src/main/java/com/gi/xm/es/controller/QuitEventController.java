@@ -134,7 +134,6 @@ public class QuitEventController {
         }
         Pagination page = new Pagination();
         page.setTotal(totalHit>SEARCHLIMIT?SEARCHLIMIT:totalHit);
-        page.setTotalhit(totalHit);
         page.setRecords(entityList);
         ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
         return ret;
