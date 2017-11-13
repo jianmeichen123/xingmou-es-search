@@ -10,173 +10,175 @@ import java.util.List;
  * Created by zcy on 17-4-18.
  */
 public class NewsQuery extends Query implements Serializable {
-    private Long newsId;
 
-    private String objCode;
+    private Long id;
 
-    private String  objType;
+    private String auther;
 
-    private String newsReportDate;
+    private String industry;
 
-    private String newsTitle;
+    private String code;
 
-    private String newsOverview;
+    private Long ctime;
 
-    private String labels;
+    private String href;
 
-    private String newsContent;
+    private String img;
 
-    private String newsListpics;
+    private String imgmd5;
 
-    private String newsSource;
+    private Long orderTime;
 
-    private String newsAddress;
+    private String searchkey;
 
-    private Integer newsType;
+    private String overview;
 
-    private String newsTypeName;
+    private String type;
 
-    private Long newsReportTime;
+    private Integer typeId;
 
-    private Integer newsColumns;
+    private String md5;
+
+    private String title;
 
     private String order;
 
     private String orderBy;
 
-    public Long getNewsId() {
-        return newsId;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setNewsId(Long newsId) {
-        this.newsId = newsId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getObjCode() {
-        return objCode;
+    public String getAuther() {
+        return auther;
     }
 
-    public void setObjCode(String objCode) {
-        this.objCode = objCode;
+    public void setAuther(String auther) {
+        this.auther = auther;
     }
 
-    public String getObjType() {
-        return objType;
+    public String getIndustry() {
+        return industry;
     }
 
-    public void setObjType(String objType) {
-        this.objType = objType;
+    public void setIndustry(String industry) {
+        this.industry = industry;
     }
 
-    public void setNewsReportDate(String newsReportDate) {
-        this.newsReportDate = newsReportDate;
+    public String getCode() {
+        return code;
     }
 
-    public String getNewsReportDate() {
-        return newsReportDate;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getNewsTitle() {
-        return newsTitle;
+    public String getHref() {
+        return href;
     }
 
-    public void setNewsTitle(String newsTitle) {
-        this.newsTitle = newsTitle;
+    public void setHref(String href) {
+        this.href = href;
     }
 
-    public String getNewsOverview() {
-        return newsOverview;
+    public String getImg() {
+        return img;
     }
 
-    public void setNewsOverview(String newsOverview) {
-        this.newsOverview = newsOverview;
+    public void setImg(String img) {
+        this.img = img;
     }
 
-    public String getLabels() {
-        return labels;
+    public String getImgmd5() {
+        return imgmd5;
     }
 
-    public void setLabels(String labels) {
-        this.labels = labels;
+    public void setImgmd5(String imgmd5) {
+        this.imgmd5 = imgmd5;
     }
 
-    public String getNewsContent() {
-        return newsContent;
+    public String getSearchkey() {
+        return searchkey;
     }
 
-    public void setNewsContent(String newsContent) {
-        this.newsContent = newsContent;
+    public void setSearchkey(String searchkey) {
+        this.searchkey = searchkey;
     }
 
-    public String getNewsListpics() {
-        return newsListpics;
+    public String getOverview() {
+        return overview;
     }
 
-    public void setNewsListpics(String newsListpics) {
-        this.newsListpics = newsListpics;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
-    public String getNewsSource() {
-        return newsSource;
+    public String getType() {
+        return type;
     }
 
-    public void setNewsSource(String newsSource) {
-        this.newsSource = newsSource;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getNewsAddress() {
-        return newsAddress;
+    public String getMd5() {
+        return md5;
     }
 
-    public void setNewsAddress(String newsAddress) {
-        this.newsAddress = newsAddress;
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 
-    public Integer getNewsType() {
-        return newsType;
+    public String getTitle() {
+        return title;
     }
 
-    public void setNewsType(Integer newsType) {
-        this.newsType = newsType;
-    }
-
-    public String getNewsTypeName() {
-        return newsTypeName;
-    }
-
-    public void setNewsTypeName(String newsTypeName) {
-        this.newsTypeName = newsTypeName;
-    }
-
-    public Long getNewsReportTime() {
-        return newsReportTime;
-    }
-
-    public void setNewsReportTime(Long newsReportTime) {
-        this.newsReportTime = newsReportTime;
-    }
-
-    public Integer getNewsColumns() {
-        return newsColumns;
-    }
-
-    public void setNewsColumns(Integer newsColumns) {
-        this.newsColumns = newsColumns;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getOrder() {
         return order;
     }
 
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
+    public void setOrder(String order) {
+        this.order = order;
     }
 
     public String getOrderBy() {
         return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public Long getCtime() {
+        return ctime;
+    }
+
+    public void setCtime(Long ctime) {
+        this.ctime = ctime;
+    }
+
+    public Long getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(Long orderTime) {
+        this.orderTime = orderTime;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 }

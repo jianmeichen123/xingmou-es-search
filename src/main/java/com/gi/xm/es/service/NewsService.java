@@ -13,6 +13,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,15 +66,26 @@ public class NewsService extends BaseService {
         if (!StringUtils.isEmpty(newsQuery.getKeyword())) {
             newsQuery.setKeyword(QueryParserBase.escape(newsQuery.getKeyword().trim()));
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-            shoudBuilder.should(QueryBuilders.wildcardQuery("newsTitle", "*" + newsQuery.getKeyword() + "*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("newsOverview", "*" + newsQuery.getKeyword() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("title", "*" + newsQuery.getKeyword() + "*"));
+            shoudBuilder.should(QueryBuilders.wildcardQuery("overview", "*" + newsQuery.getKeyword() + "*"));
             shoudBuilder.minimumNumberShouldMatch(1);
             queryBuilder.must(shoudBuilder);
+
+            //设置高亮
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            highlightBuilder.field("title");
+            highlightBuilder.field("overview");
+            srb.highlighter(highlightBuilder);
         }
 
         //按新闻分类
-        if(!StringUtils.isEmpty(newsQuery.getNewsTypeName())){
-            queryBuilder.must(QueryBuilders.termQuery("newsTypeName", newsQuery.getNewsTypeName()));
+        if(!StringUtils.isEmpty(newsQuery.getType())){
+            queryBuilder.must(QueryBuilders.termQuery("type", newsQuery.getType()));
+        }
+
+        //按code
+        if(!StringUtils.isEmpty(newsQuery.getCode())){
+            queryBuilder.must(QueryBuilders.termQuery("code",newsQuery.getCode()));
         }
 
         //设置分页参数和请求参数
@@ -81,7 +93,7 @@ public class NewsService extends BaseService {
         //求总数
         SearchResponse res = srb.setTypes(type).setSearchType(SearchType.DEFAULT).execute().actionGet();
         Long totalHit = res.getHits().totalHits();
-        srb.addSort("newsReportTime", SortOrder.DESC);
+        srb.addSort("orderTime", SortOrder.DESC);
         //设置分页参数和请求参数
         Integer tmp = newsQuery.getPageSize();
         Integer pageSize = newsQuery.getPageSize();
@@ -116,9 +128,9 @@ public class NewsService extends BaseService {
                         field.setAccessible(true);
                         String value = field.get(p).toString();
                         //获得搜索关键字
-                        String rep = "<comp>" + newsQuery.getNewsTitle()+ "</comp>";
+                        String rep = "<comp>" + newsQuery.getKeyword()+ "</comp>";
                         //替换
-                        field.set(p, value.replaceAll(newsQuery.getNewsTitle(), rep));
+                        field.set(p, value.replaceAll(newsQuery.getKeyword(), rep));
                     }
                 } catch (Exception e) {
                     throw e;

@@ -45,7 +45,7 @@ public class NewsController {
     @RequestMapping(value="news",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Result queryNews(@RequestBody NewsQuery newsQuery) {
-        Result ret = new Result();
+        Result ret ;
         Integer pageSize = newsQuery.getPageSize();
         Integer pageNum = newsQuery.getPageNo();
         //构建请求体

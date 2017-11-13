@@ -65,5 +65,4 @@ curl -XPUT 10.9.130.135:9200/ctdn_investfirms -d '{
   }
 }'
 
-curl -XPUT 10.9.130.135:9200/ctdn_news -d '{"mappings": { "news": { "properties": { "newsId": { "type": "long" }, "objCode": { "type": "keyword" }, "objType": { "type": "keyword" }, "newsReportDate": { "type": "keyword" }, "newsTitle": { "type": "keyword" }, "newsOverview": { "type": "keyword" }, "labels": { "type": "keyword" }, "newsContent": { "type": "keyword" }, "newsListpics": { "type": "keyword" }, "newsSource": { "type": "keyword" }, "newsAddress": { "type": "keyword" }, "newsType": { "type": "long" }, "newsTypeName": { "type": "keyword" }, "newsReportTime": { "type": "long" }, "newsColumns": { "type": "long" } } } } }'
-
+curl -XPUT 10.9.130.135:9200/ctdn_news -d '{"mappings":{"news":{"properties":{"id":{"type":"long"},"auther":{"type":"keyword"},"industry":{"type":"keyword"},"code":{"type":"keyword"},"ctime":{"type":"long"},"href":{"type":"keyword"},"img":{"type":"keyword"},"imgmd5":{"type":"keyword"},"orderTime":{"type":"long"},"searchkey":{"type":"keyword"},"overview":{"type":"keyword"},"type":{"type":"keyword"},"typeId":{"type":"integer"},"md5":{"type":"keyword"},"title":{"type":"keyword"}}}}}'
