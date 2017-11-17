@@ -80,7 +80,7 @@ public class NewsService extends BaseService {
 
         //按新闻分类
         if(!StringUtils.isEmpty(newsQuery.getType())){
-            queryBuilder.must(QueryBuilders.termQuery("type", newsQuery.getType()));
+            queryBuilder.must(QueryBuilders.termQuery("typeId", newsQuery.getTypeId()));
         }
 
         //按code
