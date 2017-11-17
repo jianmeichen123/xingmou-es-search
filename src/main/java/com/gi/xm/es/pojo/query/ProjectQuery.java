@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ProjectQuery extends Query implements Serializable{
 
-    private String code;
+    private String projCode;
 
     private Long sourceId;
 
@@ -63,12 +63,12 @@ public class ProjectQuery extends Query implements Serializable{
         this.sourceId = sourceId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public String getProjCode() {
+        return projCode;
     }
 
-    public String getCode() {
-        return code;
+    public void setProjCode(String projCode) {
+        this.projCode = projCode;
     }
 
     public List<Long> getDistrictIds() {

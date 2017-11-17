@@ -90,9 +90,6 @@ public class NewsService extends BaseService {
 
         //设置分页参数和请求参数
         srb.setQuery(queryBuilder);
-        //求总数
-        SearchResponse res = srb.setTypes(type).setSearchType(SearchType.DEFAULT).execute().actionGet();
-        Long totalHit = res.getHits().totalHits();
         srb.addSort("orderTime", SortOrder.DESC);
         //设置分页参数和请求参数
         Integer tmp = newsQuery.getPageSize();

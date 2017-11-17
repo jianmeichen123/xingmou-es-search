@@ -11,7 +11,9 @@ import java.util.List;
  */
 public class InvestFirmsQuery extends Query implements Serializable {
 
-    private Long orgId;
+    private Long id;
+
+    private String orgCode;
 
     private String logoSmall;
 
@@ -51,12 +53,20 @@ public class InvestFirmsQuery extends Query implements Serializable {
 
     private String orderBy;
 
-    public Long getOrgId() {
-        return orgId;
+    public Long getId() {
+        return id;
     }
 
-    public void setOrgId(Long orgId) {
-        this.orgId = orgId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getOrgCode() {
+        return orgCode;
+    }
+
+    public void setOrgCode(String orgCode) {
+        this.orgCode = orgCode;
     }
 
     public String getLogoSmall() {
