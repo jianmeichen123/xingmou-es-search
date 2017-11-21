@@ -65,6 +65,7 @@ public class InvestFirmsController {
             page.setTotal(totalHit >max_search_result?max_search_result:totalHit);
             page.setRecords(entityList);
             ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
+            ret.setTotalhit(totalHit);
             return ret;
         }catch(Exception e){
             LOG.error(e.getMessage());
