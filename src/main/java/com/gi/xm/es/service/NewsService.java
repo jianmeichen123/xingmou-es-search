@@ -65,11 +65,9 @@ public class NewsService extends BaseService {
         //按title
         if (!StringUtils.isEmpty(newsQuery.getKeyword())) {
             newsQuery.setKeyword(QueryParserBase.escape(newsQuery.getKeyword().trim()));
-            BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-            shoudBuilder.should(QueryBuilders.wildcardQuery("title", "*" + newsQuery.getKeyword() + "*"));
-            shoudBuilder.should(QueryBuilders.wildcardQuery("overview", "*" + newsQuery.getKeyword() + "*"));
-            shoudBuilder.minimumNumberShouldMatch(1);
-            queryBuilder.must(shoudBuilder);
+            queryBuilder.should(QueryBuilders.wildcardQuery("title", "*" + newsQuery.getKeyword() + "*").boost(5.0f));
+            queryBuilder.should(QueryBuilders.wildcardQuery("overview", "*" + newsQuery.getKeyword() + "*").boost(1.0f));
+            queryBuilder.minimumNumberShouldMatch(1);
 
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
@@ -90,6 +88,7 @@ public class NewsService extends BaseService {
 
         //设置分页参数和请求参数
         srb.setQuery(queryBuilder);
+        srb.addSort("_score", SortOrder.DESC);
         srb.addSort("orderTime", SortOrder.DESC);
         //设置分页参数和请求参数
         Integer tmp = newsQuery.getPageSize();
