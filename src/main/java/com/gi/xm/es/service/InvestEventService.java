@@ -1,6 +1,7 @@
 package com.gi.xm.es.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.pojo.query.InvestEventQuery;
@@ -147,47 +148,56 @@ public class InvestEventService extends BaseService {
         for (SearchHit it : shs) {
             try {
                 Map source = it.getSource();
-                InvestEventQuery entity =  JSON.parseObject(JSON.toJSONString(source),InvestEventQuery.class);
+                InvestEventQuery entity = JSON.parseObject(JSON.toJSONString(source), InvestEventQuery.class);
                 //高亮company
-                if(!StringUtils.isEmpty(investEvent.getCompany())){
+                if (!StringUtils.isEmpty(investEvent.getCompany())) {
                     Field field1 = entity.getClass().getDeclaredField("company");
                     field1.setAccessible(true);
-                    Object object1 =  field1.get(entity);
+                    Object object1 = field1.get(entity);
                     //判断是否有该属性
-                    if(object1!=null){
+                    if (object1 != null) {
                         String value1 = object1.toString();
-                        if(value1 !=null ){
+                        if (value1 != null) {
                             field1.set(entity, value1.replaceAll(investEvent.getCompany(), "<comp>" + investEvent.getCompany() + "</comp>"));
                         }
                     }
                 }
-                //重新构造investSideJson,使之成为json,便于解析
+                //investSideJson解析,有高亮的放前面
                 Field field2 = entity.getClass().getDeclaredField("investSideJson");
                 field2.setAccessible(true);
-                Object object =  field2.get(entity);
+                Object object = field2.get(entity);
                 //判断是否有该属性
-                if(object != null){
-                    String value2 = object.toString();
-                    String jsonStr = "{\"investSideJson\":"+value2+"}";
-                    JSONObject obj = JSONObject.parseObject(jsonStr);
-                    //高亮investSideJson
-                    if(!StringUtils.isEmpty(investEvent.getCompany())) {
-                        List<JSONObject> ls = (List<JSONObject>) obj.get("investSideJson");
-                        for (JSONObject json : ls) {
-                            if (json.get("invstor") != null) {
+                if (object != null) {
+                    JSONArray ls = JSONArray.parseArray(object.toString());
+                    if (ls != null && ls.size() > 0) {
+                        JSONArray resultJsonArray = new JSONArray(3);
+                        if (!StringUtils.isEmpty(investEvent.getCompany())) {
+                            for (int i = 0; i < ls.size(); i++) {
+                                JSONObject json = (JSONObject) ls.get(i);
                                 String invstor = (String) json.get("invstor");
-                                json.put("invstor", invstor.replaceAll(investEvent.getCompany(), "<firm>" + investEvent.getCompany() + "</firm>"));
+                                if (invstor.indexOf(investEvent.getCompany()) >= 0) {
+                                    if (resultJsonArray.size() <= 3) {
+                                        json.put("invstor", invstor.replaceAll(investEvent.getCompany(), "<firm>" + investEvent.getCompany() + "</firm>"));
+                                        resultJsonArray.add(json);
+                                    }
+                                }
                             }
                         }
+                        for (int i = 0; i < ls.size(); i++) {
+                            JSONObject json = (JSONObject) ls.get(i);
+                            if (resultJsonArray.size() < 3) {
+                                resultJsonArray.add(json);
+                            }
+                        }
+
+                        field2.set(entity, resultJsonArray.toString());
                     }
-                    field2.set(entity,obj.toString());
                 }
                 entityList.add(entity);
             }catch (Exception e) {
                 e.printStackTrace();
                 throw e;
             }
-
         }
         return entityList;
     }

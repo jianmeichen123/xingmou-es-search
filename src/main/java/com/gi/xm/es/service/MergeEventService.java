@@ -1,6 +1,7 @@
 package com.gi.xm.es.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.pojo.query.LaunchEventQuery;
@@ -166,20 +167,29 @@ public class MergeEventService extends BaseService {
                 Object object = field2.get(entity);
                 //判断是否有该属性
                 if (object != null) {
-                    String value2 = object.toString();
-                    String jsonStr = "{\"mergeSideJson\":" + value2 + "}";
-                    JSONObject obj = JSONObject.parseObject(jsonStr);
-                    //高亮investSideJson
-                    if (!StringUtils.isEmpty(mergeEventQuery.getKeyword())) {
-                        List<JSONObject> ls = (List<JSONObject>) obj.get("mergeSideJson");
-                        for (JSONObject json : ls) {
-                            if (json.get("title") != null) {
-                                String invstor = (String) json.get("title");
-                                json.put("title", invstor.replaceAll(mergeEventQuery.getKeyword(), "<firm>" + mergeEventQuery.getKeyword() + "</firm>"));
+                    JSONArray ls = JSONArray.parseArray(object.toString());
+                    if(ls!=null && ls.size()>0){
+                        JSONArray resultJsonArray = new JSONArray(3);
+                        if (!StringUtils.isEmpty(mergeEventQuery.getKeyword())) {
+                            for (int i = 0; i < ls.size(); i++) {
+                                JSONObject json = (JSONObject) ls.get(i);
+                                String invstor = (String) json.get("invstor");
+                                if (invstor.indexOf(mergeEventQuery.getKeyword()) >= 0) {
+                                    if (resultJsonArray.size() <= 3) {
+                                        json.put("invstor", invstor.replaceAll(mergeEventQuery.getKeyword(), "<firm>" + mergeEventQuery.getKeyword() + "</firm>"));
+                                        resultJsonArray.add(json);
+                                    }
+                                }
                             }
                         }
+                        for (int i= 0;i<ls.size();i++) {
+                            JSONObject json = (JSONObject)ls.get(i);
+                            if(resultJsonArray.size()<3){
+                                resultJsonArray.add(json);
+                            }
+                        }
+                        field2.set(entity,resultJsonArray.toString());
                     }
-                    field2.set(entity, obj.toString());
                 }
                 entityList.add(entity);
             } catch (Exception e) {
