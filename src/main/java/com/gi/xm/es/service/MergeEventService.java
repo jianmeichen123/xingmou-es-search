@@ -173,10 +173,10 @@ public class MergeEventService extends BaseService {
                         if (!StringUtils.isEmpty(mergeEventQuery.getKeyword())) {
                             for (int i = 0; i < ls.size(); i++) {
                                 JSONObject json = (JSONObject) ls.get(i);
-                                String invstor = (String) json.get("invstor");
-                                if (invstor.indexOf(mergeEventQuery.getKeyword()) >= 0) {
+                                String title = (String) json.get("title");
+                                if (title!=null &&title.indexOf(mergeEventQuery.getKeyword()) >= 0) {
                                     if (resultJsonArray.size() <= 3) {
-                                        json.put("invstor", invstor.replaceAll(mergeEventQuery.getKeyword(), "<firm>" + mergeEventQuery.getKeyword() + "</firm>"));
+                                        json.put("title", title.replaceAll(mergeEventQuery.getKeyword(), "<firm>" + mergeEventQuery.getKeyword() + "</firm>"));
                                         resultJsonArray.add(json);
                                     }
                                 }
