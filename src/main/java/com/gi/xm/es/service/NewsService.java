@@ -10,6 +10,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -64,11 +65,7 @@ public class NewsService extends BaseService {
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         //按title
         if (!StringUtils.isEmpty(newsQuery.getKeyword())) {
-            newsQuery.setKeyword(QueryParserBase.escape(newsQuery.getKeyword().trim()));
-            queryBuilder.should(QueryBuilders.wildcardQuery("title", "*" + newsQuery.getKeyword() + "*").boost(5.0f));
-            queryBuilder.should(QueryBuilders.wildcardQuery("overview", "*" + newsQuery.getKeyword() + "*").boost(1.0f));
-            queryBuilder.minimumNumberShouldMatch(1);
-
+            queryBuilder.must(QueryBuilders.termQuery("title",newsQuery.getKeyword()));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
             highlightBuilder.field("title");
@@ -82,14 +79,15 @@ public class NewsService extends BaseService {
         }
 
         //按code
-        if(!StringUtils.isEmpty(newsQuery.getCode())){
-            queryBuilder.must(QueryBuilders.termQuery("code",newsQuery.getCode()));
-        }
+//        if(!StringUtils.isEmpty(newsQuery.getCode())){
+//            queryBuilder.must(QueryBuilders.termQuery("code",newsQuery.getCode()));
+//        }
 
         //设置分页参数和请求参数
         srb.setQuery(queryBuilder);
-        srb.addSort("_score", SortOrder.DESC);
         srb.addSort("orderTime", SortOrder.DESC);
+        srb.addSort("_score", SortOrder.DESC);
+
         //设置分页参数和请求参数
         Integer tmp = newsQuery.getPageSize();
         Integer pageSize = newsQuery.getPageSize();
@@ -113,23 +111,25 @@ public class NewsService extends BaseService {
             Map source = it.getSource();
             NewsQuery p = JSON.parseObject(JSON.toJSONString(source), NewsQuery.class);
             //获取对应的高亮域
+
             Map<String, HighlightField> result = it.highlightFields();
+
             if(result != null){
-                //从设定的高亮域中取得指定域
-                try{
-                    for (Map.Entry<String, HighlightField> entry : result.entrySet()) {
-                        String key = entry.getKey();
-                        //获得高亮字段的原值
-                        Field field = p.getClass().getDeclaredField(key);
-                        field.setAccessible(true);
-                        String value = field.get(p).toString();
-                        //获得搜索关键字
-                        String rep = "<comp>" + newsQuery.getKeyword()+ "</comp>";
-                        //替换
-                        field.set(p, value.replaceAll(newsQuery.getKeyword(), rep));
-                    }
-                } catch (Exception e) {
-                    throw e;
+                if(!StringUtils.isEmpty(newsQuery.getKeyword())){
+                    Field title = p.getClass().getDeclaredField("title");
+                    title.setAccessible(true);
+                    String titleVal = title.get(p).toString();
+                    //获得搜索关键字
+                    String titleHtml = "<comp>" + newsQuery.getKeyword()+ "</comp>";
+                    title.set(p, titleVal.replaceAll(newsQuery.getKeyword(), titleHtml));
+
+
+                    Field overview = p.getClass().getDeclaredField("overview");
+                    overview.setAccessible(true);
+                    String overviewVal = overview.get(p).toString();
+                    //获得搜索关键字
+                    String overviewHtml = "<comp>" + newsQuery.getKeyword()+ "</comp>";
+                    overview.set(p, overviewVal.replaceAll(newsQuery.getKeyword(), overviewHtml));
                 }
             }
             entityList.add(p);
