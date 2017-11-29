@@ -35,8 +35,6 @@ public class MergeEventQuery extends Query implements Serializable {
 
     private String mergeDate;
 
-    private String logo;
-
     private String projTitle;
 
     private String amountStr;
@@ -147,14 +145,6 @@ public class MergeEventQuery extends Query implements Serializable {
 
     public void setEquityRate(Integer equityRate) {
         this.equityRate = equityRate;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
     }
 
     public String getProjTitle() {

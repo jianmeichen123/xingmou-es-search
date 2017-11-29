@@ -27,8 +27,6 @@ public class ProjectQuery extends Query implements Serializable{
 
     private String districtSubName;
 
-    private String  logoSmall;
-
     private String  setupDT;
 
     private String latestFinanceDT;
@@ -125,14 +123,6 @@ public class ProjectQuery extends Query implements Serializable{
 
     public void setDistrictSubName(String districtSubName) {
         this.districtSubName = districtSubName;
-    }
-
-    public String getLogoSmall() {
-        return logoSmall;
-    }
-
-    public void setLogoSmall(String logoSmall) {
-        this.logoSmall = logoSmall;
     }
 
     public String getSetupDT() {
