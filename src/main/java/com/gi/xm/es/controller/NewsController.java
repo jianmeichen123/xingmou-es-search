@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +49,9 @@ public class NewsController {
         Result ret ;
         Integer pageSize = newsQuery.getPageSize();
         Integer pageNum = newsQuery.getPageNo();
+        if(!StringUtils.isEmpty(newsQuery.getKeyword())){
+            newsQuery.setKeyword(newsQuery.getKeyword().toLowerCase());
+        }
         //构建请求体
         SearchRequestBuilder srb = newsService.queryList(newsQuery);
         //返回响应

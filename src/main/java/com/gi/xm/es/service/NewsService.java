@@ -50,7 +50,9 @@ public class NewsService extends BaseService {
      */
     public  Long queryNum(Query query){
         NewsQuery newsQuery = new NewsQuery();
-        newsQuery.setKeyword(query.getKeyword());
+        if(!StringUtils.isEmpty(newsQuery.getKeyword())){
+            newsQuery.setKeyword(newsQuery.getKeyword().toLowerCase());
+        }
         SearchRequestBuilder qb = queryList(newsQuery);
         SearchHits ssh = getSearchHits(qb);
         return ssh.getTotalHits();
@@ -120,8 +122,8 @@ public class NewsService extends BaseService {
                     title.setAccessible(true);
                     String titleVal = title.get(p).toString();
                     //获得搜索关键字
-                    String titleHtml = "<comp>" + newsQuery.getKeyword()+ "</comp>";
-                    title.set(p, titleVal.replaceAll(newsQuery.getKeyword(), titleHtml));
+                    String titleHtml = "<comp>" + newsQuery.getKeyword().toUpperCase()+ "</comp>";
+                    title.set(p, titleVal.replaceAll(newsQuery.getKeyword().toUpperCase(), titleHtml));
 
 
                     Field overview = p.getClass().getDeclaredField("overview");
@@ -129,7 +131,7 @@ public class NewsService extends BaseService {
                     String overviewVal = overview.get(p).toString();
                     //获得搜索关键字
                     String overviewHtml = "<comp>" + newsQuery.getKeyword()+ "</comp>";
-                    overview.set(p, overviewVal.replaceAll(newsQuery.getKeyword(), overviewHtml));
+                    overview.set(p, overviewVal.replaceAll(newsQuery.getKeyword().toUpperCase(), overviewHtml));
                 }
             }
             entityList.add(p);
@@ -147,4 +149,5 @@ public class NewsService extends BaseService {
         SearchHits shs = res.getHits();
         return shs;
     }
+
 }
