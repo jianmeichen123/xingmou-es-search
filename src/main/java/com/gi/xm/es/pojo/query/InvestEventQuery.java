@@ -25,8 +25,6 @@ public class InvestEventQuery extends Query implements Serializable {
 
     private String districtSubName;
 
-    private String logo;
-
     private String company;
 
     private String investDate;
@@ -150,14 +148,6 @@ public class InvestEventQuery extends Query implements Serializable {
 
     public void setDistrictSubName(String districtSubName) {
         this.districtSubName = districtSubName;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
     }
 
     public void setCompany(String company) {

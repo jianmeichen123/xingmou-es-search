@@ -60,8 +60,8 @@ public class GlobalSearchController {
         totalNumMap.put("mergeEvent",mergeEventNum);
         totalNumMap.put("launchEvent",launchEventNum);
         ret.setNumMap(totalNumMap);
-        Long totalHist = newsNum+projectNum+investfirmsNum+investEventNum+mergeEventNum+launchEventNum;
-        ret.setTotalhit(totalHist);
+        Long totalHit = newsNum+projectNum+investfirmsNum+investEventNum+mergeEventNum+launchEventNum;
+        ret.setTotalhit(totalHit);
         return ret;
     }
 }

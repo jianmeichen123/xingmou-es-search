@@ -15,8 +15,6 @@ public class InvestFirmsQuery extends Query implements Serializable {
 
     private String orgCode;
 
-    private String logoSmall;
-
     private String investOrg;
 
     private Integer investTotal;
@@ -67,14 +65,6 @@ public class InvestFirmsQuery extends Query implements Serializable {
 
     public void setOrgCode(String orgCode) {
         this.orgCode = orgCode;
-    }
-
-    public String getLogoSmall() {
-        return logoSmall;
-    }
-
-    public void setLogoSmall(String logoSmall) {
-        this.logoSmall = logoSmall;
     }
 
     public String getOrgProjJson() {
