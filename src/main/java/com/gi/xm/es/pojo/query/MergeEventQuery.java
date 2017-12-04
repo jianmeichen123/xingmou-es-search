@@ -1,6 +1,5 @@
 package com.gi.xm.es.pojo.query;
 
-import com.gi.xm.es.pojo.Pagination;
 import com.gi.xm.es.pojo.Query;
 
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package com.gi.xm.es.pojo;
 
-import com.gi.xm.es.pojo.Pagination;
+import com.gi.xm.es.view.Pagination;
 
 /**
  * Created by zcy on 16-12-8.

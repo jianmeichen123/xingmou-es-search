@@ -1,36 +1,21 @@
 package com.gi.xm.es.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.gi.xm.es.pojo.query.InvestFirmsQuery;
 import com.gi.xm.es.service.InvestfirmsService;
-import com.gi.xm.es.util.ListUtil;
+import com.gi.xm.es.view.MessageInfo4ES;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.pojo.Pagination;
-import com.gi.xm.es.view.Result;
-import org.apache.lucene.queryparser.classic.QueryParserBase;
+import com.gi.xm.es.view.Pagination;
 import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class InvestFirmsController {
@@ -47,12 +32,12 @@ public class InvestFirmsController {
     private Integer max_search_result;
 
 
-    private static Result errorRet = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
+    private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @RequestMapping(value="investfirms",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result queryMergeEvent(@RequestBody InvestFirmsQuery investFirmsQuery) {
-        Result ret = new Result();
+    public MessageInfo4ES queryMergeEvent(@RequestBody InvestFirmsQuery investFirmsQuery) {
+        MessageInfo4ES messageInfo = new MessageInfo4ES();
         Integer pageSize = investFirmsQuery.getPageSize();
         Integer pageNum = investFirmsQuery.getPageNo();
         SearchRequestBuilder srb = investfirmsService.queryList(investFirmsQuery);
@@ -64,9 +49,9 @@ public class InvestFirmsController {
             List<Object> entityList =investfirmsService.getResponseList (investFirmsQuery,shs);
             page.setTotal(totalHit >max_search_result?max_search_result:totalHit);
             page.setRecords(entityList);
-            ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
-            ret.setTotalhit(totalHit);
-            return ret;
+            messageInfo = new MessageInfo4ES(MessageStatus.OK.getStatus(),MessageStatus.OK.getMessage(), page);
+            messageInfo.setTotalhit(totalHit);
+            return messageInfo;
         }catch(Exception e){
             LOG.error(e.getMessage());
             return errorRet;

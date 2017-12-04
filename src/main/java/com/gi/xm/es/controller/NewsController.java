@@ -1,12 +1,10 @@
 package com.gi.xm.es.controller;
 
-import com.gi.xm.es.pojo.Pagination;
-import com.gi.xm.es.pojo.query.InvestEventQuery;
+import com.gi.xm.es.view.MessageInfo4ES;
+import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.pojo.query.NewsQuery;
-import com.gi.xm.es.service.InvestEventService;
 import com.gi.xm.es.service.NewsService;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.view.Result;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.SearchHits;
@@ -15,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,12 +38,12 @@ public class NewsController {
     private Integer max_search_result;
 
 
-    private static Result errorRet = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
+    private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @RequestMapping(value="news",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result queryNews(@RequestBody NewsQuery newsQuery) {
-        Result ret ;
+    public MessageInfo4ES queryNews(@RequestBody NewsQuery newsQuery) {
+        MessageInfo4ES messageInfo ;
         Integer pageSize = newsQuery.getPageSize();
         Integer pageNum = newsQuery.getPageNo();
         //构建请求体
@@ -59,9 +56,9 @@ public class NewsController {
             List<Object> entityList =newsService.getResponseList (newsQuery,shs);
             page.setTotal(totalHit >max_search_result?max_search_result:totalHit);
             page.setRecords(entityList);
-            ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
-            ret.setTotalhit(totalHit);
-            return ret;
+            messageInfo = new MessageInfo4ES(MessageStatus.OK.getStatus(), MessageStatus.OK.getMessage(), page);
+            messageInfo.setTotalhit(totalHit);
+            return messageInfo;
         }catch(Exception e){
             LOG.error(e.getMessage());
             return errorRet;

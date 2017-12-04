@@ -2,16 +2,14 @@ package com.gi.xm.es.controller;
 
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.service.*;
+import com.gi.xm.es.view.MessageInfo4ES;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.view.Result;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by zcy on 17-11-6.
@@ -40,12 +38,12 @@ public class GlobalSearchController {
     @Autowired
     private ProjectService projectService;
 
-    private static Result errorRet = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
+    private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @RequestMapping(value="total",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result queryTotal(@RequestBody Query query) {
-        Result ret = new Result();
+    public MessageInfo4ES queryTotal(@RequestBody Query query) {
+        MessageInfo4ES messageInfo = new MessageInfo4ES();
         LinkedHashMap<String,Long> totalNumMap = new LinkedHashMap<String,Long>();
         Long newsNum = newsService.queryNum(query);
         Long projectNum = projectService.queryNum(query);
@@ -59,9 +57,9 @@ public class GlobalSearchController {
         totalNumMap.put("investEvent",investEventNum);
         totalNumMap.put("mergeEvent",mergeEventNum);
         totalNumMap.put("launchEvent",launchEventNum);
-        ret.setNumMap(totalNumMap);
+        messageInfo.setNumMap(totalNumMap);
         Long totalHit = newsNum+projectNum+investfirmsNum+investEventNum+mergeEventNum+launchEventNum;
-        ret.setTotalhit(totalHit);
-        return ret;
+        messageInfo.setTotalhit(totalHit);
+        return messageInfo;
     }
 }

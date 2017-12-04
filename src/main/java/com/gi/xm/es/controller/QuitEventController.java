@@ -1,11 +1,11 @@
 package com.gi.xm.es.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.gi.xm.es.pojo.Pagination;
+import com.gi.xm.es.view.MessageInfo4ES;
+import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.pojo.query.QuitEventQuery;
 import com.gi.xm.es.util.ListUtil;
 import com.gi.xm.es.view.MessageStatus;
-import com.gi.xm.es.view.Result;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -43,12 +43,12 @@ public class QuitEventController {
 
     private final String TYPE = "quit_event";
 
-    private static Result errorRet = new Result(MessageStatus.MISS_PARAMETER.getMessage(), MessageStatus.MISS_PARAMETER.getStatus());
+    private static MessageInfo4ES errorRet = new MessageInfo4ES (MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @RequestMapping(value="quitEvent",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Result queryMergeEvent(@RequestBody QuitEventQuery quitEvent) {
-        Result ret = new Result();
+    public MessageInfo4ES queryMergeEvent(@RequestBody QuitEventQuery quitEvent) {
+        MessageInfo4ES messageInfo = new MessageInfo4ES();
         Integer pageSize = quitEvent.getPageSize();
         Integer pageNum = quitEvent.getPageNo();
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
@@ -135,7 +135,7 @@ public class QuitEventController {
         Pagination page = new Pagination();
         page.setTotal(totalHit>SEARCHLIMIT?SEARCHLIMIT:totalHit);
         page.setRecords(entityList);
-        ret = new Result(MessageStatus.OK.getMessage(), MessageStatus.OK.getStatus(), page);
-        return ret;
+        messageInfo = new MessageInfo4ES(MessageStatus.OK.getStatus(), MessageStatus.OK.getMessage(), page);
+        return messageInfo;
     }
 }
