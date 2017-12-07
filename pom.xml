@@ -27,9 +27,22 @@
     <properties>
 		<!-- The main class to start by executing java -jar -->
 		<start-class>com.gi.xm.es.main.SearchApp</start-class>
-	</properties>
+            <swagger.verison>2.7.0</swagger.verison>
+    </properties>
 
     <dependencies>
+        <!--swagger2文档 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.verison}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.verison}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>  
             <artifactId>spring-boot-starter-web</artifactId>  
