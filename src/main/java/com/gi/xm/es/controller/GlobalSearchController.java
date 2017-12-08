@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
@@ -49,7 +50,7 @@ public class GlobalSearchController {
     @ResponseBody
     public MessageInfo4ES queryTotal(@RequestBody Query query) {
         MessageInfo4ES messageInfo = new MessageInfo4ES();
-        if(query.getKeyword() == null){
+        if(query.getKeyword() == null || StringUtils.isEmpty(query.getKeyword())){
             return errorRet;
         }
         LinkedHashMap<String,Long> totalNumMap = new LinkedHashMap<String,Long>();
