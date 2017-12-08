@@ -13,10 +13,10 @@ public class MessageInfo4ES{
      * @Fields serialVersionUID : TODO
      */
     private static final long serialVersionUID = -7122226153545621086L;
-    @ApiModelProperty(value = "OK/ERROR")
+    @ApiModelProperty(value = "OK/ERROR/缺少参数")
     private String message;
 
-    @ApiModelProperty(value = "成功:10000 失败:10001")
+    @ApiModelProperty(value = "成功:10000 失败:10001 缺少参数:10002")
     private int status;
     /**
      * 返回分页数据
