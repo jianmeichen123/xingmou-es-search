@@ -46,9 +46,9 @@ public class ProjectController {
              @ApiImplicitParam(paramType = "query", dataType = "List<Integer>", name = "industryIds", value = "一级行业id集合", required = false),
              @ApiImplicitParam(paramType = "query", dataType = "String", name = "order", value = "asc/desc", required = false),
              @ApiImplicitParam(paramType = "query", dataType = "String", name = "orderBy", value = "排序字段", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "pageNo", value = "当前页码 从0 开始", required = true),
-             @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "pageSize", value = "", required = true),
-             @ApiImplicitParam(paramType = "query", dataType = "List<String>", name = "rounds", value = "轮次名称集合", required = false)
+             @ApiImplicitParam(paramType = "query", dataType = "integer", name = "pageNo", value = "当前页码 从0 开始", required = true),
+             @ApiImplicitParam(paramType = "query", dataType = "integer", name = "pageSize", value = "", required = true),
+             @ApiImplicitParam(paramType = "query", dataType = "List<s>", name = "rounds", value = "轮次名称集合", required = false)
             })
     @RequestMapping(value = "project", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
