@@ -45,7 +45,7 @@ public class GlobalSearchController {
     private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @ApiOperation("查询项目,机构,投资事件,并购事件,上市事件 每种列表总数")
-    @ApiImplicitParams(@ApiImplicitParam(paramType = "query", dataType = "String", name = "keyword", value = "关键字", required = true))
+    @ApiImplicitParam(paramType = "body", dataType = "Query", name = "query", value = "必填项:keyword", required = true)
     @RequestMapping(value="total",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES queryTotal(@RequestBody Query query) {
