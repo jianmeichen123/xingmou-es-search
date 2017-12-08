@@ -37,8 +37,9 @@ public class InvestEventController {
     @ResponseBody
     public MessageInfo4ES queryInvestEvent(@RequestBody InvestEventQuery investEvent) {
         MessageInfo4ES messageInfo = new MessageInfo4ES();
-        Integer pageSize = investEvent.getPageSize();
-        Integer pageNum = investEvent.getPageNo();
+        if(investEvent.getPageSize()==null || investEvent.getPageNo()==null){
+            return errorRet;
+        }
         //构建请求体
         SearchRequestBuilder srb = investEventService.queryList(investEvent);
         //返回响应

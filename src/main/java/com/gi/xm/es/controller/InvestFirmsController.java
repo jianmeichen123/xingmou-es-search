@@ -38,6 +38,9 @@ public class InvestFirmsController {
     @ResponseBody
     public MessageInfo4ES queryMergeEvent(@RequestBody InvestFirmsQuery investFirmsQuery) {
         MessageInfo4ES messageInfo = new MessageInfo4ES();
+        if(investFirmsQuery.getPageSize()==null || investFirmsQuery.getPageNo()==null){
+            return errorRet;
+        }
         Integer pageSize = investFirmsQuery.getPageSize();
         Integer pageNum = investFirmsQuery.getPageNo();
         SearchRequestBuilder srb = investfirmsService.queryList(investFirmsQuery);

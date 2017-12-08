@@ -44,6 +44,9 @@ public class LaunchEventController {
     @ResponseBody
     public MessageInfo4ES queryInvestEvent(@RequestBody LaunchEventQuery launchEventQuery) {
         MessageInfo4ES messageInfo ;
+        if(launchEventQuery.getPageSize()==null || launchEventQuery.getPageNo()==null){
+            return errorRet;
+        }
         //构建请求体
         SearchRequestBuilder srb = launchEventService.queryList(launchEventQuery);
         //返回响应

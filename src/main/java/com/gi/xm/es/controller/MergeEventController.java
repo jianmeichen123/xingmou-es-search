@@ -44,6 +44,9 @@ public class MergeEventController {
     @ResponseBody
     public MessageInfo4ES queryMergeEvent(@RequestBody MergeEventQuery mergeEventQuery) {
         MessageInfo4ES messageInfo = new MessageInfo4ES();
+        if(mergeEventQuery.getPageSize()==null || mergeEventQuery.getPageNo()==null){
+            return errorRet;
+        }
         Integer pageSize = mergeEventQuery.getPageSize();
         Integer pageNum = mergeEventQuery.getPageNo();
         //构建请求体

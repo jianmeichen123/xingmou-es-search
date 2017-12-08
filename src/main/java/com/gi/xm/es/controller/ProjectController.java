@@ -54,6 +54,9 @@ public class ProjectController {
     @ResponseBody
     public MessageInfo4ES queryProject(@RequestBody ProjectQuery project) {
         MessageInfo4ES messageInfo = new MessageInfo4ES();
+        if(project.getPageSize()==null || project.getPageNo()==null){
+            return errorRet;
+        }
         //构建请求体
         SearchRequestBuilder srb = projectService.queryList(project);
         //返回响应

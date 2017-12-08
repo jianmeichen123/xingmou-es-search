@@ -54,6 +54,9 @@ public class NewsController {
     @ResponseBody
     public MessageInfo4ES queryNews(@RequestBody NewsQuery newsQuery) {
         MessageInfo4ES messageInfo ;
+        if(newsQuery.getPageSize()==null || newsQuery.getPageNo()==null){
+            return errorRet;
+        }
         //构建请求体
         SearchRequestBuilder srb = newsService.queryList(newsQuery);
         //返回响应
