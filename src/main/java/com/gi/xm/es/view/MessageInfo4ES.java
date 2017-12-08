@@ -1,6 +1,7 @@
 package com.gi.xm.es.view;
 
 import com.gi.xm.es.view.Pagination;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.LinkedHashMap;
 
@@ -12,21 +13,30 @@ public class MessageInfo4ES{
      * @Fields serialVersionUID : TODO
      */
     private static final long serialVersionUID = -7122226153545621086L;
+    @ApiModelProperty(value = "OK/ERROR")
     private String message;
+
+    @ApiModelProperty(value = "成功:10000 失败:10001")
     private int status;
     /**
      * 返回分页数据
      */
+    @ApiModelProperty(value = "分页数据")
     Pagination page;
+
     /**
      * ES每个索引返回的命中条数加和
      */
+    @ApiModelProperty(value = "ES每个索引返回的命中条数加和")
     private Long totalhit;
+
     /**
      * ES每个索引返回的命中条数
      */
+    @ApiModelProperty(value = "ES每个索引返回的命中条数")
     private LinkedHashMap<String,Long> numMap;
 
+    @ApiModelProperty(value = "true/false")
     private boolean success;
 
     public MessageInfo4ES()

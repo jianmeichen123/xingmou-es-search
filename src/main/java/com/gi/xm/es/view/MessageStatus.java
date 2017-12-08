@@ -5,8 +5,8 @@ package com.gi.xm.es.view;
  */
 public enum MessageStatus {
 
-    OK(10000, "成功"),
-    SYS_ERROR(10001, "系统繁忙,请稍后重试"),
+    OK(10000, "OK"),
+    SYS_ERROR(10001, "ERROR"),
     MISS_PARAMETER(10002, "%s"),
     DATA_NOT_EXISTS(10003, "%s");
 

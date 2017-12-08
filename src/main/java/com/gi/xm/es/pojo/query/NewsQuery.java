@@ -1,6 +1,8 @@
 package com.gi.xm.es.pojo.query;
 
 import com.gi.xm.es.pojo.Query;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,40 +11,52 @@ import java.util.List;
 /**
  * Created by zcy on 17-4-18.
  */
+@ApiModel
 public class NewsQuery extends Query implements Serializable {
+
 
     private Long id;
 
+    @ApiModelProperty("作者")
     private String auther;
 
+    @ApiModelProperty("行业")
     private String industry;
 
+    @ApiModelProperty("新闻图片地址:'http://static.galaxyinternet.com/img/news/'+code+'.PNG'")
     private String code;
 
+    @ApiModelProperty("创建时间")
     private Long ctime;
 
+    @ApiModelProperty("点击链接")
     private String href;
 
-    private String img;
-
-    private String imgmd5;
-
+    @ApiModelProperty("时间排序字段 默认按时间倒序 不用传值")
     private Long orderTime;
 
+    @ApiModelProperty("暂无用")
     private String searchkey;
 
+    @ApiModelProperty("新闻概要")
     private String overview;
 
+    @ApiModelProperty("新闻类型")
     private String type;
 
+    @ApiModelProperty("新闻类型id")
     private Integer typeId;
 
+    @ApiModelProperty("新闻图片加密")
     private String md5;
 
+    @ApiModelProperty("新闻标题")
     private String title;
 
+    @ApiModelProperty("asc/desc")
     private String order;
 
+    @ApiModelProperty("排序字段")
     private String orderBy;
 
 
@@ -84,22 +98,6 @@ public class NewsQuery extends Query implements Serializable {
 
     public void setHref(String href) {
         this.href = href;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public String getImgmd5() {
-        return imgmd5;
-    }
-
-    public void setImgmd5(String imgmd5) {
-        this.imgmd5 = imgmd5;
     }
 
     public String getSearchkey() {

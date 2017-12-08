@@ -1,6 +1,8 @@
 package com.gi.xm.es.pojo.query;
 
 import com.gi.xm.es.pojo.Query;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,57 +10,64 @@ import java.util.List;
 /**
  * Created by zcy on 17-1-17.
  */
+@ApiModel
 public class ProjectQuery extends Query implements Serializable{
 
+    @ApiModelProperty(value = "项目code 项目图片地址:http://static.galaxyinternet.com/img/project/+projCode+.png")
     private String projCode;
 
-    private Long sourceId;
-
+    @ApiModelProperty(value = "项目标题")
     private String projTitle;
 
+    @ApiModelProperty(value = "项目slogan")
     private String introduce;
 
+    @ApiModelProperty(value = "项目一级行业")
     private String industryName;
 
+    @ApiModelProperty(value = "项目二级行业")
     private String industrySubName;
 
+    @ApiModelProperty(value = "最新融资轮次")
     private String latestFinanceRound;
 
+    @ApiModelProperty(value = "二级地区")
     private String districtSubName;
 
+    @ApiModelProperty(value = "成立时间")
     private String  setupDT;
 
+    @ApiModelProperty(value = "最新融资时间")
     private String latestFinanceDT;
 
+    @ApiModelProperty(value = "最新融资金额")
     private String  latestFinanceAmountStr;
 
-    private Long  latestFinanceAmountNum;
-
+    @ApiModelProperty(value = "一级行业id集合,用于行业筛选")
     private List<String> industryIds;
 
+    @ApiModelProperty(value = "轮次集合,用于轮次筛选")
     private List<String> rounds;
 
+    @ApiModelProperty(value = "一级地区id集合,用于一级地区筛选")
     private List<Long> districtIds;
 
+    @ApiModelProperty(value = "二级地区id集合,用于二级地区筛选")
     private List<Long> districtSubIds;
 
+    @ApiModelProperty(value = "开始时间,用于按项目成立时间筛选")
     private String startDate;
 
+    @ApiModelProperty(value = "结束时间,用于按项目成立时间筛选")
     private String endDate;
 
     private Integer showOrder;
 
+    @ApiModelProperty(value = "升序:asc 降序:desc")
     private String order;
 
+    @ApiModelProperty(value = "排序字段")
     private String orderBy;
-
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
-    }
 
     public String getProjCode() {
         return projCode;
@@ -147,15 +156,6 @@ public class ProjectQuery extends Query implements Serializable{
     public void setLatestFinanceAmountStr(String latestFinanceAmountStr) {
         this.latestFinanceAmountStr = latestFinanceAmountStr;
     }
-
-    public Long getLatestFinanceAmountNum() {
-        return latestFinanceAmountNum;
-    }
-
-    public void setLatestFinanceAmountNum(Long latestFinanceAmountNum) {
-        this.latestFinanceAmountNum = latestFinanceAmountNum;
-    }
-
     public String getStartDate() {
         return startDate;
     }

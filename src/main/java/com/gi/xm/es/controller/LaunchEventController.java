@@ -43,9 +43,7 @@ public class LaunchEventController {
     @RequestMapping(value="launchEvent",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES queryInvestEvent(@RequestBody LaunchEventQuery launchEventQuery) {
-        MessageInfo4ES messageInfo = new MessageInfo4ES();
-        Integer pageSize = launchEventQuery.getPageSize();
-        Integer pageNum = launchEventQuery.getPageNo();
+        MessageInfo4ES messageInfo ;
         //构建请求体
         SearchRequestBuilder srb = launchEventService.queryList(launchEventQuery);
         //返回响应

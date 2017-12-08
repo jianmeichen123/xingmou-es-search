@@ -1,5 +1,6 @@
 package com.gi.xm.es.pojo.query;
 
+import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.view.Pagination;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by zcy on 17-4-21.
  */
-public class QuitEventQuery extends Pagination implements Serializable {
+public class QuitEventQuery extends Query implements Serializable {
 
     private Long eventId;
 

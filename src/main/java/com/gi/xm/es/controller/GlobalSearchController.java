@@ -4,6 +4,7 @@ import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.service.*;
 import com.gi.xm.es.view.MessageInfo4ES;
 import com.gi.xm.es.view.MessageStatus;
+import io.swagger.annotations.ApiOperation;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -40,6 +41,7 @@ public class GlobalSearchController {
 
     private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
+    @ApiOperation("查询项目,机构,投资事件,并购事件,上市事件 每种列表总数")
     @RequestMapping(value="total",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES queryTotal(@RequestBody Query query) {
