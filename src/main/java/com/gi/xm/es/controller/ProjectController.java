@@ -37,19 +37,8 @@ public class ProjectController {
     private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @ApiOperation("查询项目列表")
-    @ApiImplicitParams(
-            {@ApiImplicitParam(paramType = "query", dataType = "String", name = "keyword", value = "项目查询", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "List<Integer>", name = "districtIds", value = "项目一级地区id集合", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "List<Integer>", name = "districtSubIds", value = "项目查询", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "String", name = "endDate", value = "截止日期", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "String", name = "startDate", value = "开始日期", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "List<Integer>", name = "industryIds", value = "一级行业id集合", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "String", name = "order", value = "asc/desc", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "String", name = "orderBy", value = "排序字段", required = false),
-             @ApiImplicitParam(paramType = "query", dataType = "integer", name = "pageNo", value = "当前页码 从0 开始", required = true),
-             @ApiImplicitParam(paramType = "query", dataType = "integer", name = "pageSize", value = "", required = true),
-             @ApiImplicitParam(paramType = "query", dataType = "List<s>", name = "rounds", value = "轮次名称集合", required = false)
-            })
+    @ApiImplicitParam(paramType = "body", dataType = "ProjectQuery", name = "project", value = "必填项: pageNo 0开始 pageSize", required = true)
+
     @RequestMapping(value = "project", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES queryProject(@RequestBody ProjectQuery project) {

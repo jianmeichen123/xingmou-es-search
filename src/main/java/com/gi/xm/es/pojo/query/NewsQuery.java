@@ -38,19 +38,19 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("暂无用")
     private String searchkey;
 
-    @ApiModelProperty("新闻概要")
+    @ApiModelProperty("资讯概要")
     private String overview;
 
-    @ApiModelProperty("新闻类型")
+    @ApiModelProperty("资讯类型")
     private String type;
 
-    @ApiModelProperty("新闻类型id")
+    @ApiModelProperty("资讯类型 [0:项目 1:机构 2:大公司3:事件4:任务5:政策6:行业 7:新产品")
     private Integer typeId;
 
-    @ApiModelProperty("新闻图片加密")
+    @ApiModelProperty("资讯图片加密")
     private String md5;
 
-    @ApiModelProperty("新闻标题")
+    @ApiModelProperty("资讯标题")
     private String title;
 
     @ApiModelProperty("asc/desc")

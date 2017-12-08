@@ -44,12 +44,7 @@ public class NewsController {
     private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
     @ApiOperation("查询资讯列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "keyword", value = "关键字", required = false),
-            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "typeId", value = "资讯类型[0:项目 1:机构 2:大公司3:事件4:任务5:政策6:行业 7:新产品]", required = false),
-            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "pageNo", value = "当前页码 从0 开始", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "pageSize", value = "每页记录数", required = true),
-    })
+    @ApiImplicitParam(paramType = "body", dataType = "NewsQuery", name = "newsQuery", value = "必填项: pageNo 0开始 pageSize", required = true)
     @RequestMapping(value="news",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES queryNews(@RequestBody NewsQuery newsQuery) {

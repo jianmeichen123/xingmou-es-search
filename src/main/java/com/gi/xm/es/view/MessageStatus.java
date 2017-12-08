@@ -20,7 +20,7 @@ public enum MessageStatus {
     }
 
     public String getMessage() {
-        return "缺少参数";
+        return message;
     }
 
     public void setMessage(String message) {
