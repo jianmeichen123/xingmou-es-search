@@ -2,22 +2,19 @@ package com.gi.xm.es.service;
 
 import com.alibaba.fastjson.JSON;
 import com.gi.xm.es.pojo.Query;
-import com.gi.xm.es.pojo.query.ProjectQuery;
+import com.gi.xm.es.pojo.query.InvestorQuery;
+import com.gi.xm.es.pojo.query.StartUpQuery;
 import com.gi.xm.es.util.ListUtil;
-import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,16 +29,16 @@ import java.util.Map;
  * Created by zcy on 17-11-4.
  */
 @Service
-public class ProjectService extends BaseService {
+public class InvestorService extends BaseService {
 
     @Autowired
     private Client client;
 
 
-    @Value("${ctdn.project.index}")
+    @Value("${ctdn.investor.index}")
     private  String index;
 
-    @Value("${ctdn.project.type}")
+    @Value("${ctdn.investor.type}")
     private  String type;
 
     /**构建请求体:
@@ -49,74 +46,66 @@ public class ProjectService extends BaseService {
      * @return
      */
     public  Long queryNum(Query query){
-        ProjectQuery project = new ProjectQuery();
-        project.setKeyword(query.getKeyword());
-        SearchRequestBuilder qb = queryList(project);
+        InvestorQuery investorUpQuery = new InvestorQuery();
+        investorUpQuery.setKeyword(query.getKeyword());
+        SearchRequestBuilder qb = queryList(investorUpQuery);
         SearchHits ssh = getSearchHits(qb);
         return ssh.getTotalHits();
     }
 
     /**构建请求体:
      * 按多条件查询项目列表
-     * @param project
+     * @param query
      * @return
      */
-    public SearchRequestBuilder queryList(ProjectQuery project){
-        SearchRequestBuilder srb = client.prepareSearch(index);
+    public SearchRequestBuilder queryList(InvestorQuery query){
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        SearchRequestBuilder srb = client.prepareSearch(index);
         //按行业
-        if (ListUtil.isNotEmpty(project.getIndustryIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("industryIds", project.getIndustryIds()));
+        if (ListUtil.isNotEmpty(query.getIndustryIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("industryIds", query.getIndustryIds()));
         }
-        //按title
-        if (!StringUtils.isEmpty(project.getKeyword())) {
-            project.setKeyword(QueryParserBase.escape(project.getKeyword().trim()));
-            queryBuilder.must(QueryBuilders.wildcardQuery("projTitle", "*" + project.getKeyword() + "*"));
+
+        //按创业者名称
+        if (!StringUtils.isEmpty(query.getKeyword())) {
+            queryBuilder.must(QueryBuilders.matchQuery("zhName",query.getKeyword()));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.field("projTitle");
+            highlightBuilder.field("zhName");
             srb.highlighter(highlightBuilder);
         }
-        //按createDate
-        if (!StringUtils.isEmpty(project.getStartDate())  || !StringUtils.isEmpty(project.getEndDate())) {
-            RangeQueryBuilder rangeq = QueryBuilders.rangeQuery("setupDT");
-            if (!StringUtils.isEmpty(project.getStartDate())) {
-                rangeq.gte(project.getStartDate());
-            }
-            if (!StringUtils.isEmpty(project.getEndDate())) {
-                rangeq.lte(project.getEndDate());
-            }
-            queryBuilder.filter(rangeq);
-        }
-        //按round
-        if (ListUtil.isNotEmpty(project.getRounds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("latestFinanceRound", project.getRounds()));
-        }
+
         //按地区
-        if (ListUtil.isNotEmpty(project.getDistrictIds())&&ListUtil.isNotEmpty(project.getDistrictSubIds())) {
+        if (ListUtil.isNotEmpty(query.getDistrictIds())&&ListUtil.isNotEmpty(query.getDistrictSubIds())) {
             BoolQueryBuilder shoudBuilder = QueryBuilders.boolQuery();
-            shoudBuilder.should(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
-            shoudBuilder.should(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+            shoudBuilder.should(QueryBuilders.termsQuery("districtId", query.getDistrictIds()));
+            shoudBuilder.should(QueryBuilders.termsQuery("districtSubId", query.getDistrictSubIds()));
             shoudBuilder.minimumNumberShouldMatch(1);
             queryBuilder.must(shoudBuilder);
-        }else if (ListUtil.isNotEmpty(project.getDistrictIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("districtId", project.getDistrictIds()));
-        }else if (ListUtil.isNotEmpty(project.getDistrictSubIds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", project.getDistrictSubIds()));
+        }else if (ListUtil.isNotEmpty(query.getDistrictIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtId", query.getDistrictIds()));
+        }else if (ListUtil.isNotEmpty(query.getDistrictSubIds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("districtSubId", query.getDistrictSubIds()));
         }
+
+        //按rounds
+        if (ListUtil.isNotEmpty(query.getRounds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("rounds", query.getRounds()));
+        }
+        // 构建builder
         srb.setQuery(queryBuilder);
-//        SearchHits  shs = getSearchHits(srb);
-//        Long totalHit = shs.getTotalHits();
-        //排序
-        if (project.getOrderBy() != null) {
-            srb.addSort(project.getOrderBy(), SortOrder.fromString(project.getOrder()));
+        // 设置查询方式 query_then_fetch
+        SearchHits  shs = getSearchHits(srb);
+        Long totalHit = shs.getTotalHits();
+        /*if (query.getOrderBy() != null) {
+            srb.addSort(query.getOrderBy(), SortOrder.fromString(query.getOrder()));
         } else {
             srb.addSort("showOrder", SortOrder.ASC);
-        }
+        }*/
         //设置分页参数和请求参数
-        Integer tmp = project.getPageSize();
-        Integer pageSize = project.getPageSize();
-        Integer pageNo = project.getPageNo();
+        Integer tmp = query.getPageSize();
+        Integer pageSize = query.getPageSize();
+        Integer pageNo = query.getPageNo();
         if (pageSize*pageNo+pageSize > max_search_result){
             tmp =  max_search_result - pageSize*pageNo;
         }
@@ -126,16 +115,16 @@ public class ProjectService extends BaseService {
 
     /**
      * 查询结果转List
-     * @param project
+     * @param query
      * @param shs
      * @return
      * @throws Exception
      */
-    public  List<Object> getResponseList (ProjectQuery project,SearchHits shs)  throws Exception{
+    public  List<Object> getResponseList (InvestorQuery query,SearchHits shs)  throws Exception{
         List<Object> entityList = new ArrayList<>();
         for (SearchHit it : shs) {
             Map source = it.getSource();
-            ProjectQuery p = JSON.parseObject(JSON.toJSONString(source), ProjectQuery.class);
+            InvestorQuery p = JSON.parseObject(JSON.toJSONString(source), InvestorQuery.class);
             //获取对应的高亮域
             Map<String, HighlightField> result = it.highlightFields();
             if(result != null){
@@ -148,9 +137,9 @@ public class ProjectService extends BaseService {
                         field.setAccessible(true);
                         String value = field.get(p).toString();
                         //获得搜索关键字
-                        String rep = "<comp>" + project.getKeyword() + "</comp>";
+                        String rep = "<firm>" + query.getKeyword() + "</firm>";
                         //替换
-                        field.set(p, value.replaceAll(project.getKeyword(), rep));
+                        field.set(p, value.replaceAll(query.getKeyword(), rep));
                     }
                 } catch (Exception e) {
                     throw e;

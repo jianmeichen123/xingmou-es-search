@@ -219,4 +219,5 @@ public class ProjectQuery extends Query implements Serializable{
     public String getIntroduce() {
         return introduce;
     }
+
 }

@@ -42,9 +42,15 @@ public class GlobalSearchController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private StartUpService startUpService;
+
+    @Autowired
+    private InvestorService investorService;
+
     private static MessageInfo4ES errorRet = new MessageInfo4ES(MessageStatus.MISS_PARAMETER.getStatus(),MessageStatus.MISS_PARAMETER.getMessage());
 
-    @ApiOperation("查询项目,机构,投资事件,并购事件,上市事件 每种列表总数")
+    @ApiOperation("查询项目,机构,投资事件,并购事件,上市事件,创业者,投资人 每种列表总数")
     @ApiImplicitParam(paramType = "body", dataType = "Query", name = "query", value = "必填项:keyword", required = true)
     @RequestMapping(value="total",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -60,14 +66,18 @@ public class GlobalSearchController {
         Long investEventNum = investEventService.queryNum(query);
         Long mergeEventNum = mergeEventService.queryNum(query);
         Long launchEventNum = launchEventService.queryNum(query);
+        Long startUpNum = startUpService.queryNum(query);
+        Long investorNum = investorService.queryNum(query);
         totalNumMap.put("news",newsNum);
         totalNumMap.put("project",projectNum);
         totalNumMap.put("investfirms",investfirmsNum);
         totalNumMap.put("investEvent",investEventNum);
         totalNumMap.put("mergeEvent",mergeEventNum);
         totalNumMap.put("launchEvent",launchEventNum);
+        totalNumMap.put("startUp",startUpNum);
+        totalNumMap.put("investor",investorNum);
         messageInfo.setNumMap(totalNumMap);
-        Long totalHit = newsNum+projectNum+investfirmsNum+investEventNum+mergeEventNum+launchEventNum;
+        Long totalHit = newsNum+projectNum+investfirmsNum+investEventNum+mergeEventNum+launchEventNum+startUpNum+investorNum;
         messageInfo.setTotalhit(totalHit);
         return messageInfo;
     }

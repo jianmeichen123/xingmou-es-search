@@ -1,0 +1,88 @@
+curl -XPUT 10.9.130.135:9200/ctdn_investor -d '{
+  "mappings" : {
+    "investor": {
+      "properties": {
+        "id":{
+            "type": "long"
+        },
+        "code":{
+            "type": "keyword"
+        },
+        "zhName":{
+            "type": "text",
+            "copy_to":"investor_all",
+            "fields":{
+                "raw":{
+                    "type":"keyword",
+                    "ignore_above":"256"
+                }
+            }
+        },
+        "enName":{
+            "type": "keyword"
+        },
+        "age":{
+            "type":"integer"
+        },
+        "gender":{
+            "type":"keyword"
+        },
+        "workLife":{
+            "type":"keyword"
+        },
+        "projCode":{
+            "type": "keyword"
+        },
+        "projTitle":{
+            "type": "keyword"
+        },
+        "introduce":{
+            "type": "keyword"
+        },
+         "job":{
+            "type": "keyword"
+        },
+        "industryIds":{
+            "type":"keyword"
+        },
+        "fields":{
+            "type":"keyword"
+        },
+        "rounds":{
+            "type":"keyword"
+        },
+        "districtId":{
+            "type": "keyword"
+        },
+        "districtName":{
+            "type": "keyword"
+        },
+        "districtSubId":{
+            "type": "keyword"
+        },
+        "districtSubName":{
+            "type": "keyword"
+        },
+        "districtGrandsonId":{
+            "type": "keyword"
+        },
+        "districtGrandsonName":{
+            "type": "keyword"
+        },
+        "colleage":{
+            "type": "keyword"
+        },
+        "degree":{
+            "type": "keyword"
+        },
+        "url":{
+            "type": "keyword"
+        },
+        "investor_all":{
+            "type":"text"
+        }
+      }
+    }
+  }
+}'
+

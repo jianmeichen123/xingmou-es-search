@@ -9,7 +9,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-@EnableEurekaClient
+//@EnableEurekaClient
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.gi.xm.es"})
 @Import(SwaggerConfiguration.class)
