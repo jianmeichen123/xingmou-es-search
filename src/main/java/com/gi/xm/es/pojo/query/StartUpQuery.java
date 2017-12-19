@@ -272,5 +272,10 @@ public class StartUpQuery extends Query implements Serializable  {
 		this.url = url;
 	}
 
-
+	@Override
+	public String toString() {
+		return "StartUpQuery{" +
+				"industryIds=" + industryIds +
+				'}';
+	}
 }
