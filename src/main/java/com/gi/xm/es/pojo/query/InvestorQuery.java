@@ -55,6 +55,10 @@ public class InvestorQuery extends Query implements Serializable  {
 	 */
 	private String fields;
 	/**
+	 * 投资阶段/轮次
+	 */
+	private List<String> rounds;
+	/**
 	 * 一级地区
 	 */
 	private String districtName;
@@ -79,7 +83,7 @@ public class InvestorQuery extends Query implements Serializable  {
 	private List<String> industryIds;
 
 	@ApiModelProperty(value = "轮次集合,用于轮次筛选")
-	private List<String> rounds;
+	private List<String> InvestorRounds;
 
 	@ApiModelProperty(value = "一级地区id集合,用于一级地区筛选")
 	private List<Long> districtIds;
@@ -223,10 +227,6 @@ public class InvestorQuery extends Query implements Serializable  {
 		this.industryIds = industryIds;
 	}
 
-	public void setRounds(List<String> rounds) {
-		this.rounds = rounds;
-	}
-
 	public List<Long> getDistrictIds() {
 		return districtIds;
 	}
@@ -267,9 +267,6 @@ public class InvestorQuery extends Query implements Serializable  {
 		this.orderBy = orderBy;
 	}
 
-	public List<String> getRounds() {
-		return rounds;
-	}
 
 	public String getColleage() {
 		return colleage;
@@ -295,5 +292,19 @@ public class InvestorQuery extends Query implements Serializable  {
 		this.url = url;
 	}
 
+	public List<String> getInvestorRounds() {
+		return InvestorRounds;
+	}
 
+	public void setInvestorRounds(List<String> investorRounds) {
+		InvestorRounds = investorRounds;
+	}
+
+	public List<String> getRounds() {
+		return rounds;
+	}
+
+	public void setRounds(List<String> rounds) {
+		this.rounds = rounds;
+	}
 }

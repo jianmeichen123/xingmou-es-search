@@ -89,8 +89,8 @@ public class InvestorService extends BaseService {
         }
 
         //按rounds
-        if (ListUtil.isNotEmpty(query.getRounds())) {
-            queryBuilder.must(QueryBuilders.termsQuery("rounds", query.getRounds()));
+        if (ListUtil.isNotEmpty(query.getInvestorRounds())) {
+            queryBuilder.must(QueryBuilders.termsQuery("rounds", query.getInvestorRounds()));
         }
         // 构建builder
         srb.setQuery(queryBuilder);
