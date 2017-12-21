@@ -65,10 +65,12 @@ public class NewsService extends BaseService {
     public SearchRequestBuilder queryList(NewsQuery newsQuery){
         SearchRequestBuilder srb = client.prepareSearch(index);
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+
         //按title
         if (!StringUtils.isEmpty(newsQuery.getKeyword())) {
             queryBuilder.must(QueryBuilders.termQuery("title",newsQuery.getKeyword().toLowerCase()));
         }
+
 
         //按新闻分类
         if(!StringUtils.isEmpty(newsQuery.getTypeId())){

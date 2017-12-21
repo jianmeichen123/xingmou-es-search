@@ -11,6 +11,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -70,8 +71,9 @@ public class StartUpService extends BaseService {
         }
 
         //按创业者名称
+
         if (!StringUtils.isEmpty(query.getKeyword())) {
-            queryBuilder.must(QueryBuilders.matchQuery("zhName",query.getKeyword()));
+            queryBuilder.must(QueryBuilders.matchPhraseQuery("zhName",query.getKeyword()).slop(0));
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
             highlightBuilder.field("zhName");

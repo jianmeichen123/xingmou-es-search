@@ -39,6 +39,9 @@ public class MessageInfo4ES{
     @ApiModelProperty(value = "true/false")
     private boolean success;
 
+    @ApiModelProperty(value = "ES每个索引返回的命中条数")
+    private LinkedHashMap<String,String> resultMap;
+
     public MessageInfo4ES()
     {
         this.setStatus(MessageStatus.OK.getStatus());
@@ -99,6 +102,14 @@ public class MessageInfo4ES{
 
     public void setNumMap(LinkedHashMap<String, Long> numMap) {
         this.numMap = numMap;
+    }
+
+    public LinkedHashMap<String, String> getResultMap() {
+        return resultMap;
+    }
+
+    public void setResultMap(LinkedHashMap<String, String> resultMap) {
+        this.resultMap = resultMap;
     }
 
     public void setSuccess(boolean success) {
