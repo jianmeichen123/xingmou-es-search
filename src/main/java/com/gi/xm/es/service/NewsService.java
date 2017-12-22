@@ -23,7 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -76,7 +79,10 @@ public class NewsService extends BaseService {
         if(!StringUtils.isEmpty(newsQuery.getTypeId())){
             queryBuilder.must(QueryBuilders.termQuery("typeId", newsQuery.getTypeId()));
         }
-
+        if(!StringUtils.isEmpty(newsQuery.getIndustryNames())){
+        	
+        	queryBuilder.must(QueryBuilders.termsQuery("industry",  newsQuery.getIndustryNames().split(",")));
+        }
         //按code
 //        if(!StringUtils.isEmpty(newsQuery.getCode())){
 //            queryBuilder.must(QueryBuilders.termQuery("code",newsQuery.getCode()));
@@ -171,4 +177,59 @@ public class NewsService extends BaseService {
         }
         return str;
     }
+    
+    public List<SearchHits >  queryGGList(NewsQuery newsQuery) throws Exception {
+		 SearchRequestBuilder srb = client.prepareSearch("ctdn_news");
+		
+	     srb.addSort("orderTime", SortOrder.DESC);
+	     srb.setFrom(0).setSize(2);
+	  
+		 Calendar cal = Calendar.getInstance();
+		 int interval = 0;
+		 List<SearchHits > result = new ArrayList<SearchHits >();
+		 while(true){
+			 BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+		     if(newsQuery.getIndustryNames()!=null && newsQuery.getIndustryNames().trim().length()!=0){
+		    	 queryBuilder.must(QueryBuilders.termsQuery("industry",  newsQuery.getIndustryNames().split(",")));
+		     }
+		     queryBuilder.must(QueryBuilders.termQuery("typeId", newsQuery.getTypeId()));
+			 cal.setTimeInMillis(System.currentTimeMillis());
+			 cal.add(Calendar.DATE, -interval);
+			 interval++;
+			 String now_format =  new SimpleDateFormat("yyyy-MM-dd").format(new Date(cal.getTimeInMillis()));
+			 long end_time =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(now_format + " 23:59:59").getTime()/1000;
+			 long start_time =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(now_format + " 00:00:00").getTime()/1000;
+			 System.out.println(interval + "当前日期：" + now_format + "start_time =" +  start_time + " end_time = " + end_time);
+			 queryBuilder.must(QueryBuilders.rangeQuery("orderTime").gte(start_time).lt(end_time));
+			 System.out.println(queryBuilder.toString());
+		     srb.setQuery(queryBuilder);
+	        SearchResponse res = srb.setTypes("news").setSearchType(SearchType.DEFAULT).execute().actionGet();
+	        SearchHits shs = res.getHits();
+	        System.out.println(shs.getTotalHits());
+	        if(shs.getTotalHits() == 0){
+	        	 if(interval == 20){//20天以前停止查询
+	 	        	break;
+	 	        }
+	        	continue;
+	        }
+	        result.add(res.getHits());
+	        if(result.size() ==3){
+	        	break;
+	        }
+		 }
+		 return result;
+	}
+	
+	public SearchHits  getGGCompeteInfo(NewsQuery newsQuery) throws Exception {
+		 SearchRequestBuilder srb = client.prepareSearch("ctdn_news");
+	     srb.addSort("orderTime", SortOrder.DESC);
+	     srb.setFrom(0).setSize(3);
+	     BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+		 queryBuilder.must(QueryBuilders.matchPhraseQuery("title",  newsQuery.getIndustryNames()));
+		 queryBuilder.must(QueryBuilders.termQuery("typeId", "1"));
+		 System.out.println(queryBuilder.toString());
+		 srb.setQuery(queryBuilder);
+	     SearchResponse res = srb.setTypes("news").setSearchType(SearchType.DEFAULT).execute().actionGet();
+		 return res.getHits();
+	}
 }
