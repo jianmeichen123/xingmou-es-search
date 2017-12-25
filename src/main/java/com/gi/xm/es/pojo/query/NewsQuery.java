@@ -59,7 +59,8 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("排序字段")
     private String orderBy;
 
-
+    private String industryNames;
+    
     public Long getId() {
         return id;
     }
@@ -179,4 +180,12 @@ public class NewsQuery extends Query implements Serializable {
     public void setTypeId(Integer typeId) {
         this.typeId = typeId;
     }
+
+	public String getIndustryNames() {
+		return industryNames;
+	}
+
+	public void setIndustryNames(String industryNames) {
+		this.industryNames = industryNames;
+	}
 }

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -65,6 +66,49 @@ public class NewsController {
             messageInfo = new MessageInfo4ES(MessageStatus.OK.getStatus(), MessageStatus.OK.getMessage(), page);
             messageInfo.setTotalhit(totalHit);
             return messageInfo;
+        }catch(Exception e){
+            LOG.error(e.getMessage());
+            return errorRet;
+        }
+    }
+    
+    /**
+     * 高管-首页-获取最近三天行业资讯
+     */
+    @RequestMapping(value="getGGNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public MessageInfo4ES getGGNews(@RequestBody NewsQuery newsQuery) {
+    	MessageInfo4ES ret ;
+        try{
+        	Pagination page = new Pagination();
+        	List<SearchHits>  result = newsService.queryGGList(newsQuery);
+        	List<List<Object>> entityList = new ArrayList<List<Object>>();
+        	for(SearchHits searchHits : result){
+        		List<Object> objList =newsService.getResponseList (newsQuery,searchHits);
+        		entityList.add(objList);
+        	}
+            page.setRecordList(entityList);
+            ret = new MessageInfo4ES(MessageStatus.OK.getStatus(), MessageStatus.OK.getMessage(), page);
+            return ret;
+        }catch(Exception e){
+            LOG.error(e.getMessage());
+            return errorRet;
+        }
+    }
+    
+    
+    //高管-首页-竞争状态
+    @RequestMapping(value="getGGCompeteInfo",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public MessageInfo4ES getGGCompeteInfo(@RequestBody NewsQuery newsQuery) {
+    	MessageInfo4ES ret ;
+        try{
+        	Pagination page = new Pagination();
+        	SearchHits  result = newsService.getGGCompeteInfo(newsQuery);
+        	List<Object> records =newsService.getResponseList (newsQuery,result);
+            page.setRecords(records);
+            ret = new MessageInfo4ES(MessageStatus.OK.getStatus(), MessageStatus.OK.getMessage(), page);
+            return ret;
         }catch(Exception e){
             LOG.error(e.getMessage());
             return errorRet;
