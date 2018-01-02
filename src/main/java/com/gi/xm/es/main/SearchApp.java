@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Import;
 //@EnableEurekaClient
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.gi.xm.es"})
-@Import(SwaggerConfiguration.class)
 public class SearchApp {
     private static final Logger LOG = LoggerFactory.getLogger(SearchApp.class);
 
