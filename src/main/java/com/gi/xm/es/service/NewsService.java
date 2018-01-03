@@ -1,6 +1,7 @@
 package com.gi.xm.es.service;
 
 import com.alibaba.fastjson.JSON;
+import com.gi.xm.es.controller.NewsController;
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.pojo.query.NewsQuery;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
@@ -17,6 +18,8 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,7 +40,9 @@ import java.util.regex.Pattern;
  */
 @Service
 public class NewsService extends BaseService {
-
+	
+	
+	private static final Logger LOG = LoggerFactory.getLogger(NewsService.class);
 
     @Autowired
     private Client client;
@@ -92,7 +97,7 @@ public class NewsService extends BaseService {
         srb.setQuery(queryBuilder);
         srb.addSort("orderTime", SortOrder.DESC);
         srb.addSort("_score", SortOrder.DESC);
-
+        System.out.println(srb.toString());
         //设置分页参数和请求参数
         Integer tmp = newsQuery.getPageSize();
         Integer pageSize = newsQuery.getPageSize();
@@ -199,7 +204,7 @@ public class NewsService extends BaseService {
 			 String now_format =  new SimpleDateFormat("yyyy-MM-dd").format(new Date(cal.getTimeInMillis()));
 			 long end_time =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(now_format + " 23:59:59").getTime()/1000;
 			 long start_time =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(now_format + " 00:00:00").getTime()/1000;
-			 System.out.println(interval + "当前日期：" + now_format + "start_time =" +  start_time + " end_time = " + end_time);
+			 LOG.info(interval + "当前日期：" + now_format + "start_time =" +  start_time + " end_time = " + end_time);
 			 queryBuilder.must(QueryBuilders.rangeQuery("orderTime").gte(start_time).lt(end_time));
 			 System.out.println(queryBuilder.toString());
 		     srb.setQuery(queryBuilder);
