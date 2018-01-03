@@ -1,0 +1,76 @@
+curl -XPUT 10.9.130.135:9200/ctdn_report -d '{
+  "mappings" : {
+    "report": {
+      "properties": {
+        "id":{
+            "type": "long"
+        },
+        "title":{
+            "type": "text",
+            "copy-to":"report-all",
+            "fields":{
+                "raw":{
+                    "type":"keyword",
+                    "ignore_above":"256"
+                }
+            }
+        },
+        "publishDate":{
+            "type": "keyword"
+        },
+        "source":{
+            "type": "keyword"
+        },
+        "authorName":{
+            "type":"text",
+            "copy-to":"report-all",
+            "fields":{
+                "raw":{
+                    "type":"keyword",
+                    "ignore_above":256
+                }
+            }
+        },
+        "authorAvatar":{
+            "type":"keyword"
+        },
+        "authorDesc":{
+            "type":"text"
+        },
+        "listPic":{
+            "type": "keyword"
+        },
+        "reportBody":{
+            "type": "text",
+            "copy-to":"report-all"
+        },
+        "pageNum":{
+            "type": "keyword"
+        },
+         "coverPic":{
+            "type": "keyword"
+        },
+        "reportDesc":{
+            "type":"text",
+            "copy-to":"report-all"
+        },
+        "reportIndex":{
+            "type":"keyword"
+        },
+        "fileUrl":{
+            "type": "keyword"
+        },
+        "type":{
+            "type": "keyword"
+        },
+        "state":{
+            "type": "keyword"
+        },
+        "report_all":{
+            "type":"text"
+        }
+      }
+    }
+  }
+}'
+
