@@ -72,6 +72,9 @@ public class ProjectQuery extends Query implements Serializable{
     @ApiModelProperty(value = "成立时间排序")
     private String setupDTEs;
 
+    @ApiModelProperty(value="公司code/用于查询工商信息..")
+    private  String compCode;
+
     public String getProjCode() {
         return projCode;
     }
@@ -229,5 +232,13 @@ public class ProjectQuery extends Query implements Serializable{
 
     public void setSetupDTEs(String setupDTEs) {
         this.setupDTEs = setupDTEs;
+    }
+
+    public String getCompCode() {
+        return compCode;
+    }
+
+    public void setCompCode(String compCode) {
+        this.compCode = compCode;
     }
 }
