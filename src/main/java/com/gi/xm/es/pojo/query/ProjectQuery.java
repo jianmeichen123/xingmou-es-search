@@ -69,6 +69,9 @@ public class ProjectQuery extends Query implements Serializable{
     @ApiModelProperty(value = "排序字段")
     private String orderBy;
 
+    @ApiModelProperty(value = "成立时间排序")
+    private String setupDTEs;
+
     public String getProjCode() {
         return projCode;
     }
@@ -220,4 +223,11 @@ public class ProjectQuery extends Query implements Serializable{
         return introduce;
     }
 
+    public String getSetupDTEs() {
+        return setupDTEs;
+    }
+
+    public void setSetupDTEs(String setupDTEs) {
+        this.setupDTEs = setupDTEs;
+    }
 }
