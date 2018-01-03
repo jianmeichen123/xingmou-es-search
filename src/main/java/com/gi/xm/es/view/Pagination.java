@@ -55,4 +55,14 @@ public class Pagination implements Serializable {
     public void setRecords(List<Object> records) {
         this.records = records;
     }
+    
+    public List<List<Object>> getRecordList() {
+		return recordList;
+	}
+
+	public void setRecordList(List<List<Object>> recordList) {
+		this.recordList = recordList;
+	}
+
+	private List<List<Object>> recordList;
 }
