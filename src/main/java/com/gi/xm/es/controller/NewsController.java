@@ -121,7 +121,7 @@ public class NewsController {
 
     @ApiOperation("app端查询资讯接口,返回分类数据和条数")
     @ApiImplicitParam(paramType = "body", dataType = "NewsQuery", name = "newsQuery", value = "必填项: pageSize keyword:搜索关键字", required = true)
-    @RequestMapping(value="getAppNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="getAggregationNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES getAppNews(@RequestBody NewsQuery newsQuery) {
         if(newsQuery.getPageSize()==null || newsQuery.getKeyword() ==null){
