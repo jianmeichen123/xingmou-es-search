@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.controller.NewsController;
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.pojo.query.NewsQuery;
+import com.gi.xm.es.view.AppNews;
+import com.gi.xm.es.view.MessageInfo4ES;
 import com.gi.xm.es.view.MessageStatus;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.apache.lucene.search.join.ScoreMode;
@@ -234,37 +236,33 @@ public class NewsService extends BaseService {
 	}
 
     //按类型分组,返回每组总数和前n条数据
-    public  JSONObject getAggregationResponse(NewsQuery newsQuery,SearchRequestBuilder srb){
-        JSONObject json = new JSONObject();
-        json.put("status", MessageStatus.OK.getStatus());
-        json.put("message",MessageStatus.OK.getMessage());
+    public MessageInfo4ES getAggregationResponse(NewsQuery newsQuery, SearchRequestBuilder srb){
+        MessageInfo4ES messageInfo4ES = new MessageInfo4ES();
         SearchResponse searchResponse = srb.get();
         Map<String, Aggregation> aggMap = searchResponse.getAggregations().asMap();
         LongTerms gradeTerms = (LongTerms) aggMap.get("perType");
         Iterator<Terms.Bucket> gradeBucketIt = gradeTerms.getBuckets().iterator();
         try{
-            JSONArray array = new JSONArray();
+           List<AppNews> list = new ArrayList<AppNews>();
             while(gradeBucketIt.hasNext()){
-                JSONObject obj = new JSONObject();
+                AppNews appNews = new AppNews();
                 Terms.Bucket gradeBucket = gradeBucketIt.next();
                 Long key = (Long)gradeBucket.getKey();
                 Long count = gradeBucket.getDocCount();
-                obj.put("typeId",key);
-                obj.put("number",count);
+                appNews.setTypeId(key);
+                appNews.setNumber(count);
                 InternalTopHits topHits =(InternalTopHits)gradeBucket.getAggregations().asMap().get("topHit");
                 SearchHits searchHits = topHits.getHits();
                 List<Object> entityList = getResponseList(newsQuery,searchHits);
-                obj.put("newsList",entityList);
-                array.add(obj);
+                appNews.setNewsList(entityList);
+                list.add(appNews);
             }
-            json.put("data",array);
+            messageInfo4ES.setData(list);
         }catch (Exception e){
-            json.put("status", MessageStatus.SYS_ERROR.getStatus());
-            json.put("message",MessageStatus.SYS_ERROR.getMessage());
-            json.put("data",null);
+            messageInfo4ES = new MessageInfo4ES(MessageStatus.SYS_ERROR.getStatus(),MessageStatus.SYS_ERROR.getMessage());
             e.printStackTrace();
         }
-        return json;
+        return messageInfo4ES;
     }
 
     public static void main(String[] args) {

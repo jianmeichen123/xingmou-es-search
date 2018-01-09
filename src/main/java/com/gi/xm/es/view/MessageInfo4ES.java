@@ -4,6 +4,7 @@ import com.gi.xm.es.view.Pagination;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Created by zcy on 17-12-4.
@@ -18,6 +19,11 @@ public class MessageInfo4ES{
 
     @ApiModelProperty(value = "成功:10000 失败:10001 缺少参数:10002")
     private int status;
+    /**
+     *
+     */
+    @ApiModelProperty(value="分组统计数据")
+    private List<AppNews> data;
     /**
      * 返回分页数据
      */
@@ -114,5 +120,13 @@ public class MessageInfo4ES{
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public List<AppNews> getData() {
+        return data;
+    }
+
+    public void setData(List<AppNews> data) {
+        this.data = data;
     }
 }

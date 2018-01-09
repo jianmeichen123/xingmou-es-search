@@ -123,12 +123,8 @@ public class NewsController {
     @ApiImplicitParam(paramType = "body", dataType = "NewsQuery", name = "newsQuery", value = "必填项: pageSize keyword:搜索关键字", required = true)
     @RequestMapping(value="getAppNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONObject getAppNews(@RequestBody NewsQuery newsQuery) {
+    public MessageInfo4ES getAppNews(@RequestBody NewsQuery newsQuery) {
         if(newsQuery.getPageSize()==null || newsQuery.getKeyword() ==null){
-            JSONObject errorRet =  new JSONObject();
-            errorRet.put("status",MessageStatus.MISS_PARAMETER.getStatus());
-            errorRet.put("message",MessageStatus.MISS_PARAMETER.getMessage());
-            errorRet.put("data",null);
             return errorRet;
         }
         //构建请求体
@@ -138,7 +134,7 @@ public class NewsController {
                                          .addAggregation(AggregationBuilders.terms("perType").field("typeId").subAggregation(AggregationBuilders.topHits("topHit").size(newsQuery.getPageSize())));
         //返回响应
         SearchHits shs = newsService.getSearchHits(srb);
-        JSONObject result = newsService.getAggregationResponse(newsQuery,srb);
+        MessageInfo4ES result = newsService.getAggregationResponse(newsQuery,srb);
         return result;
     }
 }
