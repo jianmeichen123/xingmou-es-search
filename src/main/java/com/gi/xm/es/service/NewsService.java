@@ -128,25 +128,15 @@ public class NewsService extends BaseService {
             //获取对应的高亮域
 
             Map<String, HighlightField> result = it.highlightFields();
-
             if(result != null){
                 if(!StringUtils.isEmpty(newsQuery.getKeyword())){
                     Field title = p.getClass().getDeclaredField("title");
                     title.setAccessible(true);
                     String titleVal = title.get(p).toString();
-                    //获得搜索关键字
-//                    String titleHtml = "<comp>" + newsQuery.getKeyword()+ "</comp>";
-//                    title.set(p, titleVal.replaceAll("(?i)"+newsQuery.getKeyword(), titleHtml));
-
-
                     title.set(p,ignoreCase(titleVal,newsQuery.getKeyword()));
                     Field overview = p.getClass().getDeclaredField("overview");
                     overview.setAccessible(true);
                     String overviewVal = overview.get(p).toString();
-                    //获得搜索关键字
-                    //String overviewHtml = "<comp>" + newsQuery.getKeyword()+ "</comp>";
-                    //overview.set(p, overviewVal.replaceAll("(?i)"+newsQuery.getKeyword().toUpperCase(), overviewHtml));
-
                     overview.set(p,ignoreCase(overviewVal,newsQuery.getKeyword()));
                 }
             }
@@ -166,7 +156,7 @@ public class NewsService extends BaseService {
         return shs;
     }
 
-    private String ignoreCase(String str,String regex) {
+    private static String ignoreCase(String str,String regex) {
         //保存你要添加的html代码的长度
         int len = 0;
         String s = "<comp></comp>";
@@ -175,14 +165,14 @@ public class NewsService extends BaseService {
         Matcher matcher = pattern.matcher(str);
         //循环查找，可能匹配到的不止一个字符串
         while (matcher.find()) {
-        //截取字符串，临时保存匹配到的字符串
-        //起始位置和结束位置都要加一个len长度
-        String match = str.substring(matcher.start() + len, matcher.end()
-                    + len);
-        //替换首次找到的字符串
-            str = str.replaceFirst(match, "<comp>" + match
-                    + "</comp>");
-        //len需要加上s长度
+            String match = str.substring(matcher.start() + len, matcher.end() + len);
+            if(regex.equals(match)){
+                str = str.replaceAll(match, "<comp>" + match + "</comp>");
+                break;
+            }
+            //替换首次找到的字符串
+            str = str.replace(match, "<comp>" + match + "</comp>");
+            //len需要加上s长度
             len = len + s.length();
         }
         return str;
@@ -275,5 +265,36 @@ public class NewsService extends BaseService {
             e.printStackTrace();
         }
         return json;
+    }
+
+    public static void main(String[] args) {
+        String str = "美丽说JAVA,美丽说JAVA优惠券";
+        String regex = "JAVA";
+        //保存你要添加的html代码的长度
+        int len = 0;
+        String s = "<comp></comp>";
+//不区分大小写匹配字符串
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(str);
+    //循环查找，可能匹配到的不止一个字符串
+
+        while(matcher.find()) {
+
+//截取字符串，临时保存匹配到的字符串
+//起始位置和结束位置都要加一个len长度
+            String match = str.substring(matcher.start() + len, matcher.end()
+                    + len);
+            if(regex.equals(match)){
+                str = str.replaceAll(match, "<comp>" + match + "</comp>");
+                break;
+            }
+//替换首次找到的字符串
+            str = str.replaceFirst(match, "<comp>" + match
+                    + "</comp>");
+//len需要加上s长度
+
+            len = len + s.length();
+        }
+        System.out.println(str);
     }
 }

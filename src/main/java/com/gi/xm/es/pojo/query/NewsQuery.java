@@ -23,7 +23,7 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("行业")
     private String industry;
 
-    @ApiModelProperty("新闻图片地址:'http://static.galaxyinternet.com/img/news/'+imgmd5+'.PNG'")
+    @ApiModelProperty("暂无用")
     private String code;
 
     @ApiModelProperty("创建时间")
@@ -59,7 +59,7 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("排序字段")
     private String orderBy;
 
-    @ApiModelProperty("资讯图片")
+    @ApiModelProperty("imgm资讯图片:http://static.galaxyinternet.com/img/news/+imgmd5+'.PNG'")
     private String imgmd5;
 
     private String industryNames;
