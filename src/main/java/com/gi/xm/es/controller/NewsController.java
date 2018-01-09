@@ -1,5 +1,6 @@
 package com.gi.xm.es.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.view.MessageInfo4ES;
 import com.gi.xm.es.view.Pagination;
 import com.gi.xm.es.pojo.query.NewsQuery;
@@ -9,8 +10,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,5 +117,28 @@ public class NewsController {
             LOG.error(e.getMessage());
             return errorRet;
         }
+    }
+
+    @ApiOperation("app端查询资讯接口,返回分类数据和条数")
+    @ApiImplicitParam(paramType = "body", dataType = "NewsQuery", name = "newsQuery", value = "必填项: pageSize keyword:搜索关键字", required = true)
+    @RequestMapping(value="getAppNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JSONObject getAppNews(@RequestBody NewsQuery newsQuery) {
+        if(newsQuery.getPageSize()==null || newsQuery.getKeyword() ==null){
+            JSONObject errorRet =  new JSONObject();
+            errorRet.put("status",MessageStatus.MISS_PARAMETER.getStatus());
+            errorRet.put("message",MessageStatus.MISS_PARAMETER.getMessage());
+            errorRet.put("data",null);
+            return errorRet;
+        }
+        //构建请求体
+        SearchRequestBuilder srb = client.prepareSearch(index)
+                                         .setTypes(type)
+                                         .setQuery(QueryBuilders.termQuery("title",newsQuery.getKeyword().toLowerCase()))
+                                         .addAggregation(AggregationBuilders.terms("perType").field("typeId").subAggregation(AggregationBuilders.topHits("topHit").size(newsQuery.getPageSize())));
+        //返回响应
+        SearchHits shs = newsService.getSearchHits(srb);
+        JSONObject result = newsService.getAggregationResponse(newsQuery,srb);
+        return result;
     }
 }
