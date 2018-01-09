@@ -1,9 +1,12 @@
 package com.gi.xm.es.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.gi.xm.es.controller.NewsController;
 import com.gi.xm.es.pojo.Query;
 import com.gi.xm.es.pojo.query.NewsQuery;
+import com.gi.xm.es.view.MessageStatus;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -15,6 +18,12 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.bucket.terms.InternalTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.tophits.InternalTopHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
@@ -27,11 +36,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -237,4 +242,38 @@ public class NewsService extends BaseService {
 	     SearchResponse res = srb.setTypes("news").setSearchType(SearchType.DEFAULT).execute().actionGet();
 		 return res.getHits();
 	}
+
+    //按类型分组,返回每组总数和前n条数据
+    public  JSONObject getAggregationResponse(NewsQuery newsQuery,SearchRequestBuilder srb){
+        JSONObject json = new JSONObject();
+        json.put("status", MessageStatus.OK.getStatus());
+        json.put("message",MessageStatus.OK.getMessage());
+        SearchResponse searchResponse = srb.get();
+        Map<String, Aggregation> aggMap = searchResponse.getAggregations().asMap();
+        LongTerms gradeTerms = (LongTerms) aggMap.get("perType");
+        Iterator<Terms.Bucket> gradeBucketIt = gradeTerms.getBuckets().iterator();
+        try{
+            JSONArray array = new JSONArray();
+            while(gradeBucketIt.hasNext()){
+                JSONObject obj = new JSONObject();
+                Terms.Bucket gradeBucket = gradeBucketIt.next();
+                Long key = (Long)gradeBucket.getKey();
+                Long count = gradeBucket.getDocCount();
+                obj.put("typeId",key);
+                obj.put("number",count);
+                InternalTopHits topHits =(InternalTopHits)gradeBucket.getAggregations().asMap().get("topHit");
+                SearchHits searchHits = topHits.getHits();
+                List<Object> entityList = getResponseList(newsQuery,searchHits);
+                obj.put("newsList",entityList);
+                array.add(obj);
+            }
+            json.put("data",array);
+        }catch (Exception e){
+            json.put("status", MessageStatus.SYS_ERROR.getStatus());
+            json.put("message",MessageStatus.SYS_ERROR.getMessage());
+            json.put("data",null);
+            e.printStackTrace();
+        }
+        return json;
+    }
 }

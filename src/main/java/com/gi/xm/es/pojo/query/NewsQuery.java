@@ -23,7 +23,7 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("行业")
     private String industry;
 
-    @ApiModelProperty("新闻图片地址:'http://static.galaxyinternet.com/img/news/'+code+'.PNG'")
+    @ApiModelProperty("新闻图片地址:'http://static.galaxyinternet.com/img/news/'+imgmd5+'.PNG'")
     private String code;
 
     @ApiModelProperty("创建时间")
@@ -47,7 +47,7 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("资讯类型 [0:项目 1:机构 2:大公司3:事件4:任务5:政策6:行业 7:新产品")
     private Integer typeId;
 
-    @ApiModelProperty("资讯图片加密")
+    @ApiModelProperty("暂无用")
     private String md5;
 
     @ApiModelProperty("资讯标题")
@@ -58,6 +58,9 @@ public class NewsQuery extends Query implements Serializable {
 
     @ApiModelProperty("排序字段")
     private String orderBy;
+
+    @ApiModelProperty("资讯图片")
+    private String imgmd5;
 
     private String industryNames;
     
@@ -188,4 +191,12 @@ public class NewsQuery extends Query implements Serializable {
 	public void setIndustryNames(String industryNames) {
 		this.industryNames = industryNames;
 	}
+
+    public String getImgmd5() {
+        return imgmd5;
+    }
+
+    public void setImgmd5(String imgmd5) {
+        this.imgmd5 = imgmd5;
+    }
 }
