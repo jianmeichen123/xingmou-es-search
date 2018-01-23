@@ -15,6 +15,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +132,7 @@ public class NewsController {
         SearchRequestBuilder srb = client.prepareSearch(index)
                                          .setTypes(type)
                                          .setQuery(QueryBuilders.termQuery("title",newsQuery.getKeyword().toLowerCase()))
-                                         .addAggregation(AggregationBuilders.terms("perType").field("typeId").subAggregation(AggregationBuilders.topHits("topHit").size(newsQuery.getPageSize())));
+                                         .addAggregation(AggregationBuilders.terms("perType").field("typeId").subAggregation(AggregationBuilders.topHits("topHit").sort("orderTime",SortOrder.DESC).size(newsQuery.getPageSize())));
         //返回响应
         SearchHits shs = newsService.getSearchHits(srb);
         MessageInfo4ES result = newsService.getAggregationResponse(newsQuery,srb);
