@@ -38,7 +38,7 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("暂无用")
     private String searchkey;
 
-    @ApiModelProperty("资讯概要 <comp></comp>标签代表高亮")
+    @ApiModelProperty("资讯概要 comp标签代表高亮")
     private String overview;
 
     @ApiModelProperty("资讯类型")
@@ -50,7 +50,7 @@ public class NewsQuery extends Query implements Serializable {
     @ApiModelProperty("暂无用")
     private String md5;
 
-    @ApiModelProperty("资讯标题 <comp></comp>标签代表高亮")
+    @ApiModelProperty("资讯标题 comp标签代表高亮")
     private String title;
 
     @ApiModelProperty("asc/desc")

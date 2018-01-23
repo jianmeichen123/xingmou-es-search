@@ -15,6 +15,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,8 +121,8 @@ public class NewsController {
     }
 
     @ApiOperation("app端查询资讯接口,返回分类数据和条数")
-    @ApiImplicitParam(paramType = "body", dataType = "NewsQuery", name = "newsQuery", value = "必填项: pageSize keyword:搜索关键字", required = true)
-    @RequestMapping(value="getAppNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiImplicitParam(paramType = "body", dataType = "NewsQuery", name = "newsQuery", value = "必填项: pageSize keyword:搜索关键字 结果取data:分组统计数据字段", required = true)
+    @RequestMapping(value="getAggregationNews",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MessageInfo4ES getAppNews(@RequestBody NewsQuery newsQuery) {
         if(newsQuery.getPageSize()==null || newsQuery.getKeyword() ==null){
@@ -131,7 +132,7 @@ public class NewsController {
         SearchRequestBuilder srb = client.prepareSearch(index)
                                          .setTypes(type)
                                          .setQuery(QueryBuilders.termQuery("title",newsQuery.getKeyword().toLowerCase()))
-                                         .addAggregation(AggregationBuilders.terms("perType").field("typeId").subAggregation(AggregationBuilders.topHits("topHit").size(newsQuery.getPageSize())));
+                                         .addAggregation(AggregationBuilders.terms("perType").field("typeId").subAggregation(AggregationBuilders.topHits("topHit").sort("orderTime",SortOrder.DESC).size(newsQuery.getPageSize())));
         //返回响应
         SearchHits shs = newsService.getSearchHits(srb);
         MessageInfo4ES result = newsService.getAggregationResponse(newsQuery,srb);
